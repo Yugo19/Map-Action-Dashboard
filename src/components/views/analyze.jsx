@@ -1,13 +1,65 @@
-import {React, Component} from 'react'
+import React, {useState, useEffect} from 'react'
 import { Grid, Row, Col } from 'react-bootstrap';
-import { MapContainer, TileLayer, useMap, Popup, Marker } from 'react-leaflet'
+import { MapContainer, TileLayer, Circle, Popup, Marker } from 'react-leaflet'
 import '../../assets/css/global.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faCalendarPlus} from "@fortawesome/free-solid-svg-icons";
-import { Link } from 'react-router-dom';
+import { faAngleDown, faCalendarPlus, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
+import { Link, useParams } from 'react-router-dom';
+import { config } from '../../config';
+import ReactDOMServer from 'react-dom/server';
+import axios from "axios";
 
-class Analyze extends Component {
-    render(){
+function Analyze (){
+    const { incidentId } = useParams(); 
+    const [incident, setIncident] = useState({});
+    const [videoIsLoading, setVideoIsLoading] = useState(false);
+    console.log('Incident updated:', incident);
+    useEffect(() => {
+        const fetchIncident = async () => {
+            try {
+                const response = await axios.get(`http://192.168.1.26/MapApi/incident/${incidentId}`);
+                setIncident(response.data);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des détails de l\'incident :', error);
+            }
+        };
+
+        if (incidentId) {
+            fetchIncident(); 
+        }
+    }, [incidentId]);
+
+    const imgUrl = incident ? config.url + incident.photo : '';
+    const audioUrl = incident ? config.url + incident.audio : '';
+    const videoUrl = incident ? config.url + incident.video : '';
+    const latitude = incident ? incident.lattitude: 0;
+    const longitude = incident ?  incident.longitude: 0;
+    const description = incident ? incident.description: '';
+    const position = [latitude,longitude];
+    const dataTostring = incident ? incident.created_at :'';
+    const dateObject = new Date(dataTostring)
+    const date = dateObject.toLocaleDateString();
+    const heure = dateObject.toLocaleTimeString()
+    const iconHTML = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faMapMarkerAlt} color="blue" size="2x"/>)
+    const customMarkerIconBlue = new L.DivIcon({
+        html: iconHTML,
+    });
+
+    const iconHTMLRed = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faMapMarkerAlt} color="red" size="2x"/>)
+    const customMarkerIconRed = new L.DivIcon({
+        html: iconHTMLRed,
+    });
+    const iconHTMLOrange = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faMapMarkerAlt} color="orange" size="2x"/>)
+    const customMarkerIconOrange = new L.DivIcon({
+        html: iconHTMLOrange,
+    });
+    const Loader = () => {
+        return (
+            <div className="loader">
+                <h2>Loading video...</h2>
+            </div>
+        )
+    }
         return(
             <div className='body'>
                 <div style={{backgroundColor:"#f4f7f7"}}>
@@ -38,39 +90,53 @@ class Analyze extends Component {
                                 <h4>Carte Interactive</h4>
                             </div>
                             <div id="map"> 
-                                <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={true}>
-                                    <TileLayer
-                                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                    />
-                                    <Marker position={[51.505, -0.09]}>
-                                        <Popup>
-                                            Map Action <br /> voir l'incident 
-                                        </Popup>
-                                    </Marker>
-                                </MapContainer>
+                            {/* && typeof longitude=="number" && typeof latitude=="number"  */}
+                                {latitude !== null && longitude !== null && typeof longitude=="number" && typeof latitude=="number" ? (
+                                    <MapContainer center={position} zoom={13}>
+                                        <TileLayer
+                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                        />
+                                        <Marker
+                                        className="icon-marker"
+                                        icon={
+                                            incident.etat === "resolved"
+                                              ? customMarkerIconBlue
+                                              : incident.etat === "taken_into_account"
+                                                ? customMarkerIconOrange
+                                                : customMarkerIconRed
+                                          }
+                                        position={position}
+                                        >
+                                            <Popup>{incident.title}</Popup>
+                                            <Circle center={position} radius={500} color="red"></Circle>
+                                        </Marker>
+                                    </MapContainer>
+                                ) : (
+                                    <p className="danger">Coordonnees non renseignees</p>
+                                )}
                             </div>
                             <div>
                                 <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
                                 <div>
-                                    <h5 style={{marginLeft:"350px", marginBottom:"-5px", fontWeight:"600", marginTop:"-45px", fontSize:"14px"}}>Code Couleur</h5>
+                                    <h5 style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-45px", fontSize:"18px"}}>Code Couleur</h5>
                                     <div className="codeColor">
                                         <div>
-                                            <hr className="hr_blue"/>
+                                            <div className="hr_blue"/>
                                             <p>Declaré <br/> résolu</p>
                                         </div>
                                         <div>
-                                            <hr className="hr_orange"/>
+                                            <div className="hr_orange"/>
                                             <p>Pris en <br/> compte</p>
                                         </div>
                                         <div>
-                                            <hr className="hr_red"/>
+                                            <div className="hr_red"/>
                                             <p>Pas d'action</p>
                                         </div>
                                     </div>
                                 </div>
                                 </div>
-                                <div class="dashed-line"></div>
+                                <div className="dashed-line"></div>
                                 <div style={{marginLeft:'10px'}}>
                                     <div style={{marginBottom:'40px'}}>
                                         <h6>Context & Description</h6>
@@ -97,16 +163,16 @@ class Analyze extends Component {
                             </Col>
                             <Col lg={3} sm={9}>
                                 <Col>
-                                    <Col lg={12} sm={9} className="chart-grid" style={{paddingTop:'25px'}}>
+                                    <Col lg={12} sm={9} className="chart-grid" style={{paddingTop:'5px'}}>
                                         <div className="col_header">
-                                            <div style={{marginTop:"-28px", marginLeft:"20px"}}>
+                                            <div>
                                                 <h4 style={{textAlign:"justify"}}>Image de l'incident</h4>
-                                                <img src='' alt='incident image'/>
+                                                <img src={imgUrl} alt='' style={{height:"300px"}}/>{''}
                                             </div>
                                             
                                             <div style={{display:"flex", justifyContent:"space-between"}}>
-                                                <p>Date: {}</p>
-                                                <p >Heure: {}</p>
+                                                <p>Date: {date}</p>
+                                                <p>Heure: {heure}</p>
                                             </div>
                                         </div>
                                     </Col>
@@ -114,28 +180,28 @@ class Analyze extends Component {
                                         <div className="col_header">
                                             <h4>Type d'incident</h4>
                                             <div className='typeIncident'>
-                                                <img src='' alt='type incident'/>
+                                                <img src='' alt=''/>
                                             </div>
                                         </div>
                                         <div className="col_header">
                                             <h4>Gravité d'incident</h4>
                                             <div className='typeIncident'>
-                                                <img src='' alt='type incident'/>
+                                                <img src='' alt=''/>
                                             </div>
                                         </div>
                                         <div className="col_header">
                                             <h4>Code Couleur*</h4>
                                             <div style={{display:"flex"}}>
                                                 <div>
-                                                    <hr className="hr_yellow"/>
+                                                    <div className="hr_yellow"/>
                                                     <p>Faible <br/>Impact</p>
                                                 </div>
                                                 <div>
-                                                    <hr className="hr_orange_gr"/>
+                                                    <div className="hr_orange_gr"/>
                                                     <p>Potentiellement <br/>Grave</p>
                                                 </div>
                                                 <div>
-                                                    <hr className="hr_red_gr"/>
+                                                    <div className="hr_red_gr"/>
                                                     <p>Potentiellement<br/>Dangereux</p>
                                                 </div>
                                             </div>
@@ -165,5 +231,5 @@ class Analyze extends Component {
             </div>
         )
     }
-}
+
 export default Analyze;

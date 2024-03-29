@@ -480,6 +480,7 @@ img.width-half {
   height:100%;
   background-color: #f4f7f7;
   width: 100%;
+  background-attachment: fixed;
 }
 
 .title{
@@ -601,16 +602,16 @@ padding: 0;
   margin-right: 150px; 
 }
 .monthChoice{
-  background-color:#fff;
+  /* background-color:#fff;
   width:150px;
   height:40px;
-  border-radius:10px;
+  border-radius:10px; */
   margin-left:1100px;
-  margin-top: -30px;
+  /* margin-top: -30px; */
   display: flex;
-  padding: 10px 20px 20px 5px;
-  justify-content: space-around;
-  border: 1px solid #DCDBDD;
+  /* padding: 10px 20px 20px 5px;
+  justify-content: space-around; */
+  /* border: 1px solid #DCDBDD; */
 }
 .angleDo{
   margin-top: 5px;
@@ -722,7 +723,7 @@ padding: 0;
 .hr_red_gr{
   width: 100px;
   height: 15px;
-  background-color: rgb(236, 35, 35);
+  background-color: #FF4A55;
   border-radius: 0px 4px 4px 0px;
   border:none;
   cursor: pointer;
@@ -744,7 +745,7 @@ padding: 0;
 .code{
   display: flex;
   margin-left: 200px;
-  margin-top: -10px;
+  margin-top: 5px;
 }
 .codeColor p{
   font-style: poppins;
@@ -796,7 +797,16 @@ padding: 0;
   border: 1px #84818A;
   border-radius: 30px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
-
+}
+.action-grid{
+  width: 360px;
+  height: 236px;
+  background-color: #fff;
+  margin-left: 20px;
+  margin-bottom: 20px;
+  border: 1px #84818A;
+  border-radius: 30px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
 }
 .chart-grid-ia{
   width: 400px;
@@ -824,13 +834,13 @@ padding: 0;
 
 }
 .audioIncident{
-  width: 378px;
-  height: 7Opx;
-  background-color: #F1F3F4;
+  /* width: 378px; */
+  /* height: 7Opx; */
+  /* background-color: #F1F3F4; */
   /* margin: auto; */
-  border-radius: 30px;
-  justify-content: center;
-  margin-bottom: 30px;
+  /* /* border-radius: 30px; */
+  /* justify-content: center; */
+  margin-bottom: 30px; 
 }
 .boutonAnalyse{
   font-style: poppins;
@@ -912,4 +922,17 @@ h6 h5{
   height: 50px;
   margin-left: 80px;
   /* float: left; */
+}
+
+.etat{
+  width: 109px;
+  height: 40px;
+  background-color: #3DA3DE;
+  border: none;
+  border-radius: 15px;
+  color: #fff;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 26px;
 }

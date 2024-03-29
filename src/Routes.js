@@ -27,9 +27,9 @@ const Root = () => {
         <Route path="/faq" element={<FAQ/>} />
         <Route path="/help" element={<HelpOnline/>} />
         <Route path="/incident_view/:incidentId" element={<GlobalView/>} />
-        <Route path="/analyze" element={<Analyze/>} />
+        <Route path="/analyze/:incidentId" element={<Analyze/>} />
         <Route path="/colaboration" element={<Colaboration/>} />
-        <Route path='/askCollaboration' element={<Colaborate/>}/>
+        <Route path='/askCollaboration/:incidentId' element={<Colaborate/>}/>
         <Route path="/" element={<Login/>}/>
       </Routes>
   );

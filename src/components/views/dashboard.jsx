@@ -10,6 +10,8 @@ import { config } from "../../config";
 import L from "leaflet"
 import axios from "axios";
 import ReactDOMServer from 'react-dom/server';
+import Select from 'react-select'
+import { components } from "react-select";
 
 L.Icon.Default.prototype._getIconUrl
 
@@ -22,33 +24,44 @@ function Dashboard(props) {
     const navigate = useNavigate()
     const chartRef = useRef();
     const [countIncidents, setCountIncidents] = useState('');
-    const [countRapports, setCountRapports] = useState('');
-    const [countZones, setCountZones] = useState('');
-    const [countElus, setCountElus] = useState('');
-    const [rapportsDispo, setRapportsDispo] = useState(0);
-    const [rapportsNondispo, setRapportsNondispo] = useState(0);
     const [incidentsByMonth, setIncidentsByMonth] = useState([]);
-    const [incidentsByWeek, setIncidentsByWeek] = useState([]);
     const [data, setData] = useState([]);
-    const [indicateurs, setIndicateurs] = useState({});
     const [resolus, setResolus] = useState('');
     const [nonResolus, setNonResolus] = useState('');
     const [markers, setMarkers] = useState([[14.716677, -17.467686]]);
     const [showIncidentModal, setShowIncidentModal] = useState(false);
     const [incident, setIncident] = useState([]);
     const [userType, setUserType] = useState(sessionStorage.getItem('user_type'));
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
 
     useEffect(() => {
         _getIncidents();
         _getIndicateur();
         _getIncidentsNotResolved();
         _getIncidentsResolved();
-    }, []);
+    }, [selectedMonth]);
+
+    const handleMonthChange = (selectedOption) => {
+        console.log("Selected month:", selectedOption); 
+        const monthValue = selectedOption.value;
+        if (monthValue >= 1 && monthValue <= 12) {
+            setSelectedMonth(monthValue);
+        } else {
+            console.error("Invalid month value:", monthValue);
+        }
+    };
+    const monthsOptions = [
+        { value: 1, label: 'Janvier' },
+        { value: 2, label: 'Février' },
+        { value: 3, label: 'Mars' },
+        { value: 4, label: 'Avril' },
+    ];
+
 
     const _getIndicateur = async () => {
       const userChartRef = chartRef.current.getContext('2d');
       if (window.myChart !== undefined) {
-          window.myChart.destroy(); // Détruit le graphique existant s'il existe
+          window.myChart.destroy(); 
       }
       window.myChart = new Chart(userChartRef, {
           type: 'doughnut',
@@ -63,7 +76,8 @@ function Dashboard(props) {
   }
 
     const _getIncidents = async () => {
-        var url = config.url + '/MapApi/incident/'
+        var url = `${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`
+        console.log('les urls', url)
         try {
             let res = await axios.get(url, {
                 headers: {
@@ -71,8 +85,9 @@ function Dashboard(props) {
                     'Content-Type': 'application/json',
                 },
             })
-            setCountIncidents(res.data.count);
-            setData(res.data.results);
+            console.log(res.data.data)
+            setCountIncidents(res.data.data.count);
+            setData(res.data.data);
         } catch (error) {
             console.log(error.message)
         }
@@ -107,20 +122,6 @@ function Dashboard(props) {
             console.log(error.message)
         }
     }
-
-    const getIcon = async (mark) => {
-        console.log(mark.etat)
-        if (mark.etat == 'declared') {
-            return L.Icon.Default.mergeOptions({
-                iconUrl: "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
-            })
-        } else {
-            return L.Icon.Default.mergeOptions({
-                iconUrl: "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
-            })
-        }
-    }
-
     const getIncidentById = (id) => {
         let incident = ''
         for (let index = 0; index < data.length; index++) {
@@ -131,6 +132,15 @@ function Dashboard(props) {
         }
         return incident
     }
+    function CustomOption (props) {
+        return (
+          <components.Option {...props}>
+            <FontAwesomeIcon icon={faCalendarPlus} />
+            {props.children}
+          </components.Option>
+        );
+    };
+      
 
     const onShowIncident = (id) => {
         setShowIncidentModal(!showIncidentModal);
@@ -172,6 +182,10 @@ function Dashboard(props) {
     const customMarkerIconRed = new L.DivIcon({
         html: iconHTMLRed,
     });
+    const iconHTMLOrange = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faMapMarkerAlt} color="orange" size="2x"/>)
+    const customMarkerIconOrange = new L.DivIcon({
+        html: iconHTMLOrange,
+    });
         const map = (
             <MapContainer center={position} zoom={5}>
               <TileLayer
@@ -182,7 +196,13 @@ function Dashboard(props) {
                 <Marker
                   className="icon-marker"
                   key={`marker-${idx}`}
-                  icon={mark.etat == "resolved" ? customMarkerIconBlue : customMarkerIconRed}
+                  icon={
+                    mark.etat === "resolved"
+                      ? customMarkerIconBlue
+                      : mark.etat === "taken_into_account"
+                        ? customMarkerIconOrange
+                        : customMarkerIconRed
+                  }
                   position={[mark.lat, mark.lon]}
                 >
                   <Popup>
@@ -218,9 +238,29 @@ function Dashboard(props) {
                         <h3 style={{fontSize:"30px", fontWeight:"700"}}>Tableau de Bord</h3>
                     </div>
                     <div className="monthChoice">
-                        <FontAwesomeIcon icon={faCalendarPlus} color='#84818A'/>
-                        <p>ce mois</p>
-                        <FontAwesomeIcon icon={faAngleDown} color='#84818A' className="angleDo"/>
+                         <Select
+                            components={{CustomOption}}
+                            value={monthsOptions.find(option => option.value === selectedMonth)}
+                            onChange={handleMonthChange}
+                            options={monthsOptions}
+                            styles={{
+                                // Styles de la zone de contrôle (sélection)
+                                control: (provided, state) => ({
+                                    ...provided,
+                                    border: '1px solid #ccc',
+                                    borderRadius: '15px',
+                                    width:'150px',
+                                    height:'40px',
+                                    justifyContent:'space-around',
+                                    paddingLeft: '3px',
+                                }),
+                                indicatorSeparator: (provided, state) => ({
+                                    ...provided,
+                                    display: 'none' // Pour masquer le séparateur entre l'icône et le contrôle
+                                }),
+                               
+                            }}
+                        />
                     </div>
                     <div>
                         <div className="dash">
@@ -293,18 +333,18 @@ function Dashboard(props) {
                             <div>
                                 <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
                                 <div>
-                                    <h5 style={{marginLeft:"350px", marginBottom:"-5px", fontWeight:"600", marginTop:"-48px", fontSize:"14px"}}>Code Couleur</h5>
+                                    <h5 style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-48px", fontSize:"18px"}}>Code Couleur</h5>
                                     <div className="codeColor">
                                     <div>
-                                        <hr className="hr_blue"/>
+                                        <div className="hr_blue"/>
                                         <p>Declaré <br/> résolu</p>
                                     </div>
                                     <div>
-                                        <hr className="hr_orange"/>
+                                        <div className="hr_orange"/>
                                         <p>Pris en <br/> compte</p>
                                     </div>
                                     <div>
-                                        <hr className="hr_red"/>
+                                        <div className="hr_red"/>
                                         <p>Pas d'action</p>
                                     </div>
                                     </div>
