@@ -1,6 +1,7 @@
 // Routes.js
 
 import React from 'react';
+import {Row, Container} from "react-bootstrap"
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Dashboard from './components/views/dashboard';
 import Incident from './components/views/Incident';
@@ -16,9 +17,18 @@ import Colaborate from './components/views/askCollaboration';
 import Login from './components/login';
 
 const Root = () => {
+  const renderNotFound = (
+    <div className="content" style={{ backgroundColor: "#fff" }}>
+      <Container>
+        <Row>
+          <h2>Page introuvable</h2>
+        </Row>
+      </Container>
+    </div>
+  );
   return (
       <Routes>
-        {/* <Route exact path="/" element={<Dashboard/>} /> */}
+        <Route exact path="/" element={<Dashboard/>} />
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/incident" element={<Incident/>} />
         <Route path="/historique" element={<Historique/>} />
@@ -30,7 +40,8 @@ const Root = () => {
         <Route path="/analyze/:incidentId" element={<Analyze/>} />
         <Route path="/colaboration" element={<Colaboration/>} />
         <Route path='/askCollaboration/:incidentId' element={<Colaborate/>}/>
-        <Route path="/" element={<Login/>}/>
+        <Route path="*" element={<renderNotFound />} />
+        {/* <Route path="/" element={<Login/>}/> */}
       </Routes>
   );
 };

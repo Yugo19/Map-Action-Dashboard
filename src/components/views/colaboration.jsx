@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { config } from '../../config';
 import ReactDOMServer from 'react-dom/server'
 import axios from 'axios';
+import Select from 'react-select'
 
 function Colaboration () {
     const navigate = useNavigate()
@@ -15,13 +16,49 @@ function Colaboration () {
     const [data, setData] = useState([]);
     const [incident, setIncident] = useState([]);
     const [showIncidentModal, setShowIncidentModal] = useState(false);
+    const [percentageVsTaken, setPercentageVsTaken] = useState(0)
+
+    // Selection des Mois
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+    const handleMonthChange = (selectedOption) => {
+        console.log("Selected month:", selectedOption); 
+        const monthValue = selectedOption.value;
+        if (monthValue >= 1 && monthValue <= 12) {
+            setSelectedMonth(monthValue);
+        } else {
+            console.error("Invalid month value:", monthValue);
+        }
+    };
+    const monthsOptions = [
+        { value: 1, label: 'Janvier' },
+        { value: 2, label: 'Février' },
+        { value: 3, label: 'Mars' },
+        { value: 4, label: 'Avril' },
+        { value: 5, label: 'Mai' },
+        { value: 6, label: 'Juin' },
+        { value: 7, label: 'Juillet' },
+        { value: 8, label: 'Août' },
+        { value: 9, label: 'Septembre' },
+        { value: 10, label: 'Octobre' },
+        { value: 11, label: 'Novembre' },
+        { value: 12, label: 'Decembre' },
+    ];
+    function CustomOption (props) {
+        return (
+          <components.Option {...props}>
+            <FontAwesomeIcon icon={faCalendarPlus} />
+            {props.children}
+          </components.Option>
+        );
+    };
 
     useEffect(() => {
         _getIncidents();
+        _getPercentageVsTaken();
         
-    }, []);
+    }, [selectedMonth]);
     const _getIncidents = async () => {
-        var url = config.url + '/MapApi/incident/'
+        var url = `${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`
         try {
             let res = await axios.get(url, {
                 headers: {
@@ -29,8 +66,8 @@ function Colaboration () {
                     'Content-Type': 'application/json',
                 },
             })
-            setCountIncidents(res.data.count);
-            setData(res.data.results);
+            setCountIncidents(res.data.data.length);
+            setData(res.data.data);
         } catch (error) {
             console.log(error.message)
         }
@@ -58,6 +95,35 @@ function Colaboration () {
             setIncident(item);
         }
     }
+    const _getPercentageVsTaken = async () => {
+        const previousMonth = selectedMonth - 1;
+        const currentMonthUrl = `${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`;
+        const previousMonthUrl = `${config.url}/MapApi/incidentByMonth/?month=${previousMonth}`;
+        try {
+            const [currentMonthRes, previousMonthRes] = await Promise.all([
+                axios.get(currentMonthUrl, {
+                    headers: {
+                        Authorization: `Bearer${sessionStorage.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }),
+                axios.get(previousMonthUrl, {
+                    headers: {
+                        Authorization: `Bearer${sessionStorage.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
+            ]);
+            const incidentsCurrentMonth = currentMonthRes.data.data.filter(incident => incident.etat === "taken_into_account").length;
+            const incidentsPreviousMonth = previousMonthRes.data.data.filter(incident => incident.etat === "taken_into_account").length;
+            const percentageVsPreviousMonth = incidentsPreviousMonth !== 0 ? (incidentsCurrentMonth / incidentsPreviousMonth) * 100 : 0;
+            setPercentageVsTaken(percentageVsPreviousMonth)
+            console.log(`Pourcentage des incidents en ${selectedMonth} par rapport à ${previousMonth}: ${percentageVsPreviousMonth}%`);
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+    
     let positions =[]
     data.map((incident, idx) => {
         if (incident.lattitude !== null && incident.longitude !== null && !isNaN(incident.longitude) && !isNaN(incident.lattitude)) {
@@ -140,17 +206,44 @@ function Colaboration () {
                         <h3 style={{fontSize:"30px", fontWeight:"700"}}>Tableau de Bord</h3>
                     </div>
                     <div className="monthChoice">
-                        <FontAwesomeIcon icon={faCalendarPlus} color='#84818A'/>
-                        <p>ce mois</p>
-                        <FontAwesomeIcon icon={faAngleDown} color='#84818A' className="angleDo"/>
+                    <Select
+                            components={{CustomOption}}
+                            value={monthsOptions.find(option => option.value === selectedMonth)}
+                            onChange={handleMonthChange}
+                            options={monthsOptions}
+                            styles={{
+                                // Styles de la zone de contrôle (sélection)
+                                control: (provided, state) => ({
+                                    ...provided,
+                                    border: '1px solid #ccc',
+                                    borderRadius: '15px',
+                                    width:'150px',
+                                    height:'40px',
+                                    justifyContent:'space-around',
+                                    paddingLeft: '3px',
+                                }),
+                                indicatorSeparator: (provided, state) => ({
+                                    ...provided,
+                                    display: 'none'
+                                }),
+                               
+                            }}
+                        />
                     </div>
                     <div>
                         <div className="dash">
                             <ul className="dash_ul">
-                                <li style={{ textDecoration: 'none'}}><Link to="/dashboard" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Vue d'ensemble</Link></li>
-                                <li><Link to="/incident_view" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Vue incident</Link></li>
-                                <li><Link to="/analyze/:incidentId" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Analyses Avancées</Link></li>
-                                <li><Link to="/colaboration" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Collaboration</Link></li>
+                                <li style={{ textDecoration: 'none'}}>
+                                    <Link 
+                                        to="/dashboard"
+                                        className="link"
+                                    >
+                                        Vue d'ensemble
+                                    </Link>
+                                </li>
+                                <li><Link to="/incident_view" className="link non-clickable">Vue incident</Link></li>
+                                <li><Link to="/analyze" className="link non-clickable">Analyses Avancées</Link></li>
+                                <li><Link to="/colaboration" className={location.pathname === "/colaboration" ? "selected-link" : "link"}>Collaboration</Link></li>
                             </ul>
                         </div>
                     </div>
@@ -162,7 +255,7 @@ function Colaboration () {
                             <div>
                                 <div>
                                     <h3 className="titleCard">Nombre d'incidents <br/> pris en compte</h3>
-                                    <p className="percentage">+3,19%</p>
+                                    <p className="percentage">{percentageVsTaken}%</p>
                                 </div>
                                 <div className="percent">
                                     <p>{countIncidents}</p>

@@ -8,6 +8,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import ReactDOMServer from 'react-dom/server';
 import { config } from '../../config';
+import Select from "react-select"
 
 function Colaborate (){
     const navigate = useNavigate();
@@ -15,6 +16,28 @@ function Colaborate (){
     const [incident, setIncident] = useState({});
     const [videoIsLoading, setVideoIsLoading] = useState(false);
     console.log('Incident updated:', incident);
+    const [collaborations, setCollaborations] = useState([]);
+    const [newCollaborationData, setNewCollaborationData] = useState({});
+
+    const fetchCollaborations = async () => {
+        try {
+            var url = `${config.url}/MapApi/collaboration`
+            const response = await axios.get(url);
+            setCollaborations(response.data.length);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des collaborations : ', error);
+        }
+    };
+    const createCollaboration = async () => {
+        try {
+            var url = config.url + "/MapApi/collaboration"
+            const response = await axios.post(url, newCollaborationData);
+            fetchCollaborations();
+            setNewCollaborationData({});
+        } catch (error) {
+            console.error('Erreur lors de la création de la collaboration : ', error);
+        }
+    };
     useEffect(() => {
         const fetchIncident = async () => {
             try {
@@ -25,23 +48,57 @@ function Colaborate (){
                 console.error('Erreur lors de la récupération des détails de l\'incident :', error);
             }
         };
+        fetchCollaborations();
 
         if (incidentId) {
             fetchIncident(); 
         }
     }, [incidentId]);
-
+    const handleCollaborationRequest = () => {
+        const confirmation = window.confirm("Voulez-vous faire une demande de collaboration sur cet incident ?");
+        if (confirmation) {
+            alert("La demande de collaboration a été envoyée !");
+        }
+    };
     const imgUrl = incident ? config.url + incident.photo : '';
     const audioUrl = incident ? config.url + incident.audio : '';
     const videoUrl = incident ? config.url + incident.video : '';
-    const latitude = incident ? incident.lattitude: 0;
-    const longitude = incident ?  incident.longitude: 0;
+    const latitude = incident.lattitude || 0;
+    const longitude = incident.longitude || 0;
     const description = incident ? incident.description: '';
     const position = [latitude,longitude];
     const dataTostring = incident ? incident.created_at :'';
     const dateObject = new Date(dataTostring)
+    const [selectedFilter, setSelectedFilter] = useState("all"); 
     const date = dateObject.toLocaleDateString();
     const heure = dateObject.toLocaleTimeString()
+    const filterIncidents = async () => {
+        var url = config.url + "/MapApi/incident"
+        try {
+            let response = axios.get(url,{
+                headers: {
+                    Authorization: `Bearer${sessionStorage.token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
+            const incidents = await response.data;
+            console.log('innnicin', incidents)
+            switch (selectedFilter) {
+                case "resolved":
+                  return incidents.filter((incident) => incident.etat === "resolved");
+                case "taken_into_account":
+                  return incidents.filter((incident) => incident.etat === "taken_into_account");
+                case "no_action":
+                  return incidents.filter((incident) => incident.etat !== "resolved" && incident.etat !== "taken_into_account");
+                default:
+                  return incidents;
+            }
+        } catch (error) {
+            console.log('erreur de récupération', error)
+            throw error;
+        }
+        
+      };
     const iconHTML = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faMapMarkerAlt} color="blue" size="2x"/>)
     const customMarkerIconBlue = new L.DivIcon({
         html: iconHTML,
@@ -55,6 +112,40 @@ function Colaborate (){
     const customMarkerIconOrange = new L.DivIcon({
         html: iconHTMLOrange,
     });
+    // Selection des Mois
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+    const handleMonthChange = (selectedOption) => {
+        console.log("Selected month:", selectedOption); 
+        const monthValue = selectedOption.value;
+        if (monthValue >= 1 && monthValue <= 12) {
+            setSelectedMonth(monthValue);
+        } else {
+            console.error("Invalid month value:", monthValue);
+        }
+    };
+    const monthsOptions = [
+        { value: 1, label: 'Janvier' },
+        { value: 2, label: 'Février' },
+        { value: 3, label: 'Mars' },
+        { value: 4, label: 'Avril' },
+        { value: 5, label: 'Mai' },
+        { value: 6, label: 'Juin' },
+        { value: 7, label: 'Juillet' },
+        { value: 8, label: 'Août' },
+        { value: 9, label: 'Septembre' },
+        { value: 10, label: 'Octobre' },
+        { value: 11, label: 'Novembre' },
+        { value: 12, label: 'Decembre' },
+    ];
+    function CustomOption (props) {
+        return (
+          <components.Option {...props}>
+            <FontAwesomeIcon icon={faCalendarPlus} />
+            {props.children}
+          </components.Option>
+        );
+    };
+
     const Loader = () => {
         return (
             <div className="loader">
@@ -69,9 +160,28 @@ function Colaborate (){
                         <h3 style={{fontSize:"30px", fontWeight:"700"}}>Tableau de Bord</h3>
                     </div>
                     <div className="monthChoice">
-                        <FontAwesomeIcon icon={faCalendarPlus} color='#84818A'/>
-                        <p>ce mois</p>
-                        <FontAwesomeIcon icon={faAngleDown} color='#84818A' className="angleDo"/>
+                        <Select
+                            components={{CustomOption}}
+                            value={monthsOptions.find(option => option.value === selectedMonth)}
+                            onChange={handleMonthChange}
+                            options={monthsOptions}
+                            styles={{
+                                control: (provided, state) => ({
+                                    ...provided,
+                                    border: '1px solid #ccc',
+                                    borderRadius: '15px',
+                                    width:'150px',
+                                    height:'40px',
+                                    justifyContent:'space-around',
+                                    paddingLeft: '3px',
+                                }),
+                                indicatorSeparator: (provided, state) => ({
+                                    ...provided,
+                                    display: 'none' 
+                                }),
+                               
+                            }}
+                        />
                     </div>
                     <div>
                         <div className="dash">
@@ -141,7 +251,7 @@ function Colaborate (){
                             </div>
                             <div id="map"> 
                             {/* && typeof longitude=="number" && typeof latitude=="number"  */}
-                                {latitude !== null && longitude !== null ? (
+                                {incident ? (
                                     <MapContainer center={position} zoom={13}>
                                         <TileLayer
                                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -172,15 +282,15 @@ function Colaborate (){
                                     <h5 style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-45px", fontSize:"18px"}}>Code Couleur</h5>
                                     <div className="codeColor">
                                         <div>
-                                            <div className="hr_blue"/>
+                                            <div className="hr_blue" onClick={() => setSelectedFilter("resolved")}/>
                                             <p>Declaré <br/> résolu</p>
                                         </div>
                                         <div>
-                                            <div className="hr_orange"/>
+                                            <div className="hr_orange" onClick={() => setSelectedFilter("taken_into_account")}/>
                                             <p>Pris en <br/> compte</p>
                                         </div>
                                         <div>
-                                            <div className="hr_red"/>
+                                            <div className="hr_red" onClick={() => setSelectedFilter("no_action")}/>
                                             <p>Pas d'action</p>
                                         </div>
                                     </div>
@@ -201,7 +311,7 @@ function Colaborate (){
                                 
                             </Row>
                             <div className='ask'>
-                                <Link style={{textDecoration:'none', color:"#ffff"}}>Faire une demande de collaboration sur cet incident</Link>
+                                <Link style={{textDecoration:'none', color:"#ffff"}} onClick={handleCollaborationRequest}>Faire une demande de collaboration sur cet incident</Link>
                             </div>
                         </Col>
                         <Col lg={3} sm={9}>

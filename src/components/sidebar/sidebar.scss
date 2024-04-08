@@ -58,9 +58,7 @@
   
   li:hover {
     background-color: #f4f7f7;
-    // width: 200px;
-    // border-radius: 20px;
-    // opacity: 0.5; 
+    
   }
 
   li.active {
@@ -102,11 +100,13 @@
     margin-right: 15px;
   }
   input {
-    background-color: #f4f7f7;
+    background-color: transparent;
     border: #f4f7f7;
     outline: none;
     margin-left: 15px;
     top: 1px;
+    color: #585757;
+    line-height: 26px;
   }
   
   .icon {

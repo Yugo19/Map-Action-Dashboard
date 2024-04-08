@@ -89,7 +89,7 @@ export default class Login extends Component {
     e.preventDefault();
     this.setState({ inProgress: !this.state.inProgress });
     if (this.state.confirm_pwd !== this.state.new_password) {
-      Swal("erreur", "les 2 mots de pass doivent etre identiques", "error");
+      Swal.fire("erreur", "les 2 mots de pass doivent etre identiques", "error");
     } else {
       const new_pwd = {
         old_password: this.state.old_password,
@@ -104,7 +104,7 @@ export default class Login extends Component {
         })
         .then((response) => {
           console.log(response);
-          Swal("Succes", " Mot de passe modifié avec succès", "success");
+          Swal.fire("Succes", " Mot de passe modifié avec succès", "success");
           this.setState({ inProgress: false, changepwd: false });
           this.setState({
             old_password: "",
@@ -123,15 +123,15 @@ export default class Login extends Component {
           if (error.response) {
             console.log(error.response.status);
             if (error.response.data.old_password) {
-              Swal("Erreur", error.response.data.old_password[0], "error");
+              Swal.fire("Erreur", error.response.data.old_password[0], "error");
             } else {
-              Swal("Erreur", "Veuillez reessayer", "error");
+              Swal.fire("Erreur", "Veuillez reessayer", "error");
             }
           } else if (error.request) {
             console.log(error.request.data);
-            Swal("erreur", "Veuillez reessayer", "error");
+            Swal.fire("erreur", "Veuillez reessayer", "error");
           } else {
-            Swal("erreur", "Veuillez reessayer", "error");
+            Swal.fire("erreur", "Veuillez reessayer", "error");
             console.log(error.message);
           }
         });
@@ -240,7 +240,7 @@ export default class Login extends Component {
                 window.location = "/elu/dashboard";
               }
             } else {
-              Swal(
+              Swal.fire(
                 "Attention",
                 "Vous ne pouvez pas acceder au dashboard, Veuillez contacter l'administrateur",
                 "warning"
@@ -253,7 +253,7 @@ export default class Login extends Component {
           isPending: true,
           inProgress: false,
         });
-        Swal(
+        Swal.fire(
           "Erreur",
           "Login ou mot de passe incorrect! Veuillez reessayer",
           "error"
@@ -269,7 +269,7 @@ export default class Login extends Component {
     let email = this.state.emailpwd;
     if (email) {
       axios
-        .post(global.config.url + "api/password_reset/", email, {
+        .post(config.url + "/MapApi/password_reset/", email, {
           headers: {
             credentials: "include",
             method: "POST",
