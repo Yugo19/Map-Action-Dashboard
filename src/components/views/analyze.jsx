@@ -7,7 +7,8 @@ import { faAngleDown, faCalendarPlus, faMapMarkerAlt} from "@fortawesome/free-so
 import { Link, useParams } from 'react-router-dom';
 import { config } from '../../config';
 import ReactDOMServer from 'react-dom/server';
-import axios from "axios";
+import Select from 'react-select';
+import axios from 'axios';
 
 function Analyze (){
     const { incidentId } = useParams(); 
@@ -32,8 +33,8 @@ function Analyze (){
     const imgUrl = incident ? config.url + incident.photo : '';
     const audioUrl = incident ? config.url + incident.audio : '';
     const videoUrl = incident ? config.url + incident.video : '';
-    const latitude = incident ? incident.lattitude: 0;
-    const longitude = incident ?  incident.longitude: 0;
+    const latitude = incident ?.lattitude || 0;
+    const longitude = incident ?.longitude || 0;
     const description = incident ? incident.description: '';
     const position = [latitude,longitude];
     const dataTostring = incident ? incident.created_at :'';
@@ -60,6 +61,39 @@ function Analyze (){
             </div>
         )
     }
+    // Selection des Mois
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+    const handleMonthChange = (selectedOption) => {
+        console.log("Selected month:", selectedOption); 
+        const monthValue = selectedOption.value;
+        if (monthValue >= 1 && monthValue <= 12) {
+            setSelectedMonth(monthValue);
+        } else {
+            console.error("Invalid month value:", monthValue);
+        }
+    };
+    const monthsOptions = [
+        { value: 1, label: 'Janvier' },
+        { value: 2, label: 'Février' },
+        { value: 3, label: 'Mars' },
+        { value: 4, label: 'Avril' },
+        { value: 5, label: 'Mai' },
+        { value: 6, label: 'Juin' },
+        { value: 7, label: 'Juillet' },
+        { value: 8, label: 'Août' },
+        { value: 9, label: 'Septembre' },
+        { value: 10, label: 'Octobre' },
+        { value: 11, label: 'Novembre' },
+        { value: 12, label: 'Decembre' },
+    ];
+    function CustomOption (props) {
+        return (
+          <components.Option {...props}>
+            <FontAwesomeIcon icon={faCalendarPlus} />
+            {props.children}
+          </components.Option>
+        );
+    };
         return(
             <div className='body'>
                 <div style={{backgroundColor:"#f4f7f7"}}>
@@ -67,17 +101,44 @@ function Analyze (){
                         <h3 style={{fontSize:"30px", fontWeight:"700"}}>Tableau de Bord</h3>
                     </div>
                     <div className="monthChoice">
-                        <FontAwesomeIcon icon={faCalendarPlus} color='#84818A'/>
-                        <p>ce mois</p>
-                        <FontAwesomeIcon icon={faAngleDown} color='#84818A' className="angleDo"/>
+                    <Select
+                            components={{CustomOption}}
+                            value={monthsOptions.find(option => option.value === selectedMonth)}
+                            onChange={handleMonthChange}
+                            options={monthsOptions}
+                            styles={{
+                                // Styles de la zone de contrôle (sélection)
+                                control: (provided, state) => ({
+                                    ...provided,
+                                    border: '1px solid #ccc',
+                                    borderRadius: '15px',
+                                    width:'150px',
+                                    height:'40px',
+                                    justifyContent:'space-around',
+                                    paddingLeft: '3px',
+                                }),
+                                indicatorSeparator: (provided, state) => ({
+                                    ...provided,
+                                    display: 'none' // Pour masquer le séparateur entre l'icône et le contrôle
+                                }),
+                               
+                            }}
+                        />
                     </div>
                     <div>
                         <div className="dash">
                             <ul className="dash_ul">
-                                <li style={{ textDecoration: 'none'}}><Link to="/dashboard" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Vue d'ensemble</Link></li>
-                                <li><Link to="/incident_view" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Vue incident</Link></li>
-                                <li><Link to="/analyze" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Analyses Avancées</Link></li>
-                                <li><Link to="/colaboration" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Collaboration</Link></li>
+                                <li style={{ textDecoration: 'none'}}>
+                                    <Link 
+                                        to="/dashboard"
+                                        className="link"
+                                    >
+                                        Vue d'ensemble
+                                    </Link>
+                                </li>
+                                <li><Link to="/incident_view" className="link non-clickable">Vue incident</Link></li>
+                                <li><Link to={`/analyze/${incident.id}`} className={location.pathname === `/analyze/${incident.id}` ? "selected-link" : "link"}>Analyses Avancées</Link></li>
+                                <li><Link to="/colaboration" className="link">Collaboration</Link></li>
                             </ul>
                         </div>
                     </div>
@@ -91,7 +152,7 @@ function Analyze (){
                             </div>
                             <div id="map"> 
                             {/* && typeof longitude=="number" && typeof latitude=="number"  */}
-                                {latitude !== null && longitude !== null && typeof longitude=="number" && typeof latitude=="number" ? (
+                                {latitude !== null && longitude !== null ? (
                                     <MapContainer center={position} zoom={13}>
                                         <TileLayer
                                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

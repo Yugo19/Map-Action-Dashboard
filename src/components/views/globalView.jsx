@@ -49,13 +49,17 @@ function GlobalView (){
 
     const imgUrl = incident ? config.url + incident.photo : '';
     const audioUrl = incident ? config.url + incident.audio : '';
-    const videoUrl = incident ? config.url + incident.video : '';
-    const latitude = incident ? incident.lattitude: 0;
-    const longitude = incident ?  incident.longitude: 0;
+    const videoUrl = incident ? config.url + '/' + incident.video : '';
+    console.log(videoUrl)
+    const latitude = incident?.lattitude || 0;
+    const longitude = incident?.longitude || 0;
+    console.log(latitude)
+    console.log(longitude)
     const description = incident ? incident.description: '';
     const position = [latitude,longitude];
     const dataTostring = incident ? incident.created_at :'';
     const dateObject = new Date(dataTostring)
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
     const date = dateObject.toLocaleDateString();
     const heure = dateObject.toLocaleTimeString();
     const [isChanged, setisChanged]= useState(false)
@@ -124,6 +128,39 @@ function GlobalView (){
             }
         }
     };
+    // Selection des Mois
+    const handleMonthChange = (selectedOption) => {
+        console.log("Selected month:", selectedOption); 
+        const monthValue = selectedOption.value;
+        if (monthValue >= 1 && monthValue <= 12) {
+            setSelectedMonth(monthValue);
+        } else {
+            console.error("Invalid month value:", monthValue);
+        }
+    };
+    const monthsOptions = [
+        { value: 1, label: 'Janvier' },
+        { value: 2, label: 'Février' },
+        { value: 3, label: 'Mars' },
+        { value: 4, label: 'Avril' },
+        { value: 5, label: 'Mai' },
+        { value: 6, label: 'Juin' },
+        { value: 7, label: 'Juillet' },
+        { value: 8, label: 'Août' },
+        { value: 9, label: 'Septembre' },
+        { value: 10, label: 'Octobre' },
+        { value: 11, label: 'Novembre' },
+        { value: 12, label: 'Decembre' },
+    ];
+    function CustomOption (props) {
+        return (
+          <components.Option {...props}>
+            <FontAwesomeIcon icon={faCalendarPlus} />
+            {props.children}
+          </components.Option>
+        );
+    };
+
 
     const iconHTML = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faMapMarkerAlt} color="blue" size="2x"/>)
     const customMarkerIconBlue = new L.DivIcon({
@@ -152,17 +189,44 @@ function GlobalView (){
                         <h3 style={{fontSize:"30px", fontWeight:"700"}}>Tableau de Bord</h3>
                     </div>
                     <div className="monthChoice">
-                        <FontAwesomeIcon icon={faCalendarPlus} color='#84818A'/>
-                        <p>ce mois</p>
-                        <FontAwesomeIcon icon={faAngleDown} color='#84818A' className="angleDo"/>
+                        <Select
+                            components={{CustomOption}}
+                            value={monthsOptions.find(option => option.value === selectedMonth)}
+                            onChange={handleMonthChange}
+                            options={monthsOptions}
+                            styles={{
+                                // Styles de la zone de contrôle (sélection)
+                                control: (provided, state) => ({
+                                    ...provided,
+                                    border: '1px solid #ccc',
+                                    borderRadius: '15px',
+                                    width:'150px',
+                                    height:'40px',
+                                    justifyContent:'space-around',
+                                    paddingLeft: '3px',
+                                }),
+                                indicatorSeparator: (provided, state) => ({
+                                    ...provided,
+                                    display: 'none' // Pour masquer le séparateur entre l'icône et le contrôle
+                                }),
+                               
+                            }}
+                        />
                     </div>
                     <div>
                         <div className="dash">
                             <ul className="dash_ul">
-                                <li style={{ textDecoration: 'none'}}><Link to="/dashboard" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Vue d'ensemble</Link></li>
-                                <li><Link to="/incident_view" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Vue incident</Link></li>
-                                <li><Link to="/analyze" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Analyses Avancées</Link></li>
-                                <li><Link to="/colaboration" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Collaboration</Link></li>
+                                <li style={{ textDecoration: 'none'}}>
+                                    <Link 
+                                        to="/dashboard"
+                                        className="link"
+                                    >
+                                        Vue d'ensemble
+                                    </Link>
+                                </li>
+                                <li><Link to={`/incident_view/${incident.id}`} className={location.pathname === `/incident_view/${incident.id}` ? "selected-link" : "link"}>Vue incident</Link></li>
+                                <li><Link to="/analyze" className="link non-clickable">Analyses Avancées</Link></li>
+                                <li><Link to="/colaboration" className="link">Collaboration</Link></li>
                             </ul>
                         </div>
                     </div>
@@ -176,7 +240,7 @@ function GlobalView (){
                             </div>
                             <div id="map"> 
                             {/* && typeof longitude=="number" && typeof latitude=="number"  */}
-                                {latitude !== null && longitude !== null && typeof longitude=="number" && typeof latitude=="number"  ? (
+                                {latitude !== null && longitude !== null ? (
                                     <MapContainer center={position} zoom={13}>
                                         <TileLayer
                                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

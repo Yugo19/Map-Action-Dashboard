@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Grid, Row, Col } from 'react-bootstrap';
 import { MapContainer, TileLayer, Popup, Marker } from 'react-leaflet'
 import '../../assets/css/global.css'
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import Chart from "chart.js/auto"
 import { config } from "../../config";
 import L from "leaflet"
@@ -24,21 +24,29 @@ function Dashboard(props) {
     const navigate = useNavigate()
     const chartRef = useRef();
     const [countIncidents, setCountIncidents] = useState('');
-    const [incidentsByMonth, setIncidentsByMonth] = useState([]);
+    // const [incidentsByMonth, setIncidentsByMonth] = useState([]);
     const [data, setData] = useState([]);
     const [resolus, setResolus] = useState('');
-    const [nonResolus, setNonResolus] = useState('');
-    const [markers, setMarkers] = useState([[14.716677, -17.467686]]);
+    const [taken_into, setTaken] = useState('');
+    // const [markers, setMarkers] = useState([[14.716677, -17.467686]]);
     const [showIncidentModal, setShowIncidentModal] = useState(false);
     const [incident, setIncident] = useState([]);
     const [userType, setUserType] = useState(sessionStorage.getItem('user_type'));
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-
+    const [percentageAnonymous, setAnonymousPercentage] = useState(0);
+    const [registeredPercentage, setRegisteredPercentage] = useState(0);
+    const [percentageVs, setPercentageVs] = useState(0)
+    const [percentageVsTaken, setPercentageVsTaken] = useState(0)
+    const [percentageVsResolved, setPercentageVsResolved] = useState(0)
     useEffect(() => {
         _getIncidents();
         _getIndicateur();
-        _getIncidentsNotResolved();
         _getIncidentsResolved();
+        _getAnonymous();
+        _getPercentage();
+        _getPercentageVsPreviousMonth();
+        _getPercentageVsTaken();
+        _getPercentageVsResolved();
     }, [selectedMonth]);
 
     const handleMonthChange = (selectedOption) => {
@@ -55,29 +63,81 @@ function Dashboard(props) {
         { value: 2, label: 'Février' },
         { value: 3, label: 'Mars' },
         { value: 4, label: 'Avril' },
+        { value: 5, label: 'Mai' },
+        { value: 6, label: 'Juin' },
+        { value: 7, label: 'Juillet' },
+        { value: 8, label: 'Août' },
+        { value: 9, label: 'Septembre' },
+        { value: 10, label: 'Octobre' },
+        { value: 11, label: 'Novembre' },
+        { value: 12, label: 'Decembre' },
     ];
-
-
+    // user not registered
+    const _getAnonymous = async () =>{
+        var url = `${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`
+        try {
+            let res = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer${sessionStorage.token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
+            let totalIncidents = res.data.data.length;
+            let anonymousIncidents = res.data.data.filter(incident => incident.user_id === null).length;
+            let percentageAnonymous = totalIncidents !== 0 ? (anonymousIncidents / totalIncidents) * 100 : 0;
+            setAnonymousPercentage(percentageAnonymous);
+            return percentageAnonymous;
+        } catch (error) {
+            console.log(error.message)
+            setAnonymousPercentage(0);
+        }
+    }
+    // User Registried
+    const _getRegistered = async () =>{
+        var url = `${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`;
+        try {
+            let res = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer${sessionStorage.token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            let totalIncidents = res.data.data.length;
+            let registeredIncidents = res.data.data.filter(incident => incident.user_id !== null).length;
+            let percentageRegistered = totalIncidents !== 0 ? (registeredIncidents / totalIncidents) * 100 : 0;
+            setRegisteredPercentage(percentageRegistered); 
+        } catch (error) {
+            console.log(error.message);
+            setRegisteredPercentage(0); 
+        };
+    }
+    // Chart of users
     const _getIndicateur = async () => {
       const userChartRef = chartRef.current.getContext('2d');
       if (window.myChart !== undefined) {
           window.myChart.destroy(); 
       }
-      window.myChart = new Chart(userChartRef, {
-          type: 'doughnut',
-          data: {
-              datasets: [{
-                  data: [40, 20],
-                  backgroundColor: ['purple', 'orange']
-              }]
-          },
-          options: {}
-      });
-  }
-
-    const _getIncidents = async () => {
+      try {
+        const anonymousPercentage = await _getAnonymous();
+        const registerdPercent = await _getRegistered();
+        window.myChart = new Chart(userChartRef, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [anonymousPercentage, registerdPercent],
+                    backgroundColor: ['purple', 'orange']
+                }]
+            },
+            options: {}
+        });
+      } catch (error) {
+        console.log(error.message)
+      }
+     
+    }
+    // Retrieve percentage of incident taken into account
+    const _getPercentage = async () => {
         var url = `${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`
-        console.log('les urls', url)
         try {
             let res = await axios.get(url, {
                 headers: {
@@ -85,31 +145,34 @@ function Dashboard(props) {
                     'Content-Type': 'application/json',
                 },
             })
-            console.log(res.data.data)
-            setCountIncidents(res.data.data.count);
+            let totalIncidents = res.data.data.length;
+            let taken = res.data.data.filter(incident => incident.etat === "taken_into_account").length;
+            let percentageTaken = totalIncidents !== 0 ? (taken / totalIncidents) * 100 : 0;
+            setTaken(percentageTaken)
+            console.log("Incidents pris en comptes", percentageTaken)
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+    // Retrieve Incident
+    const _getIncidents = async () => {
+        var url = `${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`
+        try {
+            let res = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer${sessionStorage.token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
+            setCountIncidents(res.data.data.length);
             setData(res.data.data);
         } catch (error) {
             console.log(error.message)
         }
     }
-
-    const _getIncidentsNotResolved = async () => {
-        var url = config.url + '/MapApi/incidentNotResolved/'
-        try {
-            let res = await axios.get(url, {
-                headers: {
-                    Authorization: `Bearer${sessionStorage.token}`,
-                    'Content-Type': 'application/json',
-                },
-            })
-            setNonResolus(res.data.count);
-        } catch (error) {
-            console.log(error.message)
-        }
-    }
-
+    // Resolved Incidents
     const _getIncidentsResolved = async () => {
-        var url = config.url + '/MapApi/incidentResolved/'
+        var url = `${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`
         try {
             let res = await axios.get(url, {
                 headers: {
@@ -117,11 +180,112 @@ function Dashboard(props) {
                     'Content-Type': 'application/json',
                 },
             })
-            setResolus(res.data.count);
+            let totalIncidents = res.data.data.length;
+            let resolve = res.data.data.filter(incident => incident.etat === "resolved").length;
+            let percentageTaken = totalIncidents !== 0 ? (resolve / totalIncidents) * 100 : 0;
+            setResolus(percentageTaken)
+            console.log("Incidents resolu", percentageTaken)
         } catch (error) {
             console.log(error.message)
         }
     }
+    // Percentage previous 
+    const _getPercentageVsPreviousMonth = async () => {
+        const previousMonth = selectedMonth - 1;
+        const currentMonthUrl = `${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`;
+        const previousMonthUrl = `${config.url}/MapApi/incidentByMonth/?month=${previousMonth}`;
+        try {
+            const [currentMonthRes, previousMonthRes] = await Promise.all([
+                axios.get(currentMonthUrl, {
+                    headers: {
+                        Authorization: `Bearer${sessionStorage.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }),
+                axios.get(previousMonthUrl, {
+                    headers: {
+                        Authorization: `Bearer${sessionStorage.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
+            ]);
+    
+            const incidentsCurrentMonth = currentMonthRes.data.data.length;
+            const incidentsPreviousMonth = previousMonthRes.data.data.length;
+            const percentageVsPreviousMonth = incidentsPreviousMonth !== 0 ? ((incidentsCurrentMonth / incidentsPreviousMonth) * 100).toFixed(2) : 0;
+            setPercentageVs(percentageVsPreviousMonth)
+            console.log(`Pourcentage des incidents en ${selectedMonth} par rapport à ${previousMonth}: ${percentageVsPreviousMonth}%`);
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+    // Percentage previous 
+    const _getPercentageVsResolved = async () => {
+        const previousMonth = selectedMonth - 1;
+        const currentMonthUrl = `${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`;
+        const previousMonthUrl = `${config.url}/MapApi/incidentByMonth/?month=${previousMonth}`;
+        try {
+            const [currentMonthRes, previousMonthRes] = await Promise.all([
+                axios.get(currentMonthUrl, {
+                    headers: {
+                        Authorization: `Bearer${sessionStorage.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }),
+                axios.get(previousMonthUrl, {
+                    headers: {
+                        Authorization: `Bearer${sessionStorage.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
+            ]);
+    
+            const incidentsCurrentMonth = currentMonthRes.data.data.filter(incident => incident.etat === "resolved").length;
+            const incidentsPreviousMonth = previousMonthRes.data.data.filter(incident => incident.etat === "resolved").length;
+            const percentageVsPreviousMonth = incidentsPreviousMonth !== 0 ? (incidentsCurrentMonth / incidentsPreviousMonth) * 100 : 0;
+            setPercentageVsResolved(percentageVsPreviousMonth)
+            console.log(`Pourcentage des incidents en ${selectedMonth} par rapport à ${previousMonth}: ${percentageVsPreviousMonth}%`);
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+
+    const [showOnlyTakenIntoAccount, setShowOnlyTakenIntoAccount] = useState(false);
+    const [showOnlyResolved, setShowOnlyResolved] = useState(false);
+    const [showOnlyDeclared, setShowOnlyDeclared] = useState(false);
+
+    // Percentage previous 
+    const _getPercentageVsTaken = async () => {
+        const previousMonth = selectedMonth - 1;
+        const currentMonthUrl = `${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`;
+        const previousMonthUrl = `${config.url}/MapApi/incidentByMonth/?month=${previousMonth}`;
+        try {
+            const [currentMonthRes, previousMonthRes] = await Promise.all([
+                axios.get(currentMonthUrl, {
+                    headers: {
+                        Authorization: `Bearer${sessionStorage.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }),
+                axios.get(previousMonthUrl, {
+                    headers: {
+                        Authorization: `Bearer${sessionStorage.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
+            ]);
+    
+            const incidentsCurrentMonth = currentMonthRes.data.data.filter(incident => incident.etat === "taken_into_account").length;
+            const incidentsPreviousMonth = previousMonthRes.data.data.filter(incident => incident.etat === "taken_into_account").length;
+            const percentageVsPreviousMonth = incidentsPreviousMonth !== 0 ? (incidentsCurrentMonth / incidentsPreviousMonth) * 100 : 0;
+            setPercentageVsTaken(percentageVsPreviousMonth)
+            console.log(`Pourcentage des incidents en ${selectedMonth} par rapport à ${previousMonth}: ${percentageVsPreviousMonth}%`);
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+    
+    // Retrieving incident by id
     const getIncidentById = (id) => {
         let incident = ''
         for (let index = 0; index < data.length; index++) {
@@ -132,6 +296,21 @@ function Dashboard(props) {
         }
         return incident
     }
+    const TakenOnMap = async () => {
+        setShowOnlyTakenIntoAccount(!showOnlyTakenIntoAccount);
+        setShowOnlyResolved(false);
+    }
+    const ResolvedOnMap = async () => {
+        setShowOnlyResolved(!showOnlyResolved);
+        setShowOnlyTakenIntoAccount(false);
+    }
+    const DeclaredOnMap = async () => {
+        setShowOnlyResolved(!showOnlyDeclared);
+        setShowOnlyTakenIntoAccount(false);
+        setShowOnlyResolved(false);
+    }
+    const location = useLocation();
+
     function CustomOption (props) {
         return (
           <components.Option {...props}>
@@ -140,8 +319,6 @@ function Dashboard(props) {
           </components.Option>
         );
     };
-      
-
     const onShowIncident = (id) => {
         setShowIncidentModal(!showIncidentModal);
         const item = getIncidentById(id)
@@ -166,7 +343,7 @@ function Dashboard(props) {
                 tooltip: incident.title,
                 desc: incident.description,
                 etat: incident.etat,
-                img: config.url + incident.photo,
+                img: incident.photo,
             }
             positions.push(pos);
         }
@@ -193,6 +370,9 @@ function Dashboard(props) {
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               />
               {positions.map((mark, idx) => (
+                ((showOnlyTakenIntoAccount && mark.etat !== "taken_into_account") ||
+                    (showOnlyResolved && mark.etat !== "resolved") ||
+                    (showOnlyDeclared && mark.etat !== "declared")) ? null : (
                 <Marker
                   className="icon-marker"
                   key={`marker-${idx}`}
@@ -228,6 +408,7 @@ function Dashboard(props) {
                     </span>
                   </Popup>
                 </Marker>
+                )
               ))}
             </MapContainer>
           )
@@ -256,7 +437,7 @@ function Dashboard(props) {
                                 }),
                                 indicatorSeparator: (provided, state) => ({
                                     ...provided,
-                                    display: 'none' // Pour masquer le séparateur entre l'icône et le contrôle
+                                    display: 'none'
                                 }),
                                
                             }}
@@ -265,10 +446,17 @@ function Dashboard(props) {
                     <div>
                         <div className="dash">
                             <ul className="dash_ul">
-                                <li style={{ textDecoration: 'none'}}><Link to="/dashboard" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Vue d'ensemble</Link></li>
-                                <li><Link to="/incident_view" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Vue incident</Link></li>
-                                <li><Link to="/analyze" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Analyses Avancées</Link></li>
-                                <li><Link to="/colaboration" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Collaboration</Link></li>
+                                <li style={{ textDecoration: 'none'}}>
+                                    <Link 
+                                        to="/dashboard"
+                                        className={location.pathname === "/dashboard" ? "selected-link" : "link"}
+                                    >
+                                        Vue d'ensemble
+                                    </Link>
+                                </li>
+                                <li><Link to="/incident_view" className="link non-clickable">Vue incident</Link></li>
+                                <li><Link to="/analyze" className="link non-clickable">Analyses Avancées</Link></li>
+                                <li><Link to="/colaboration" className="link">Collaboration</Link></li>
                             </ul>
                         </div>
                     </div>
@@ -280,7 +468,7 @@ function Dashboard(props) {
                             <div>
                                 <div>
                                     <h3 className="titleCard">Nombre d'incidents</h3>
-                                    <p className="percentage">+3,19%</p>
+                                    <p className="percentage">{percentageVs}%</p>
                                 </div>
                                 <div className="percent">
                                     <p>{countIncidents}</p>
@@ -290,25 +478,25 @@ function Dashboard(props) {
                                 </div>
                             </div>
                         </Col>
-                        <Col lg={3} sm={9} className="compte">
+                        <Col lg={3} sm={9} className="compte" onClick={TakenOnMap}>
                             <div>
                                 <div>
                                     <h3 className="titleCard">Pourcentage pris en compte</h3>
-                                    <p className="percentage">+3,19%</p>
+                                    <p className="percentage">{percentageVsTaken}%</p>
                                 </div>
                                 <div className="percent">
-                                    <p>19%</p>
+                                    <p>{taken_into}%</p>
                                     <FontAwesomeIcon icon={faBarChart} className="statistic-icon"/>
                                 </div>
                                 <div>
                                 </div>
                             </div>
                         </Col>
-                        <Col lg={3} sm={9} className="resolu">
+                        <Col lg={3} sm={9} className="resolu" onClick={ResolvedOnMap}>
                             <div>
                                 <div>
                                     <h3 className="titleCard">Pourcentage résolu</h3>
-                                    <p className="resolve-percent">-3,19%</p>
+                                    <p className="resolve-percent">{percentageVsResolved}%</p>
                                 </div>
                                 <div className="percent">
                                     <p>{resolus}%</p>
@@ -336,15 +524,15 @@ function Dashboard(props) {
                                     <h5 style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-48px", fontSize:"18px"}}>Code Couleur</h5>
                                     <div className="codeColor">
                                     <div>
-                                        <div className="hr_blue"/>
+                                        <div className="hr_blue" onClick={ResolvedOnMap}/>
                                         <p>Declaré <br/> résolu</p>
                                     </div>
                                     <div>
-                                        <div className="hr_orange"/>
+                                        <div className="hr_orange" onClick={TakenOnMap}/>
                                         <p>Pris en <br/> compte</p>
                                     </div>
                                     <div>
-                                        <div className="hr_red"/>
+                                        <div className="hr_red" onClick={DeclaredOnMap}/>
                                         <p>Pas d'action</p>
                                     </div>
                                     </div>
@@ -393,7 +581,7 @@ function Dashboard(props) {
                                         <Row style={{marginTop:'40px'}}>
                                             <Col lg={6}>
                                                 <div style={{marginLeft:"35px"}}>
-                                                    <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>75%</p>
+                                                    <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{percentageAnonymous}%</p>
                                                     <div style={{display:"flex"}}>
                                                         <div className="dotpurple"></div>
                                                         <p className="doghnut_p">Anonymes</p>
@@ -404,7 +592,7 @@ function Dashboard(props) {
                                             
                                             <Col>
                                                 <div style={{}}>
-                                                    <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>15%</p>
+                                                    <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{registeredPercentage}%</p>
                                                     <div style={{display:"flex"}}>
                                                         <div className="dotorange"></div>
                                                         <p className="doghnut_p">Inscrits</p>

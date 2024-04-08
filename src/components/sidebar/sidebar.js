@@ -1,20 +1,74 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './sidebar.scss'; 
 import logo from '../../assets/logo.png'
 import sidebar from '../../assets/img/sidebar-1.jpg'
-import {Link} from 'react-router-dom'
+import {Link, useLocation} from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { config } from '../../config';
+import axios from 'axios';
 import { faExclamationCircle, faHistory,faFileCsv, faCog, faBarChart, faQuestionCircle, faLifeRing, faSearch, faBell, faAngleDown} from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [allIncidents, setAllIncidents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
+  const fetchData = async (searchTerm) => {
+    setLoading(true);
+    setError(null);
+    const url = `${config.url}/MapApi/search/`;
+    const params = {
+      search: searchTerm,
+    };
+  
+    try {
+      const res = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.token}`,
+          'Content-Type': 'application/json',
+        },
+        params,
+      });
+      setAllIncidents(res.data.results);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des incidents :', error.message);
+      setError('Une erreur s\'est produite lors de la récupération des incidents.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
+    fetchData(searchTerm);
+  }, [searchTerm]);
+  
+  const filteredIncidents = allIncidents.filter(incident => {
+    return incident.title.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+  
   return (
     <div className={`sidebar`}>
       <div className="header">
         <div>
           <FontAwesomeIcon icon={faSearch} className="icon" color='#84818A'/>
-          <input type="text" placeholder="Recherche" />
+          <input 
+            type="text" 
+            placeholder="Recherche" 
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          {/* {loading && <p>Chargement...</p>}
+          {error && <p>{error}</p>} */}
+          <ul>
+            {filteredIncidents.map(incident => (
+              <li key={incident.id}>{incident.title}</li>
+            ))}
+          </ul>
         </div>
         <FontAwesomeIcon icon={faBell} className="notifi" color='#84818A'/>        
       </div>
@@ -34,7 +88,17 @@ const Sidebar = () => {
       </div>
       <ul>
         <li className="hidden">Menu</li>
-        <li><Link to="/dashboard" className='link_style'><FontAwesomeIcon icon={faBarChart} color='#39A1DD'/>   Tableau de Bord </Link></li>
+        <li>
+          <Link
+            to="/dashboard"
+            className={
+              location.pathname === "/dashboard" ? "selected-link" : "link"
+            }
+          >
+            <FontAwesomeIcon icon={faBarChart} color='#39A1DD'/>   
+              Tableau de Bord 
+          </Link>
+        </li>
         <li><Link to="/incident" className='link_style'><FontAwesomeIcon icon={faExclamationCircle} color='#84818A'/> Incident</Link></li>
         <li><Link to="/historique" className='link_style'><FontAwesomeIcon icon={faHistory} color='#84818A'/>   Historique des actions</Link></li>
         <li><Link to="/export" className='link_style'><FontAwesomeIcon icon={faFileCsv} color='#84818A'/> Exporter les données</Link></li>

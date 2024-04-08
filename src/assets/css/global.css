@@ -87,22 +87,13 @@ td {
   font-size: 13px;
 }
 
-/* .auth-wrapper {
-	display: flex;
-	background-image: url('assets/img/map-bg-1.jpg');
-  } */
 
 .button {
-  /* float: left; */
-  /* min-width: 150px;
-	max-width: 250px; */
   display: block;
-  /* margin: 1em; */
   padding: 1em 2em;
   border: none;
   background: none;
   width: 100%;
-  vertical-align: middle;
   position: relative;
   z-index: 1;
   backface-visibility: hidden;
@@ -336,7 +327,7 @@ a.button {
 }
 
 .admin-s {
-  background: rgb(35, 95, 19);
+  background: #23ADDE;
   color: white;
   padding: 3px;
   border-radius: 10%;
@@ -354,8 +345,9 @@ a.button {
 .business-s {
   background: rgb(4, 119, 185);
   color: white;
-  padding: 3px;
+  padding: 5px;
   border-radius: 10%;
+  text-align: center;
 }
 
 .visitor-s {
@@ -371,17 +363,18 @@ a.button {
   border-radius: 11px;
 }
 .reporter-s {
-  background: rgb(10, 179, 170);
+  background: rgb(236, 35, 35);
   color: white;
   padding: 3px;
-  border-radius: 10%;
+  /* border-radius: 10%; */
 }
 
 .encharge-s {
-  background: rgb(64, 179, 10);
+  background:rgb(252, 166, 7);
   color: white;
-  padding: 3px;
-  border-radius: 10%;
+  /* padding: 3px; */
+  /* border-radius: 10%; */
+  text-align: center;
 }
 
 img.width-half {
@@ -602,16 +595,8 @@ padding: 0;
   margin-right: 150px; 
 }
 .monthChoice{
-  /* background-color:#fff;
-  width:150px;
-  height:40px;
-  border-radius:10px; */
   margin-left:1100px;
-  /* margin-top: -30px; */
   display: flex;
-  /* padding: 10px 20px 20px 5px;
-  justify-content: space-around; */
-  /* border: 1px solid #DCDBDD; */
 }
 .angleDo{
   margin-top: 5px;
@@ -935,4 +920,21 @@ h6 h5{
   font-size: 18px;
   font-weight: 500;
   line-height: 26px;
+}
+
+.link{
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #202020;
+  text-decoration: none;
+}
+.selected-link {
+  color: rgb(51, 179, 230); 
+  font-weight: bold; 
+  text-decoration: none;
+}
+.non-clickable {
+  pointer-events: none;
+  cursor: wait;
 }
