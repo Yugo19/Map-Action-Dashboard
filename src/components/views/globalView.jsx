@@ -36,6 +36,10 @@ function GlobalView (){
         const fetchIncident = async () => {
             try {
                 const response = await axios.get(`${config.url}/MapApi/incident/${incidentId}`);
+<<<<<<< HEAD
+=======
+                console.log("reponse", response)
+>>>>>>> c66250c154f664d51c48dccc27657d740c66e923
                 setIncident(response.data);
             } catch (error) {
                 console.error('Erreur lors de la récupération des détails de l\'incident :', error);
@@ -48,6 +52,7 @@ function GlobalView (){
     }, [incidentId]);
 
     const imgUrl = incident ? config.url + incident.photo : '';
+    console.log("photo del'incident", imgUrl)
     const audioUrl = incident ? config.url + incident.audio : '';
     const videoUrl = incident ? config.url + incident.video : '';
     console.log(videoUrl)

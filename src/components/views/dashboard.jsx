@@ -47,6 +47,8 @@ function Dashboard(props) {
         _getPercentageVsPreviousMonth();
         _getPercentageVsTaken();
         _getPercentageVsResolved();
+        _getZone();
+        _getRegistered();
     }, [selectedMonth]);
 
     const handleMonthChange = (selectedOption) => {
@@ -105,7 +107,12 @@ function Dashboard(props) {
             let totalIncidents = res.data.data.length;
             let registeredIncidents = res.data.data.filter(incident => incident.user_id !== null).length;
             let percentageRegistered = totalIncidents !== 0 ? ((registeredIncidents / totalIncidents) * 100).toFixed(2) : 0;
+<<<<<<< HEAD
             setRegisteredPercentage(percentageRegistered); 
+=======
+            setRegisteredPercentage(percentageRegistered);
+            return percentageRegistered;
+>>>>>>> c66250c154f664d51c48dccc27657d740c66e923
         } catch (error) {
             console.log(error.message);
             setRegisteredPercentage(0); 
@@ -154,6 +161,65 @@ function Dashboard(props) {
             console.log(error.message)
         }
     }
+    // Chart of zone by users
+    const _getZone = async () => {
+        try {
+            const data = [
+                { zone: "Zone A", user: "Anonyme", incidents: 10 },
+                { zone: "Zone A", user: "Inscrit", incidents: 15 },
+                { zone: "Zone B", user: "Anonyme", incidents: 8 },
+                { zone: "Zone B", user: "Inscrit", incidents: 12 },
+            ];
+    
+            const aggregatedData = {};
+            data.forEach(entry => {
+                if (!aggregatedData[entry.zone]) {
+                    aggregatedData[entry.zone] = { Anonyme: 0, Inscrit: 0 };
+                }
+                aggregatedData[entry.zone][entry.user] += entry.incidents;
+            });
+    
+            const chartData = {
+                labels: Object.keys(aggregatedData),
+                datasets: [
+                    {
+                        label: 'Anonyme',
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        data: Object.values(aggregatedData).map(zoneData => zoneData.Anonyme)
+                    },
+                    {
+                        label: 'Inscrit',
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        data: Object.values(aggregatedData).map(zoneData => zoneData.Inscrit)
+                    }
+                ]
+            };
+    
+            const chartConfig = {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            };
+    
+            const existingChart = window.myConfig;
+            if (existingChart) {
+                existingChart.destroy(); 
+            }
+    
+            const ctx = document.getElementById('myConfig').getContext('2d');
+            window.myConfig = new Chart(ctx, chartConfig);
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
+    
     // Retrieve Incident
     const _getIncidents = async () => {
         var url = `${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`
@@ -182,9 +248,8 @@ function Dashboard(props) {
             })
             let totalIncidents = res.data.data.length;
             let resolve = res.data.data.filter(incident => incident.etat === "resolved").length;
-            let percentageTaken = totalIncidents !== 0 ? (resolve / totalIncidents) * 100 : 0;
+            let percentageTaken = totalIncidents !== 0 ? ((resolve / totalIncidents) * 100).toFixed(2): 0;
             setResolus(percentageTaken)
-            console.log("Incidents resolu", percentageTaken)
         } catch (error) {
             console.log(error.message)
         }
@@ -214,7 +279,6 @@ function Dashboard(props) {
             const incidentsPreviousMonth = previousMonthRes.data.data.length;
             const percentageVsPreviousMonth = incidentsPreviousMonth !== 0 ? ((incidentsCurrentMonth / incidentsPreviousMonth) * 100).toFixed(2) : 0;
             setPercentageVs(percentageVsPreviousMonth)
-            console.log(`Pourcentage des incidents en ${selectedMonth} par rapport à ${previousMonth}: ${percentageVsPreviousMonth}%`);
         } catch (error) {
             console.log(error.message);
         }
@@ -244,7 +308,6 @@ function Dashboard(props) {
             const incidentsPreviousMonth = previousMonthRes.data.data.filter(incident => incident.etat === "resolved").length;
             const percentageVsPreviousMonth = incidentsPreviousMonth !== 0 ? ((incidentsCurrentMonth / incidentsPreviousMonth) * 100).toFixed(2) : 0;
             setPercentageVsResolved(percentageVsPreviousMonth)
-            console.log(`Pourcentage des incidents en ${selectedMonth} par rapport à ${previousMonth}: ${percentageVsPreviousMonth}%`);
         } catch (error) {
             console.log(error.message);
         }
@@ -279,7 +342,6 @@ function Dashboard(props) {
             const incidentsPreviousMonth = previousMonthRes.data.data.filter(incident => incident.etat === "taken_into_account").length;
             const percentageVsPreviousMonth = incidentsPreviousMonth !== 0 ? ((incidentsCurrentMonth / incidentsPreviousMonth) * 100).toFixed(2) : 0;
             setPercentageVsTaken(percentageVsPreviousMonth)
-            console.log(`Pourcentage des incidents en ${selectedMonth} par rapport à ${previousMonth}: ${percentageVsPreviousMonth}%`);
         } catch (error) {
             console.log(error.message);
         }
@@ -414,18 +476,17 @@ function Dashboard(props) {
           )
         return (
             <div className="body">
-                <div>
+                <div className="">
                     <div className="title">
                         <h3 style={{fontSize:"30px", fontWeight:"700"}}>Tableau de Bord</h3>
-                    </div>
+                    </div> 
                     <div className="monthChoice">
-                         <Select
+                        <Select
                             components={{CustomOption}}
                             value={monthsOptions.find(option => option.value === selectedMonth)}
                             onChange={handleMonthChange}
                             options={monthsOptions}
                             styles={{
-                                // Styles de la zone de contrôle (sélection)
                                 control: (provided, state) => ({
                                     ...provided,
                                     border: '1px solid #ccc',
@@ -439,7 +500,6 @@ function Dashboard(props) {
                                     ...provided,
                                     display: 'none'
                                 }),
-                               
                             }}
                         />
                     </div>
@@ -464,7 +524,7 @@ function Dashboard(props) {
                 </div>
                 <div>
                     <Row>
-                        <Col lg={3} sm={9} className="colle">
+                        <Col className="colle col-3">
                             <div>
                                 <div>
                                     <h3 className="titleCard">Nombre d'incidents</h3>
@@ -478,7 +538,7 @@ function Dashboard(props) {
                                 </div>
                             </div>
                         </Col>
-                        <Col lg={3} sm={9} className="compte" onClick={TakenOnMap}>
+                        <Col className="compte col-3" onClick={TakenOnMap}>
                             <div>
                                 <div>
                                     <h3 className="titleCard">Pourcentage pris en compte</h3>
@@ -492,7 +552,7 @@ function Dashboard(props) {
                                 </div>
                             </div>
                         </Col>
-                        <Col lg={3} sm={9} className="resolu" onClick={ResolvedOnMap}>
+                        <Col className="resolu col-3" onClick={ResolvedOnMap}>
                             <div>
                                 <div>
                                     <h3 className="titleCard">Pourcentage résolu</h3>
@@ -606,6 +666,9 @@ function Dashboard(props) {
                                <Col lg={12} sm={9} className="chart-grid" style={{paddingTop:'5px'}}>
                                     <div className="col_header">
                                         <h4>Incidents par Zones</h4>
+                                    </div>
+                                    <div>
+                                        <canvas id="myConfig" width="300" height="100"></canvas>
                                     </div>
                                 </Col> 
                             </Col>

@@ -1,12 +1,11 @@
-import {React, Component} from 'react'
+import React, {useState, useEffect} from "react";
 
-class DataExport extends Component {
-    render(){
-        return(
-            <div>
-                <p>export view</p>
-            </div>
-        )
-    }
+function DataExport(){
+    return(
+
+        <div className="container">
+            <p>Data Export View</p>
+        </div>
+    )
 }
 export default DataExport;

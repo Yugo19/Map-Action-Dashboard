@@ -14,7 +14,7 @@ function Analyze (){
     const { incidentId } = useParams(); 
     const [incident, setIncident] = useState({});
     const [videoIsLoading, setVideoIsLoading] = useState(false);
-    console.log('Incident updated:', incident);
+    const [prediction, setPredictions] = useState({});
     useEffect(() => {
         const fetchIncident = async () => {
             try {
@@ -24,9 +24,20 @@ function Analyze (){
                 console.error('Erreur lors de la récupération des détails de l\'incident :', error);
             }
         };
+        const fetchPredictions = async () => {
+            try {
+                const response = await axios.get(`${config.url}/MapApi/prediction/${incidentId}`);
+                console.log("les reponses du serveur", response.data)
+                setPredictions(response.data[0]);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des prédictions :', error);
+            }
+        };
+
 
         if (incidentId) {
-            fetchIncident(); 
+            fetchIncident();
+            fetchPredictions(); 
         }
     }, [incidentId]);
 
@@ -38,6 +49,10 @@ function Analyze (){
     const description = incident ? incident.description: '';
     const position = [latitude,longitude];
     const dataTostring = incident ? incident.created_at :'';
+    const piste_solution = prediction ? prediction.piste_solution: '';
+    const context = prediction ? prediction.context: '';
+    const impact_potentiel = prediction ? prediction.impact_potentiel: '';
+    console.log(impact_potentiel)
     const dateObject = new Date(dataTostring)
     const date = dateObject.toLocaleDateString();
     const heure = dateObject.toLocaleTimeString()
@@ -202,19 +217,19 @@ function Analyze (){
                                     <div style={{marginBottom:'40px'}}>
                                         <h6>Context & Description</h6>
                                         <div className='descriptionIncident'>
-                                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quo, eius non? Tempore velit veritatis beatae et voluptatem eum blanditiis consequatur recusandae! Sed dolores rerum amet quos, nobis repellendus voluptatibus nostrum!</p>
+                                            <p>{context}</p>
                                         </div>
                                     </div>
                                     <div style={{marginBottom:'40px'}}>
                                         <h6>Impacts Potentiels</h6>
                                         <div className='descriptionIncident'>
-                                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quo, eius non? Tempore velit veritatis beatae et voluptatem eum blanditiis consequatur recusandae! Sed dolores rerum amet quos, nobis repellendus voluptatibus nostrum!</p>
+                                            <p>{impact_potentiel}</p>
                                         </div>
                                     </div>
                                     <div>
                                         <h6>Pistes de solutions envisageables</h6>
                                         <div className='descriptionIncident'>
-                                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quo, eius non? Tempore velit veritatis beatae et voluptatem eum blanditiis consequatur recusandae! Sed dolores rerum amet quos, nobis repellendus voluptatibus nostrum!</p>
+                                            <p>{piste_solution}</p>
                                         </div>
                                     </div>
                                     <div className='boutonAnalyse'>

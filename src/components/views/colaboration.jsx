@@ -66,7 +66,7 @@ function Colaboration () {
                     'Content-Type': 'application/json',
                 },
             })
-            setCountIncidents(res.data.data.length);
+            setCountIncidents(res.data.data.filter(incident => incident.etat === "taken_into_account").length);
             setData(res.data.data);
         } catch (error) {
             console.log(error.message)
