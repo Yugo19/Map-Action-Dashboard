@@ -84,7 +84,7 @@ function Dashboard(props) {
             })
             let totalIncidents = res.data.data.length;
             let anonymousIncidents = res.data.data.filter(incident => incident.user_id === null).length;
-            let percentageAnonymous = totalIncidents !== 0 ? (anonymousIncidents / totalIncidents) * 100 : 0;
+            let percentageAnonymous = totalIncidents !== 0 ? ((anonymousIncidents / totalIncidents) * 100).toFixed(2) : 0;
             setAnonymousPercentage(percentageAnonymous);
             return percentageAnonymous;
         } catch (error) {
@@ -104,7 +104,7 @@ function Dashboard(props) {
             });
             let totalIncidents = res.data.data.length;
             let registeredIncidents = res.data.data.filter(incident => incident.user_id !== null).length;
-            let percentageRegistered = totalIncidents !== 0 ? (registeredIncidents / totalIncidents) * 100 : 0;
+            let percentageRegistered = totalIncidents !== 0 ? ((registeredIncidents / totalIncidents) * 100).toFixed(2) : 0;
             setRegisteredPercentage(percentageRegistered); 
         } catch (error) {
             console.log(error.message);
@@ -147,7 +147,7 @@ function Dashboard(props) {
             })
             let totalIncidents = res.data.data.length;
             let taken = res.data.data.filter(incident => incident.etat === "taken_into_account").length;
-            let percentageTaken = totalIncidents !== 0 ? (taken / totalIncidents) * 100 : 0;
+            let percentageTaken = totalIncidents !== 0 ? ((taken / totalIncidents) * 100).toFixed(2) : 0;
             setTaken(percentageTaken)
             console.log("Incidents pris en comptes", percentageTaken)
         } catch (error) {
@@ -242,7 +242,7 @@ function Dashboard(props) {
     
             const incidentsCurrentMonth = currentMonthRes.data.data.filter(incident => incident.etat === "resolved").length;
             const incidentsPreviousMonth = previousMonthRes.data.data.filter(incident => incident.etat === "resolved").length;
-            const percentageVsPreviousMonth = incidentsPreviousMonth !== 0 ? (incidentsCurrentMonth / incidentsPreviousMonth) * 100 : 0;
+            const percentageVsPreviousMonth = incidentsPreviousMonth !== 0 ? ((incidentsCurrentMonth / incidentsPreviousMonth) * 100).toFixed(2) : 0;
             setPercentageVsResolved(percentageVsPreviousMonth)
             console.log(`Pourcentage des incidents en ${selectedMonth} par rapport à ${previousMonth}: ${percentageVsPreviousMonth}%`);
         } catch (error) {
@@ -277,7 +277,7 @@ function Dashboard(props) {
     
             const incidentsCurrentMonth = currentMonthRes.data.data.filter(incident => incident.etat === "taken_into_account").length;
             const incidentsPreviousMonth = previousMonthRes.data.data.filter(incident => incident.etat === "taken_into_account").length;
-            const percentageVsPreviousMonth = incidentsPreviousMonth !== 0 ? (incidentsCurrentMonth / incidentsPreviousMonth) * 100 : 0;
+            const percentageVsPreviousMonth = incidentsPreviousMonth !== 0 ? ((incidentsCurrentMonth / incidentsPreviousMonth) * 100).toFixed(2) : 0;
             setPercentageVsTaken(percentageVsPreviousMonth)
             console.log(`Pourcentage des incidents en ${selectedMonth} par rapport à ${previousMonth}: ${percentageVsPreviousMonth}%`);
         } catch (error) {
@@ -523,18 +523,18 @@ function Dashboard(props) {
                                 <div>
                                     <h5 style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-48px", fontSize:"18px"}}>Code Couleur</h5>
                                     <div className="codeColor">
-                                    <div>
-                                        <div className="hr_blue" onClick={ResolvedOnMap}/>
-                                        <p>Declaré <br/> résolu</p>
-                                    </div>
-                                    <div>
-                                        <div className="hr_orange" onClick={TakenOnMap}/>
-                                        <p>Pris en <br/> compte</p>
-                                    </div>
-                                    <div>
-                                        <div className="hr_red" onClick={DeclaredOnMap}/>
-                                        <p>Pas d'action</p>
-                                    </div>
+                                        <div>
+                                            <div className="hr_blue" onClick={ResolvedOnMap}/>
+                                            <p>Declaré <br/> résolu</p>
+                                        </div>
+                                        <div>
+                                            <div className="hr_orange" onClick={TakenOnMap}/>
+                                            <p>Pris en <br/> compte</p>
+                                        </div>
+                                        <div>
+                                            <div className="hr_red" onClick={DeclaredOnMap}/>
+                                            <p>Pas d'action</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

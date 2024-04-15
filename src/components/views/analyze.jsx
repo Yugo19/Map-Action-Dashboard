@@ -18,7 +18,7 @@ function Analyze (){
     useEffect(() => {
         const fetchIncident = async () => {
             try {
-                const response = await axios.get(`http://192.168.1.26/MapApi/incident/${incidentId}`);
+                const response = await axios.get(`${config.url}/MapApi/incident/${incidentId}`);
                 setIncident(response.data);
             } catch (error) {
                 console.error('Erreur lors de la récupération des détails de l\'incident :', error);
