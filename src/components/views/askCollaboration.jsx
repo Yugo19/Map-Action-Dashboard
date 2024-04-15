@@ -30,7 +30,7 @@ function Colaborate (){
     };
     const createCollaboration = async () => {
         try {
-            var url = config.url + "/MapApi/collaboration"
+            var url = config.url + "/MapApi/collaboration/"
             const response = await axios.post(url, newCollaborationData);
             fetchCollaborations();
             setNewCollaborationData({});
@@ -54,12 +54,19 @@ function Colaborate (){
             fetchIncident(); 
         }
     }, [incidentId]);
-    const handleCollaborationRequest = () => {
+    const handleCollaborationRequest = async () => {
         const confirmation = window.confirm("Voulez-vous faire une demande de collaboration sur cet incident ?");
         if (confirmation) {
-            alert("La demande de collaboration a été envoyée !");
+            try {
+                await createCollaboration();
+                alert("La demande de collaboration a été envoyée !");
+            } catch (error) {
+                console.error('Erreur lors de la création de la collaboration : ', error);
+                alert("Une erreur s'est produite lors de l'envoi de la demande de collaboration. Veuillez réessayer plus tard.");
+            }
         }
     };
+    
     const imgUrl = incident ? config.url + incident.photo : '';
     const audioUrl = incident ? config.url + incident.audio : '';
     const videoUrl = incident ? config.url + incident.video : '';
