@@ -204,7 +204,7 @@ function Incident(){
             item.category_ids,
             item.etat,
             formatDate(item.created_at),
-            <div className="btn-group">
+            <div className="btn-group"> 
                 <a
                   onClick={(e) => onShowIncident(item.id)}
                   className="map-color "

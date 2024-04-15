@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { config } from '../../config';
 import axios from 'axios';
 import { faExclamationCircle, faHistory,faFileCsv, faCog, faBarChart, faQuestionCircle, faLifeRing, faSearch, faBell, faAngleDown} from '@fortawesome/free-solid-svg-icons';
+import NotificationsComponent from '../Notification/Notification';
 
 const Sidebar = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -21,11 +22,11 @@ const Sidebar = () => {
   const fetchData = async (searchTerm) => {
     setLoading(true);
     setError(null);
-    const url = `${config.url}/MapApi/search/`;
+    const url = `${config.url}/MapApi/Search/`;
     const params = {
-      search: searchTerm,
+      search_term: searchTerm,
     };
-  
+
     try {
       const res = await axios.get(url, {
         headers: {
@@ -34,7 +35,7 @@ const Sidebar = () => {
         },
         params,
       });
-      setAllIncidents(res.data.results);
+      setAllIncidents(res.data);
     } catch (error) {
       console.error('Erreur lors de la récupération des incidents :', error.message);
       setError('Une erreur s\'est produite lors de la récupération des incidents.');
@@ -42,15 +43,21 @@ const Sidebar = () => {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchData(searchTerm);
   }, [searchTerm]);
-  
+
+  // Si vous prévoyez de filtrer côté client, assurez-vous d'utiliser filteredIncidents plutôt que allIncidents dans votre composant.
   const filteredIncidents = allIncidents.filter(incident => {
     return incident.title.toLowerCase().includes(searchTerm.toLowerCase());
   });
-  
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const handleNotificationClick = () => {
+    setShowNotifications(!showNotifications);
+  };
+
   return (
     <div className={`sidebar`}>
       <div className="header">
@@ -70,7 +77,10 @@ const Sidebar = () => {
             ))}
           </ul>
         </div>
-        <FontAwesomeIcon icon={faBell} className="notifi" color='#84818A'/>        
+        <div onClick={handleNotificationClick}>
+          <FontAwesomeIcon icon={faBell} className="notifi" color='#84818A'/>        
+        </div>
+        {showNotifications && <NotificationsComponent />}
       </div>
       <div >
         <img className="logo" src={logo} alt="logo_image" />

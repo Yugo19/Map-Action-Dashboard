@@ -477,9 +477,10 @@ img.width-half {
 }
 
 .title{
-  font-weight: 700;
+  font-weight: 600;
   margin-left: 250px;
-  margin-top: 60px;
+  line-height: 26px;
+  margin-top: 5%;
 }
 .dash{
   margin-left: 250px;
@@ -510,7 +511,7 @@ padding: 0;
 .dash_line {
   border-top: 1px solid #DCDBDD;
   margin-top: -10px;
-  width: 1110px;
+  width: 100%;
   height: 1px;
   margin-left: 235px;
 }
@@ -595,7 +596,7 @@ padding: 0;
   margin-right: 150px; 
 }
 .monthChoice{
-  margin-left:1100px;
+  margin-left:90%;
   display: flex;
 }
 .angleDo{
@@ -937,4 +938,10 @@ h6 h5{
 .non-clickable {
   pointer-events: none;
   cursor: wait;
+}
+.notification{
+ 
+  background-color: #fff;
+  color: #202020;
+  
 }
