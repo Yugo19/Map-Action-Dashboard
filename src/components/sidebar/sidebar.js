@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import './sidebar.scss'; 
 import logo from '../../assets/logo.png'
-import sidebar from '../../assets/img/sidebar-1.jpg'
+import face from '../../assets/img/faces/face-0.jpg'
 import {Link, useLocation} from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { config } from '../../config';
@@ -14,7 +14,20 @@ const Sidebar = () => {
   const [allIncidents, setAllIncidents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [userData, setUserData] = useState(null);
 
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(`${config.url}/MapApi/user_retrieve/`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.token}`,
+        },
+      });
+      setUserData(response.data);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des informations utilisateur :', error.message);
+    }
+  };
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -43,12 +56,14 @@ const Sidebar = () => {
       setLoading(false);
     }
   };
+  const handleProfileClick = () => {
+    console.log(userData);
+  };
 
   useEffect(() => {
     fetchData(searchTerm);
   }, [searchTerm]);
 
-  // Si vous prévoyez de filtrer côté client, assurez-vous d'utiliser filteredIncidents plutôt que allIncidents dans votre composant.
   const filteredIncidents = allIncidents.filter(incident => {
     return incident.title.toLowerCase().includes(searchTerm.toLowerCase());
   });
@@ -69,13 +84,13 @@ const Sidebar = () => {
             value={searchTerm}
             onChange={handleSearchChange}
           />
-          {/* {loading && <p>Chargement...</p>}
-          {error && <p>{error}</p>} */}
+          {searchTerm && (
           <ul>
             {filteredIncidents.map(incident => (
               <li key={incident.id}>{incident.title}</li>
             ))}
           </ul>
+          )}
         </div>
         <div onClick={handleNotificationClick}>
           <FontAwesomeIcon icon={faBell} className="notifi" color='#84818A'/>        
@@ -85,10 +100,10 @@ const Sidebar = () => {
       <div >
         <img className="logo" src={logo} alt="logo_image" />
       </div>
-      <div className='profil'>
-        <img className="profil_img" src={sidebar} alt="side" />
+      <div className='profil' onClick={handleProfileClick}>
+        <img className="profil_img" src={face} alt="side" />
         <div className='profil_info'>
-          <p><strong>@ForestGir</strong></p>
+        <p><strong>{userData ? `@${userData.organisation}` : ''}</strong></p>
           <p className='elu_info'>
             <span>Gestion intégrée <br /> des forets</span>
             <FontAwesomeIcon icon={faAngleDown} className='angle'/>

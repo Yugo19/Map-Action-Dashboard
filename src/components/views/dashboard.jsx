@@ -160,19 +160,17 @@ function Dashboard(props) {
     // Chart of zone by users
     const _getZone = async () => {
         try {
-            const data = [
-                { zone: "Zone A", user: "Anonyme", incidents: 10 },
-                { zone: "Zone A", user: "Inscrit", incidents: 15 },
-                { zone: "Zone B", user: "Anonyme", incidents: 8 },
-                { zone: "Zone B", user: "Inscrit", incidents: 12 },
-            ];
+            const response = await axios.get(`${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`);
+            const incidents = response.data.data;
+            console.log(incidents)
     
             const aggregatedData = {};
-            data.forEach(entry => {
-                if (!aggregatedData[entry.zone]) {
-                    aggregatedData[entry.zone] = { Anonyme: 0, Inscrit: 0 };
+            incidents.forEach(incident => {
+                const userType = incident.user_id ? 'Inscrit' : 'Anonyme'; // Détermine le type d'utilisateur en fonction de user_id
+                if (!aggregatedData[incident.zone]) {
+                    aggregatedData[incident.zone] = { Anonyme: 0, Inscrit: 0 };
                 }
-                aggregatedData[entry.zone][entry.user] += entry.incidents;
+                aggregatedData[incident.zone][userType]++;
             });
     
             const chartData = {
@@ -180,12 +178,12 @@ function Dashboard(props) {
                 datasets: [
                     {
                         label: 'Anonyme',
-                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        backgroundColor: 'purple',
                         data: Object.values(aggregatedData).map(zoneData => zoneData.Anonyme)
                     },
                     {
                         label: 'Inscrit',
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        backgroundColor: 'orange',
                         data: Object.values(aggregatedData).map(zoneData => zoneData.Inscrit)
                     }
                 ]
@@ -203,11 +201,6 @@ function Dashboard(props) {
                     }
                 }
             };
-    
-            const existingChart = window.myConfig;
-            if (existingChart) {
-                existingChart.destroy(); 
-            }
     
             const ctx = document.getElementById('myConfig').getContext('2d');
             window.myConfig = new Chart(ctx, chartConfig);
@@ -663,8 +656,8 @@ function Dashboard(props) {
                                     <div className="col_header">
                                         <h4>Incidents par Zones</h4>
                                     </div>
-                                    <div>
-                                        <canvas id="myConfig" width="300" height="100"></canvas>
+                                    <div style={{width:"100%"}}>
+                                        <canvas id="myConfig" width="400" height="200"></canvas>
                                     </div>
                                 </Col> 
                             </Col>
