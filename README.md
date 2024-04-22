@@ -31,7 +31,7 @@ $ npm start
 Map Action is an open source project. Fell free to fork the source and contribute with your features.
 
 ## Authors
-Our code squad : @A7640S & @Yugo
+Our code squad : A7640S & Yugo19
 
 ## Licensing
 
