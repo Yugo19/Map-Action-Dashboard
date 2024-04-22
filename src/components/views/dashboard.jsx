@@ -572,18 +572,18 @@ function Dashboard(props) {
                                 <div>
                                     <h5 style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-48px", fontSize:"18px"}}>Code Couleur</h5>
                                     <div className="codeColor">
-                                    <div>
-                                        <div className="hr_blue" onClick={ResolvedOnMap}/>
-                                        <p>Declaré <br/> résolu</p>
-                                    </div>
-                                    <div>
-                                        <div className="hr_orange" onClick={TakenOnMap}/>
-                                        <p>Pris en <br/> compte</p>
-                                    </div>
-                                    <div>
-                                        <div className="hr_red" onClick={DeclaredOnMap}/>
-                                        <p>Pas d'action</p>
-                                    </div>
+                                        <div>
+                                            <div className="hr_blue" onClick={ResolvedOnMap}/>
+                                            <p>Declaré <br/> résolu</p>
+                                        </div>
+                                        <div>
+                                            <div className="hr_orange" onClick={TakenOnMap}/>
+                                            <p>Pris en <br/> compte</p>
+                                        </div>
+                                        <div>
+                                            <div className="hr_red" onClick={DeclaredOnMap}/>
+                                            <p>Pas d'action</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
