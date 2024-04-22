@@ -31,11 +31,13 @@ function Parametres() {
 
   const _getUser = async () => {
     const url = config.url + '/MapApi/user_retrieve';
+
     const configs = {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem('token')}`
       }
     };
+
     try {
       const response = await axios.get(url, configs);
       setUser(response.data.data);
@@ -47,13 +49,16 @@ function Parametres() {
   const OnUpdateUser = async (e) => {
     e.preventDefault();
     setProgress(true);
+
     const new_data = {
       first_name: user.first_name,
       last_name: user.last_name,
       phone: user.phone,
       adresse: user.adresse
     };
+
     const url = config.url + '/MapApi/user/' + user.id + '/';
+
     try {
       const response = await axios.put(url, new_data);
       sessionStorage.setItem('user', JSON.stringify(response.data));
@@ -73,6 +78,7 @@ function Parametres() {
   const handleChangePassword = (e) => {
     e.preventDefault();
     setProgress(true);
+
     if (confirmPwd !== newPassword) {
       Swal.fire('Erreur', 'Les 2 mots de passe doivent être identiques', 'error');
     } else {
@@ -80,7 +86,9 @@ function Parametres() {
         old_password: oldPassword,
         new_password: newPassword
       };
+
       const url = config.url + '/MapApi/change_password/';
+
       axios
         .put(url, new_pwd, {
           headers: { Authorization: `Bearer ${sessionStorage.token}` }
@@ -99,6 +107,7 @@ function Parametres() {
           setOldPassword('');
           setNewPassword('');
           setConfirmPwd('');
+          
           if (error.response) {
             Swal.fire('Erreur', error.response.data.old_password[0] || 'Veuillez réessayer', 'error');
           } else {
