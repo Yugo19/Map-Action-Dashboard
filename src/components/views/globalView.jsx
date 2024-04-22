@@ -36,10 +36,7 @@ function GlobalView (){
         const fetchIncident = async () => {
             try {
                 const response = await axios.get(`${config.url}/MapApi/incident/${incidentId}`);
-<<<<<<< HEAD
-=======
                 console.log("reponse", response)
->>>>>>> c66250c154f664d51c48dccc27657d740c66e923
                 setIncident(response.data);
             } catch (error) {
                 console.error('Erreur lors de la récupération des détails de l\'incident :', error);

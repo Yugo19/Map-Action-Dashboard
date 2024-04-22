@@ -107,12 +107,8 @@ function Dashboard(props) {
             let totalIncidents = res.data.data.length;
             let registeredIncidents = res.data.data.filter(incident => incident.user_id !== null).length;
             let percentageRegistered = totalIncidents !== 0 ? ((registeredIncidents / totalIncidents) * 100).toFixed(2) : 0;
-<<<<<<< HEAD
-            setRegisteredPercentage(percentageRegistered); 
-=======
             setRegisteredPercentage(percentageRegistered);
             return percentageRegistered;
->>>>>>> c66250c154f664d51c48dccc27657d740c66e923
         } catch (error) {
             console.log(error.message);
             setRegisteredPercentage(0); 
