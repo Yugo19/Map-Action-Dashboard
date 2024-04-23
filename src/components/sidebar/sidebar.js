@@ -56,6 +56,7 @@ const Sidebar = () => {
       setLoading(false);
     }
   };
+  
   const handleProfileClick = () => {
     console.log(userData);
   };
