@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Importez Axios ou utilisez fetch pour effectuer des requêtes HTTP
+import axios from 'axios';
 import { config } from '../../config';
 
 function DataExport() {
