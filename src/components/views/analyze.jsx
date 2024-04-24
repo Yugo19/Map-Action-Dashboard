@@ -10,6 +10,25 @@ import ReactDOMServer from 'react-dom/server';
 import Select from 'react-select';
 import axios from 'axios';
 
+function ExpandableContent({ content }) {
+    const [expanded, setExpanded] = useState(false);
+
+    const toggleExpanded = () => {
+        setExpanded(!expanded);
+    };
+
+    return (
+        <div>
+            <p>
+                {expanded ? content : content.substring(0, 300)}
+                {!expanded && content.length > 100 && (
+                    <button onClick={toggleExpanded}>Voir plus</button>
+                )}
+            </p>
+        </div>
+    );
+}
+
 function Analyze (){
     const { incidentId } = useParams(); 
     const [incident, setIncident] = useState({});
@@ -217,19 +236,19 @@ function Analyze (){
                                     <div style={{marginBottom:'40px'}}>
                                         <h6>Context & Description</h6>
                                         <div className='descriptionIncident'>
-                                            <p>{context}</p>
+                                            <ExpandableContent content={context || ""} />
                                         </div>
                                     </div>
                                     <div style={{marginBottom:'40px'}}>
                                         <h6>Impacts Potentiels</h6>
                                         <div className='descriptionIncident'>
-                                            <p>{impact_potentiel}</p>
+                                            <ExpandableContent content={impact_potentiel || ""} />
                                         </div>
                                     </div>
                                     <div>
                                         <h6>Pistes de solutions envisageables</h6>
                                         <div className='descriptionIncident'>
-                                            <p>{piste_solution}</p>
+                                            <ExpandableContent content={piste_solution || ""} />
                                         </div>
                                     </div>
                                     <div className='boutonAnalyse'>
