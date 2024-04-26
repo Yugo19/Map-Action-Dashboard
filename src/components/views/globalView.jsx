@@ -270,7 +270,7 @@ function GlobalView (){
                             <div>
                                 <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
                                 <div>
-                                    <h5 style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-35px", fontSize:"18px"}}>Code Couleur</h5>
+                                    <h5 className='colorCode'>Code Couleur</h5>
                                     <div className="codeColor">
                                     <div>
                                         <div className="hr_blue"/>

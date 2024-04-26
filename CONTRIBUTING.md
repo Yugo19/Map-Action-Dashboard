@@ -4,7 +4,7 @@ Welcome to the contribution guidelines for the Map Action project. We're excited
 
 ## Description
 
-Map Action is a technological innovation initiated by the consulting firm Kaicedra-consulting. We specialize in geolocating issues or areas of interest, mapping, monitoring, and providing databases in the fields of environment, WASH (Water, Sanitation, and Hygiene), and sustainable development. Our actions involve civil society, governments, NGOs, private or semi-private structures, etc.
+Map Action is a technological innovation initiated by the consulting firm Kaicedra Consulting SAS, a malian organisation. We specialize in geolocating issues or areas of interest, mapping, monitoring, and providing databases in the fields of environment, WASH (Water, Sanitation, and Hygiene), and sustainable development. Our actions involve civil society, governments, NGOs, private or semi-private structures, etc.
 
 In addition to our geolocation and mapping services, Map Action also integrates advanced artificial intelligence technologies. Our system uses machine learning algorithms to automatically detect the types of incidents, assess their severity, and consider potential solutions. Furthermore, we analyze the potential impacts of these incidents on the environment, thus providing valuable insights for decision-making and crisis management.
 
@@ -20,19 +20,15 @@ Map Action aims to revolutionize the way environmental issues and areas of inter
 Utilize Map Action Mobile (The application Mobile Android & iOS) to accurately identify and localize environmental issues, such as pollution hotspots, natural resource depletion zones, and areas vulnerable to climate change.
 
 2. **Monitoring and Tracking**:
-
 Implement robust monitoring and tracking mechanisms to continuously monitor changes in environmental conditions and track the progress of ongoing initiatives and interventions.
 
 3. **Risk Assessment and Prediction**:
-
 Develop advanced artificial intelligence algorithms to assess the severity of environmental incidents, predict potential risks, and propose proactive solutions to mitigate adverse impacts.
 
 4. **Data-driven Decision Making**: 
-
 Provide decision-makers with actionable insights and data-driven recommendations to facilitate informed decision-making processes and optimize resource allocation for sustainable development.
 
 5. **Collaborative Engagement**: 
-
 Foster collaboration and engagement among stakeholders, including civil society, governments, NGOs, and private entities, to collectively address environmental challenges and promote sustainable development practices.
 
 Through these objectives, Map Action strives to empower organizations and individuals with the tools and knowledge needed to make meaningful contributions to environmental conservation, disaster management, and sustainable development efforts worldwide.
@@ -63,6 +59,10 @@ Through these objectives, Map Action strives to empower organizations and indivi
 ## Communication
 
 For any questions or feedback, feel free to contact us via [contact@map-action.com].
+
+For more information about our organization, please visit [www.kaicedra-consulting.ml].
+
+To learn more about the Map Action project, visit our dedicated website at [www.map-action.com].
 
 ## License and Copyright
 
