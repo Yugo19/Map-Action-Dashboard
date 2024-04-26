@@ -471,13 +471,13 @@ img.width-half {
 
 .title{
   font-weight: 600;
-  margin-left: 15%;
+  margin-left: 19%;
   line-height: 26px;
-  margin-top: 5%;
+  margin-top: 8%
 }
 .dash{
-  margin-left: 15%;
-  margin-top: 20px;
+  margin-left: 20%;
+  margin-top: 10px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -951,4 +951,13 @@ h6 h5{
   width: 164px;
   height: 164px;
   margin-left: 25%;
+}
+
+.main-content {
+  width: calc(100% - 250px); 
+  margin-left: 250px; 
+  @media (max-width: 960px) {
+    width: 100%; 
+    margin-left: 0;
+  }
 }
