@@ -230,14 +230,14 @@ export default class Login extends Component {
             sessionStorage.setItem("user_type", res.data.data.user_type);
 
             if (res.data.data.user_type === "admin") {
-              window.location = "/dashboard";
+              window.location = "/dashboardAdmin";
 
             } else if (res.data.data.user_type === "elu") {
               console.log(res.data.data.password_reset_count);
               if (res.data.data.password_reset_count === "0") {
                 this.setState({ changepwd: true });
               } else {
-                window.location = "/elu/dashboard";
+                window.location = "/dashboard";
               }
             } else {
               Swal.fire(

@@ -8,10 +8,13 @@ import "./assets/css/demo.css";
 import "./assets/css/pe-icon-7-stroke.css"
 const App = () => {
   return (
-    <BrowserRouter>
-      <Sidebar /> 
-      <Root /> 
-    </BrowserRouter>
+    <div style={{backgroundColor:"#f4f7f7"}}>
+      <BrowserRouter>
+        <Sidebar /> 
+        <Root /> 
+      </BrowserRouter>
+    </div>
+    
  
   );
 };
