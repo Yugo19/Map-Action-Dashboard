@@ -1,7 +1,14 @@
 img {
   width: 100%;
 }
-
+html{
+  scroll-behavior: smooth;
+  body{
+    background-color: #f4f7f7;
+    min-width: 100vw;
+    overflow-x: hidden;
+  }
+}
 .btn-colored {
   display: block;
   width: 100%;
@@ -216,7 +223,6 @@ a.button {
   display: block;
   border: none;
   background: none;
-  vertical-align: middle;
   position: relative;
   z-index: 1;
   backface-visibility: hidden;
@@ -292,19 +298,6 @@ a.button {
   margin: 0.6em 0 0;
 }
 
-/* Colour of your bars */
-/* .ct-series-a .ct-bar {
-	stroke:  #38e6d8;
-	
-  }
-  .ct-series-b .ct-bar {
-	stroke:  #006aa7;
-	
-  }
-  .ct-series-c .ct-bar {
-	stroke:  rgb(177, 51, 51);
-  }
-   */
 .main-panel {
   background: rgb(42, 74, 100) !important;
 }
@@ -366,14 +359,11 @@ a.button {
   background: rgb(236, 35, 35);
   color: white;
   padding: 3px;
-  /* border-radius: 10%; */
 }
 
 .encharge-s {
   background:rgb(252, 166, 7);
   color: white;
-  /* padding: 3px; */
-  /* border-radius: 10%; */
   text-align: center;
 }
 
@@ -381,8 +371,6 @@ img.width-half {
   width: 50% !important;
 }
 .card-stats .numbers {
-  /* font-size: 2em;
-  text-align: right;  */
   font-size: 23px;
   text-align: left;
   font-weight: 900;
@@ -472,7 +460,6 @@ img.width-half {
 }
 
 .body{
-  padding:30px 15px;
   height:100%;
   background-color: #f4f7f7;
   width: 100%;
@@ -484,12 +471,12 @@ img.width-half {
 
 .title{
   font-weight: 600;
-  margin-left: 250px;
+  margin-left: 15%;
   line-height: 26px;
   margin-top: 5%;
 }
 .dash{
-  margin-left: 250px;
+  margin-left: 15%;
   margin-top: 20px;
   display: flex;
   justify-content: flex-start;
@@ -499,7 +486,6 @@ img.width-half {
 
 .dash li  {
   text-decoration: none;
-  /* color: blue; */
 }
 
 
@@ -589,9 +575,10 @@ padding: 0;
   margin: 0; 
   font-weight: bold;
   font-size: 30px;
-  margin-top: -44px;
+  margin-top: 10%;
   margin-bottom: 5px;
   margin-left: 20px;
+  justify-content: space-between;
 }
 .count-icon-container {
   display: flex;
@@ -732,7 +719,7 @@ padding: 0;
 }
 .codeColor{
   display: flex;
-  margin-left: 356px;
+  margin-left: 70%;
 }
 .code{
   display: flex;
@@ -912,8 +899,8 @@ h6 h5{
   margin-top: -60px;
   margin-bottom: 10px;
   height: 50px;
-  margin-left: 80px;
-  /* float: left; */
+  margin-left: 50%;
+  display: flex;
 }
 
 .etat{
@@ -950,4 +937,18 @@ h6 h5{
   background-color: #fff;
   color: #202020;
   
+}
+/* style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-48px", fontSize:"18px"}} */
+.colorCode{
+  margin-left: 70%;
+  margin-bottom: 5px;
+  font-weight: 500;
+  font-size: 18px;
+  margin-top: -5%;
+}
+/* style={{width:"164px", height:"164px", justifyItems:"center", marginLeft:"60px"}} */
+.pun{
+  width: 164px;
+  height: 164px;
+  margin-left: 25%;
 }

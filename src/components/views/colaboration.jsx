@@ -67,7 +67,7 @@ function Colaboration () {
                 },
             })
             setCountIncidents(res.data.data.filter(incident => incident.etat === "taken_into_account").length);
-            setData(res.data.data);
+            setData(res.data.data.filter(incident => incident.etat === "taken_into_account"));
         } catch (error) {
             console.log(error.message)
         }
@@ -135,6 +135,8 @@ function Colaboration () {
                 desc: incident.description,
                 etat: incident.etat,
                 img: config.url + incident.photo,
+                video: config.url + incident.video,
+                audio: config.url + incident.audio
             }
             positions.push(pos);
         }

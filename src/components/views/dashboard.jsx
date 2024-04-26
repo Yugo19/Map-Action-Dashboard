@@ -172,7 +172,7 @@ function Dashboard(props) {
     
             const aggregatedData = {};
             incidents.forEach(incident => {
-                const userType = incident.user_id ? 'Inscrit' : 'Anonyme'; // Détermine le type d'utilisateur en fonction de user_id
+                const userType = incident.user_id ? 'Inscrit' : 'Anonyme'; 
                 if (!aggregatedData[incident.zone]) {
                     aggregatedData[incident.zone] = { Anonyme: 0, Inscrit: 0 };
                 }
@@ -409,6 +409,8 @@ function Dashboard(props) {
                 desc: incident.description,
                 etat: incident.etat,
                 img: incident.photo,
+                video: config.url + incident.video,
+                audio: config.url + incident.audio
             }
             positions.push(pos);
         }
@@ -582,7 +584,7 @@ function Dashboard(props) {
                         <div>
                             <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
                             <div>
-                                <h5 style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-48px", fontSize:"18px"}}>Code Couleur</h5>
+                                <h5 className="colorCode">Code Couleur</h5>
                                 <div className="codeColor">
                                     <div>
                                         <div className="hr_blue" onClick={ResolvedOnMap}/>
@@ -631,16 +633,16 @@ function Dashboard(props) {
                         </div>
                     </Col>
                     <Col lg={3} sm={9}>
-                        <Col>
-                            <Col lg={12} sm={9} className="chart-grid" style={{paddingTop:'5px'}}>
+                        <Col lg={12} sm={12} >
+                            <Col lg={12} sm={12} className="chart-grid" style={{paddingTop:'5px'}}>
                                 <div className="col_header">
                                     <h4>Incidents par type d’utilisateurs</h4>
-                                    <p>Mar 21 - Apr 21</p>
-                                    <div style={{width:"164px", height:"164px", justifyItems:"center", marginLeft:"60px"}}>
-                                        <canvas ref={chartRef} width="300" height="100"></canvas>
+                                    <p>{selectedMonth}</p>
+                                    <div className="pun">
+                                        <canvas ref={chartRef} width="500" height="300"></canvas>
                                     </div>
                                     <Row style={{marginTop:'40px'}}>
-                                        <Col lg={6}>
+                                        <Col lg={6} sm={6}>
                                             <div style={{marginLeft:"35px"}}>
                                                 <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{percentageAnonymous}%</p>
                                                 <div style={{display:"flex"}}>
@@ -650,7 +652,7 @@ function Dashboard(props) {
                                             </div>
                                             <hr className="separate"/>
                                         </Col>
-                                        <Col>
+                                        <Col lg={6} sm={6}>
                                             <div style={{}}>
                                                 <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{registeredPercentage}%</p>
                                                 <div style={{display:"flex"}}>
