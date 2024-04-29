@@ -20,7 +20,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 })
 
-function Dashboard(props) {
+function AdminDashboard(props) {
     const navigate = useNavigate()
     const chartRef = useRef();
     const [countIncidents, setCountIncidents] = useState('');
@@ -172,7 +172,7 @@ function Dashboard(props) {
     
             const aggregatedData = {};
             incidents.forEach(incident => {
-                const userType = incident.user_id ? 'Inscrit' : 'Anonyme'; 
+                const userType = incident.user_id ? 'Inscrit' : 'Anonyme';
                 if (!aggregatedData[incident.zone]) {
                     aggregatedData[incident.zone] = { Anonyme: 0, Inscrit: 0 };
                 }
@@ -185,7 +185,7 @@ function Dashboard(props) {
                     {
                         label: 'Anonyme',
                         backgroundColor: 'purple',
-                        data: Object.values(aggregatedData).map(zoneData => zoneData.Anonyme)
+                        data: [Object.values(aggregatedData).map(zoneData => zoneData.Anonyme)]
                     },
                     {
                         label: 'Inscrit',
@@ -409,8 +409,6 @@ function Dashboard(props) {
                 desc: incident.description,
                 etat: incident.etat,
                 img: incident.photo,
-                video: config.url + incident.video,
-                audio: config.url + incident.audio
             }
             positions.push(pos);
         }
@@ -486,33 +484,31 @@ function Dashboard(props) {
     return (
         <div className="body">
             <div className="">
-                <div className="head">
-                    <div>
-                        <h3 className="title">Tableau de Bord</h3>
-                    </div> 
-                    <div className="monthChoice">
-                        <Select
-                            components={{CustomOption}}
-                            value={monthsOptions.find(option => option.value === selectedMonth)}
-                            onChange={handleMonthChange}
-                            options={monthsOptions}
-                            styles={{
-                                control: (provided, state) => ({
-                                    ...provided,
-                                    border: '1px solid #ccc',
-                                    borderRadius: '15px',
-                                    width:'150px',
-                                    height:'40px',
-                                    justifyContent:'space-around',
-                                    paddingLeft: '3px',
-                                }),
-                                indicatorSeparator: (provided, state) => ({
-                                    ...provided,
-                                    display: 'none'
-                                }),
-                            }}
-                        />
-                    </div>
+                <div className="title">
+                    <h3 style={{fontSize:"30px", fontWeight:"700"}}>Tableau de Bord</h3>
+                </div> 
+                <div className="monthChoice">
+                    <Select
+                        components={{CustomOption}}
+                        value={monthsOptions.find(option => option.value === selectedMonth)}
+                        onChange={handleMonthChange}
+                        options={monthsOptions}
+                        styles={{
+                            control: (provided, state) => ({
+                                ...provided,
+                                border: '1px solid #ccc',
+                                borderRadius: '15px',
+                                width:'150px',
+                                height:'40px',
+                                justifyContent:'space-around',
+                                paddingLeft: '3px',
+                            }),
+                            indicatorSeparator: (provided, state) => ({
+                                ...provided,
+                                display: 'none'
+                            }),
+                        }}
+                    />
                 </div>
                 <div>
                     <div className="dash">
@@ -533,8 +529,8 @@ function Dashboard(props) {
                 </div>
                 <hr className="dash_line"/>
             </div>
-            <div >
-                <Row className="static-card">
+            <div>
+                <Row>
                     <Col className="colle col-3">
                         <div>
                             <div>
@@ -573,9 +569,9 @@ function Dashboard(props) {
                     </Col>
                 </Row>
             </div>
-            <div style={{marginTop:"20px"}}>
-                <Row  className="static-card">
-                    <Col className="map-grid col-6">
+            <div style={{marginTop:"15px"}}>
+                <Row>
+                    <Col lg={6} sm={9} className="map-grid">
                         <div className="col_header">
                             <h4>Carte Interactive</h4>
                             <p>Carte interactive avec les points reportés par les utilisateurs de l'application mobile</p>
@@ -586,7 +582,7 @@ function Dashboard(props) {
                         <div>
                             <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
                             <div>
-                                <h5 className="colorCode">Code Couleur</h5>
+                                <h5 style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-48px", fontSize:"18px"}}>Code Couleur</h5>
                                 <div className="codeColor">
                                     <div>
                                         <div className="hr_blue" onClick={ResolvedOnMap}/>
@@ -635,16 +631,16 @@ function Dashboard(props) {
                         </div>
                     </Col>
                     <Col lg={3} sm={9}>
-                        <Col lg={12} sm={12} >
-                            <Col lg={12} sm={12} className="chart-grid" style={{paddingTop:'5px'}}>
+                        <Col>
+                            <Col lg={12} sm={9} className="chart-grid" style={{paddingTop:'5px'}}>
                                 <div className="col_header">
-                                    <h4 style={{marginLeft:"20px"}}>Incidents par type d’utilisateurs</h4>
-                                    <p style={{marginLeft:"20px"}}>{selectedMonth}</p>
-                                    <div className="pun">
-                                        <canvas ref={chartRef} width="500" height="300"></canvas>
+                                    <h4>Incidents par type d’utilisateurs</h4>
+                                    <p>Mar 21 - Apr 21</p>
+                                    <div style={{width:"164px", height:"164px", justifyItems:"center", marginLeft:"60px"}}>
+                                        <canvas ref={chartRef} width="300" height="100"></canvas>
                                     </div>
                                     <Row style={{marginTop:'40px'}}>
-                                        <Col lg={6} sm={6}>
+                                        <Col lg={6}>
                                             <div style={{marginLeft:"35px"}}>
                                                 <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{percentageAnonymous}%</p>
                                                 <div style={{display:"flex"}}>
@@ -654,7 +650,7 @@ function Dashboard(props) {
                                             </div>
                                             <hr className="separate"/>
                                         </Col>
-                                        <Col lg={6} sm={6}>
+                                        <Col>
                                             <div style={{}}>
                                                 <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{registeredPercentage}%</p>
                                                 <div style={{display:"flex"}}>
@@ -668,9 +664,9 @@ function Dashboard(props) {
                             </Col>
                            <Col lg={12} sm={9} className="chart-grid" style={{paddingTop:'5px'}}>
                                 <div className="col_header">
-                                    <h4 style={{marginLeft:"20px", marginBottom:"20%"}}>Incidents par Zones</h4>
+                                    <h4>Incidents par Zones</h4>
                                 </div>
-                                <div style={{width:"100%"}}>
+                                <div className="zone">
                                     <canvas id="myConfig" width="400" height="200"></canvas>
                                 </div>
                             </Col> 
@@ -682,4 +678,4 @@ function Dashboard(props) {
     );
 }
 
-export default Dashboard;
+export default AdminDashboard;

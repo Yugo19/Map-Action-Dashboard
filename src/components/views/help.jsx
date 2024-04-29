@@ -1,12 +1,26 @@
-import {React, Component} from 'react'
+import React, {} from 'react';
 
-class HelpOnline extends Component {
-    render(){
-        return(
-            <div>
-                <p>HelpOnline view</p>
+function Help(){
+
+    return (
+        <>
+            <div className="body">
+                <p>Aide en Ligne</p>
+                <p>Aide en Ligne</p>
+                <p>Aide en Ligne</p>
+                <p>Aide en Ligne</p>
+                <p>Aide en Ligne</p>
+                <p>Aide en Ligne</p>
+                <p>Aide en Ligne</p>
+                <p>Aide en Ligne</p>
+                <p>Aide en Ligne</p>
+                <p>Aide en Ligne</p>
+                <p>Aide en Ligne</p>
+                <p>Aide en Ligne</p>
+                <p>Aide en Ligne</p>
+                <p>Aide en Ligne</p>
+                <p>Aide en Ligne</p>
             </div>
-        )
-    }
-}
-export default HelpOnline;
+        </>
+    )
+} export default Help;
