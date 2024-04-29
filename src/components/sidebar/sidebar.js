@@ -108,10 +108,16 @@ const Sidebar = ({ isAdmin }) => {
           </ul>
           )}
         </div>
-        <div onClick={handleNotificationClick}>
-          <FontAwesomeIcon icon={faBell} className="notifi" color='#84818A'/>        
+        <div className='activity'>
+          <div onClick={handleNotificationClick}>
+            <FontAwesomeIcon icon={faBell} className="notifi" color='#84818A'/>        
+          </div>
+          {showNotifications && <NotificationsComponent />}
+          <div className='user_logo'>
+            <img src={ userData ? userData.photo : ''} alt='' />
+          </div>
         </div>
-        {showNotifications && <NotificationsComponent />}
+        
       </div>
       <div >
         <img className="logo" src={logo} alt="logo_image" />

@@ -7,6 +7,9 @@ html{
     background-color: #f4f7f7;
     min-width: 100vw;
     overflow-x: hidden;
+    font-family: "Poppins";
+    justify-content: center;
+    align-items: center;
   }
 }
 .btn-colored {
@@ -465,19 +468,19 @@ img.width-half {
   width: 100%;
   background-attachment: fixed;
   flex: 1;
-  justify-content: space-between;
   gap: 1.5rem;
+  margin-left: 15%;
 }
 
 .title{
-  font-weight: 600;
-  margin-left: 19%;
-  line-height: 26px;
-  margin-top: 8%
+  font-weight: 500;
+  line-height: 48px;
+  font-size: 36px;
+  font: "Poppins";
 }
 .dash{
-  margin-left: 20%;
-  margin-top: 10px;
+  /* margin-left: 15%; */
+  margin-top: 20px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -505,7 +508,6 @@ padding: 0;
   margin-top: -10px;
   width: 100%;
   height: 1px;
-  margin-left: 235px;
 }
 
 .card {
@@ -517,7 +519,7 @@ padding: 0;
   margin-bottom: 20px; 
   width: 300px;
   height: 120px;
-  
+  transform: scale(1.04); 
 }
 .text-card {
   display: flex;
@@ -589,7 +591,6 @@ padding: 0;
   margin-right: 150px; 
 }
 .monthChoice{
-  margin-left:90%;
   display: flex;
 }
 .angleDo{
@@ -598,12 +599,16 @@ padding: 0;
   cursor: pointer;
 }
 .colle{
-  margin-left: 270px;
   background-color: #fff;
   height: 150px;
   border-radius: 30px;
   display: flex;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  flex-direction: column; 
+}
+.colle:hover{
+  transform: scale(1.04);
 }
 .compte{
   margin-left: 20px;
@@ -613,6 +618,11 @@ padding: 0;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
   display: flex;
   cursor: pointer;
+  justify-content: center;
+  flex-direction: column; 
+}
+.compte:hover{
+  transform: scale(1.04);
 }
 .resolu{
   margin-left: 20px;
@@ -622,6 +632,11 @@ padding: 0;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
   cursor: pointer;
   display: flex;
+  justify-content: center;
+  flex-direction: column; 
+}
+.resolu:hover{
+  transform: scale(1.04);
 }
 .titleCard{
   font-size: 16px;
@@ -633,12 +648,17 @@ padding: 0;
   border: 1px #84818A;
   width: 732px;
   height: 100%;
-  margin-left: 270px;
   background-color: #fff;
   margin-top: 20px;
   border-radius: 30px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
   /* display: flex; */
+  justify-content: center;
+  flex-direction: column; 
+  align-items: center;
+}
+.map-grid:hover{
+  transform: scale(1.01);
 }
 .map-grid-view{
   border: 1px #84818A;
@@ -655,12 +675,10 @@ padding: 0;
   border: 1px #84818A;
   width: 80%;
   height: 100%;
-  margin-left: 255px;
   background-color: #fff;
   margin-top: 20px;
   border-radius: 30px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
-  /* display: flex; */
 }
 
 .hr_blue{
@@ -717,6 +735,29 @@ padding: 0;
   margin-right: 2px;
   cursor: pointer;
 }
+.hr_blue:hover{
+  transform: scale(1.04);
+}
+
+.hr_orange:hover{
+  transform: scale(1.04);
+}
+
+.hr_red:hover{
+  transform: scale(1.04);
+}
+
+.hr_yellow:hover{
+  transform: scale(1.04);
+}
+.hr_orange_gr:hover{
+  transform: scale(1.04);
+}
+
+.hr_red_gr:hover{
+  transform: scale(1.04);
+}
+
 .codeColor{
   display: flex;
   margin-left: 70%;
@@ -777,6 +818,9 @@ padding: 0;
   border-radius: 30px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
 }
+.chart-grid:hover{
+  transform: scale(1.04);
+}
 .action-grid{
   /* width: 360px; */
   height: 236px;
@@ -813,12 +857,6 @@ padding: 0;
 
 }
 .audioIncident{
-  /* width: 378px; */
-  /* height: 7Opx; */
-  /* background-color: #F1F3F4; */
-  /* margin: auto; */
-  /* /* border-radius: 30px; */
-  /* justify-content: center; */
   margin-bottom: 30px; 
 }
 .boutonAnalyse{
@@ -938,7 +976,6 @@ h6 h5{
   color: #202020;
   
 }
-/* style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-48px", fontSize:"18px"}} */
 .colorCode{
   margin-left: 70%;
   margin-bottom: 5px;
@@ -946,18 +983,21 @@ h6 h5{
   font-size: 18px;
   margin-top: -5%;
 }
-/* style={{width:"164px", height:"164px", justifyItems:"center", marginLeft:"60px"}} */
 .pun{
   width: 164px;
   height: 164px;
   margin-left: 25%;
 }
 
-.main-content {
-  width: calc(100% - 250px); 
-  margin-left: 250px; 
-  @media (max-width: 960px) {
-    width: 100%; 
-    margin-left: 0;
-  }
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5%;
+  width: 84%;
+}
+
+.static-card{
+  gap: 20px;
+  display: flex;
 }

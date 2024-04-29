@@ -486,31 +486,33 @@ function Dashboard(props) {
     return (
         <div className="body">
             <div className="">
-                <div className="title">
-                    <h3 style={{fontSize:"30px", fontWeight:"700"}}>Tableau de Bord</h3>
-                </div> 
-                <div className="monthChoice">
-                    <Select
-                        components={{CustomOption}}
-                        value={monthsOptions.find(option => option.value === selectedMonth)}
-                        onChange={handleMonthChange}
-                        options={monthsOptions}
-                        styles={{
-                            control: (provided, state) => ({
-                                ...provided,
-                                border: '1px solid #ccc',
-                                borderRadius: '15px',
-                                width:'150px',
-                                height:'40px',
-                                justifyContent:'space-around',
-                                paddingLeft: '3px',
-                            }),
-                            indicatorSeparator: (provided, state) => ({
-                                ...provided,
-                                display: 'none'
-                            }),
-                        }}
-                    />
+                <div className="head">
+                    <div>
+                        <h3 className="title">Tableau de Bord</h3>
+                    </div> 
+                    <div className="monthChoice">
+                        <Select
+                            components={{CustomOption}}
+                            value={monthsOptions.find(option => option.value === selectedMonth)}
+                            onChange={handleMonthChange}
+                            options={monthsOptions}
+                            styles={{
+                                control: (provided, state) => ({
+                                    ...provided,
+                                    border: '1px solid #ccc',
+                                    borderRadius: '15px',
+                                    width:'150px',
+                                    height:'40px',
+                                    justifyContent:'space-around',
+                                    paddingLeft: '3px',
+                                }),
+                                indicatorSeparator: (provided, state) => ({
+                                    ...provided,
+                                    display: 'none'
+                                }),
+                            }}
+                        />
+                    </div>
                 </div>
                 <div>
                     <div className="dash">
@@ -531,8 +533,8 @@ function Dashboard(props) {
                 </div>
                 <hr className="dash_line"/>
             </div>
-            <div>
-                <Row>
+            <div >
+                <Row className="static-card">
                     <Col className="colle col-3">
                         <div>
                             <div>
@@ -571,9 +573,9 @@ function Dashboard(props) {
                     </Col>
                 </Row>
             </div>
-            <div style={{marginTop:"15px"}}>
-                <Row>
-                    <Col lg={6} sm={9} className="map-grid">
+            <div style={{marginTop:"20px"}}>
+                <Row  className="static-card">
+                    <Col className="map-grid col-6">
                         <div className="col_header">
                             <h4>Carte Interactive</h4>
                             <p>Carte interactive avec les points reportés par les utilisateurs de l'application mobile</p>
@@ -636,8 +638,8 @@ function Dashboard(props) {
                         <Col lg={12} sm={12} >
                             <Col lg={12} sm={12} className="chart-grid" style={{paddingTop:'5px'}}>
                                 <div className="col_header">
-                                    <h4>Incidents par type d’utilisateurs</h4>
-                                    <p>{selectedMonth}</p>
+                                    <h4 style={{marginLeft:"20px"}}>Incidents par type d’utilisateurs</h4>
+                                    <p style={{marginLeft:"20px"}}>{selectedMonth}</p>
                                     <div className="pun">
                                         <canvas ref={chartRef} width="500" height="300"></canvas>
                                     </div>
@@ -666,7 +668,7 @@ function Dashboard(props) {
                             </Col>
                            <Col lg={12} sm={9} className="chart-grid" style={{paddingTop:'5px'}}>
                                 <div className="col_header">
-                                    <h4>Incidents par Zones</h4>
+                                    <h4 style={{marginLeft:"20px", marginBottom:"20%"}}>Incidents par Zones</h4>
                                 </div>
                                 <div style={{width:"100%"}}>
                                     <canvas id="myConfig" width="400" height="200"></canvas>
