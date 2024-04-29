@@ -5,8 +5,36 @@
     top: 0;
     background-color: #f4f7f7;
     transition: left 0.3s ease;
-    // overflow-y: scroll;
     scroll-behavior: smooth;
+    overflow-y: scroll;
+    
+    &.collapsed {
+      width: 60px;
+    }
+
+    .main-content {
+      margin-left: 60px; 
+    }
+  
+    .collapse-button {
+      background-color: #ffffff;
+      border: 1px solid #cccccc;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      bottom: 40px;
+      left: 10px;
+      cursor: pointer;
+  
+      svg {
+        font-size: 18px;
+        color: #333333;
+      }
+    }
   }
   .profil {
     border: 1px solid #dddddf;
@@ -42,40 +70,27 @@
     left: 0;
   }
   
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
+  // ul {
+  //   list-style-type: none;
+  //   padding: 0;
+  //   gap: 20px;
+  // }
   
-  li {
-    padding: 10px;
-    color: #202020;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 16px;
-    font-family: sans-serif;
-    margin-top: 10px;
-  }
-  
-  li:hover {
-    background-color: #f4f7f7;
-    
-  }
-
-  li.active {
-    background-color: #e0efee;
-    width: 200px;
-    border-radius: 20px;
-    opacity: 0.5; 
-  }
 
   .hidden {
     opacity: 0.5;
-    cursor: not-allowed; 
+    cursor: not-allowed;
+    gap: 20px; 
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    padding: 10px;
   }
+
   .hidden:hover{
     background-color:  #f4f7f7;
   }
+
   .logo {
     width: 141px;
     height: 54px;
@@ -90,10 +105,9 @@
     padding: 10px;
     width: 100%;
     height: 96px;
-    left: 7%;
+    left: 250px;
     background-color: #f4f7f7;
     position: fixed;
-    justify-content: space-around;
 
   }
   
@@ -121,7 +135,9 @@
     margin-left: 1110px;
     cursor: pointer;
     margin-top: 1px;
-
+  }
+  .notifi:hover{
+    transform: scale(1.3);
   }
   .profil_img{
     width: 49px;
@@ -132,5 +148,30 @@
   }
   .link_style{
     text-decoration: none;
+    color: #202020;
+  }
+  
+  .menu-list{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .menu-list .item{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: #202020;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 10px;
+    transition: 0.3s ease-in-out;
+    text-decoration: none;
+  }
+
+  .menu-list .item:hover{
+    background: #c7f3f7 ;
     color: #202020;
   }
