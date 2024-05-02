@@ -606,6 +606,7 @@ padding: 0;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   justify-content: center;
   flex-direction: column; 
+  width: 25%;
 }
 .colle:hover{
   transform: scale(1.04);
@@ -620,6 +621,8 @@ padding: 0;
   cursor: pointer;
   justify-content: center;
   flex-direction: column; 
+  width: 25%;
+
 }
 .compte:hover{
   transform: scale(1.04);
@@ -633,6 +636,7 @@ padding: 0;
   cursor: pointer;
   display: flex;
   justify-content: center;
+  width: 25%;
   flex-direction: column; 
 }
 .resolu:hover{
@@ -646,13 +650,12 @@ padding: 0;
 }
 .map-grid{
   border: 1px #84818A;
-  width: 732px;
+  width: 55%;
   height: 100%;
   background-color: #fff;
   margin-top: 20px;
   border-radius: 30px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
-  /* display: flex; */
   justify-content: center;
   flex-direction: column; 
   align-items: center;
@@ -662,14 +665,14 @@ padding: 0;
 }
 .map-grid-view{
   border: 1px #84818A;
-  width: 732px;
+  width: 55%;
   height: 100%;
-  margin-left: 270px;
   background-color: #fff;
   margin-top: 20px;
   border-radius: 30px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
-  /* display: flex; */
+  display: flex;
+  flex-direction: column;
 }
 .map-grid-colabor{
   border: 1px #84818A;
@@ -809,27 +812,30 @@ padding: 0;
   font-size: 14px;
 }
 .chart-grid{
-  /* width: 360px; */
   height: 448px;
   background-color: #fff;
   margin-left: 20px;
   margin-bottom: 20px;
   border: 1px #84818A;
   border-radius: 30px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  width: 55%; 
 }
 .chart-grid:hover{
   transform: scale(1.04);
 }
 .action-grid{
-  /* width: 360px; */
   height: 236px;
   background-color: #fff;
   margin-left: 20px;
   margin-bottom: 20px;
   border: 1px #84818A;
   border-radius: 30px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  width: 55%; 
+}
+.action-grid:hover {
+  transform: scale(1.04);
 }
 .chart-grid-ia{
   width: 400px;
@@ -1000,4 +1006,20 @@ h6 h5{
 .static-card{
   gap: 20px;
   display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.charts {
+  width: 50%;
+  flex-direction: column;
+  display: flex;
+  margin-top: -1%;
+}
+
+.charts-view {
+  width: 50%;
+  flex-direction: column;
+  display: flex;
+  margin-top: -56%;
 }

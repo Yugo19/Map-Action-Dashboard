@@ -383,7 +383,7 @@ function Incident(){
     ];
   
     return(
-        <div className='body' style={{marginLeft:"250px", display:"flex", marginTop:"70px",}}>
+        <div className='body' style={{marginTop:"5%"}}>
             <div style={{width:"175vh"}}>
                 { dataReady ?(
                     <ThemeProvider theme={getMuiTheme}>

@@ -534,8 +534,8 @@ function Dashboard(props) {
                 <hr className="dash_line"/>
             </div>
             <div >
-                <Row className="static-card">
-                    <Col className="colle col-3">
+                <div className="static-card">
+                    <div className="colle">
                         <div>
                             <div>
                                 <h3 className="titleCard">Nombre d'incidents</h3>
@@ -546,8 +546,8 @@ function Dashboard(props) {
                                 <FontAwesomeIcon icon={faBarChart} className="stat-icon"/>
                             </div>
                         </div>
-                    </Col>
-                    <Col className="compte col-3" onClick={TakenOnMap}>
+                    </div>
+                    <div className="compte" onClick={TakenOnMap}>
                         <div>
                             <div>
                                 <h3 className="titleCard">Pourcentage pris en compte</h3>
@@ -558,8 +558,8 @@ function Dashboard(props) {
                                 <FontAwesomeIcon icon={faBarChart} className="statistic-icon"/>
                             </div>
                         </div>
-                    </Col>
-                    <Col className="resolu col-3" onClick={ResolvedOnMap}>
+                    </div>
+                    <div className="resolu" onClick={ResolvedOnMap}>
                         <div>
                             <div>
                                 <h3 className="titleCard">Pourcentage résolu</h3>
@@ -570,12 +570,12 @@ function Dashboard(props) {
                                 <FontAwesomeIcon icon={faBarChart} className="statist-icon"/>
                             </div>
                         </div>
-                    </Col>
-                </Row>
+                    </div>
+                </div>
             </div>
             <div style={{marginTop:"20px"}}>
-                <Row  className="static-card">
-                    <Col className="map-grid col-6">
+                <div className="static-card">
+                    <div className="map-grid">
                         <div className="col_header">
                             <h4>Carte Interactive</h4>
                             <p>Carte interactive avec les points reportés par les utilisateurs de l'application mobile</p>
@@ -606,8 +606,8 @@ function Dashboard(props) {
                         <div className="dashed-line"></div>
                         <div>
                             <h4 className="repartionText">Repartition des incidents par catégories</h4>
-                            <Row>
-                                <Col lg={6} >
+                            <div>
+                                <div>
                                     <div className="repartition">
                                         <p style={{fontSize:"14px"}}>Déchet Solides</p>
                                         <p style={{float:"right", marginTop:"-25px"}}>25%</p>
@@ -618,8 +618,8 @@ function Dashboard(props) {
                                         <p style={{float:"right", marginTop:"-25px",}}>25%</p>
                                         <hr/>
                                     </div>
-                                </Col>
-                                <Col lg={6} >
+                                </div>
+                                <div>
                                     <div className="repartition">
                                         <p style={{fontSize:"14px"}}>Déchet Solides</p>
                                         <p style={{float:"right", marginTop:"-25px"}}>25%</p>
@@ -630,53 +630,51 @@ function Dashboard(props) {
                                         <p style={{float:"right", marginTop:"-25px"}}>25%</p> 
                                         <hr/>
                                     </div>
-                                </Col>
-                            </Row>
+                                </div>
+                            </div>
                         </div>
-                    </Col>
-                    <Col lg={3} sm={9}>
-                        <Col lg={12} sm={12} >
-                            <Col lg={12} sm={12} className="chart-grid" style={{paddingTop:'5px'}}>
-                                <div className="col_header">
-                                    <h4 style={{marginLeft:"20px"}}>Incidents par type d’utilisateurs</h4>
-                                    <p style={{marginLeft:"20px"}}>{selectedMonth}</p>
-                                    <div className="pun">
-                                        <canvas ref={chartRef} width="500" height="300"></canvas>
-                                    </div>
-                                    <Row style={{marginTop:'40px'}}>
-                                        <Col lg={6} sm={6}>
-                                            <div style={{marginLeft:"35px"}}>
-                                                <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{percentageAnonymous}%</p>
-                                                <div style={{display:"flex"}}>
-                                                    <div className="dotpurple"></div>
-                                                    <p className="doghnut_p">Anonymes</p>
-                                                </div>
+                    </div>
+                    <div className="charts">
+                        <div className="chart-grid" style={{paddingTop:'5px'}}>
+                            <div className="col_header">
+                                <h4 style={{marginLeft:"20px"}}>Incidents par type d’utilisateurs</h4>
+                                <p style={{marginLeft:"20px"}}>{selectedMonth}</p>
+                                <div className="pun">
+                                    <canvas ref={chartRef} width="500" height="300"></canvas>
+                                </div>
+                                <Row style={{marginTop:'40px'}}>
+                                    <Col lg={6} sm={6}>
+                                        <div style={{marginLeft:"35px"}}>
+                                            <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{percentageAnonymous}%</p>
+                                            <div style={{display:"flex"}}>
+                                                <div className="dotpurple"></div>
+                                                <p className="doghnut_p">Anonymes</p>
                                             </div>
-                                            <hr className="separate"/>
-                                        </Col>
-                                        <Col lg={6} sm={6}>
-                                            <div style={{}}>
-                                                <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{registeredPercentage}%</p>
-                                                <div style={{display:"flex"}}>
-                                                    <div className="dotorange"></div>
-                                                    <p className="doghnut_p">Inscrits</p>
-                                                </div>
+                                        </div>
+                                        <hr className="separate"/>
+                                    </Col>
+                                    <Col lg={6} sm={6}>
+                                        <div style={{}}>
+                                            <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{registeredPercentage}%</p>
+                                            <div style={{display:"flex"}}>
+                                                <div className="dotorange"></div>
+                                                <p className="doghnut_p">Inscrits</p>
                                             </div>
-                                        </Col>
-                                    </Row>
-                                </div>
-                            </Col>
-                           <Col lg={12} sm={9} className="chart-grid" style={{paddingTop:'5px'}}>
-                                <div className="col_header">
-                                    <h4 style={{marginLeft:"20px", marginBottom:"20%"}}>Incidents par Zones</h4>
-                                </div>
-                                <div style={{width:"100%"}}>
-                                    <canvas id="myConfig" width="400" height="200"></canvas>
-                                </div>
-                            </Col> 
-                        </Col>
-                    </Col>
-                </Row>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </div>
+                        </div>
+                       <div className="chart-grid" style={{paddingTop:'5px'}}>
+                            <div className="col_header">
+                                <h4 style={{marginLeft:"20px", marginBottom:"20%"}}>Incidents par Zones</h4>
+                            </div>
+                            <div style={{width:"100%"}}>
+                                <canvas id="myConfig" width="400" height="200"></canvas>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
             </div>
         </div>
     );
