@@ -469,7 +469,7 @@ img.width-half {
   background-attachment: fixed;
   flex: 1;
   gap: 1.5rem;
-  margin-left: 15%;
+  margin-left: 19%;
 }
 
 .title{
@@ -993,7 +993,7 @@ h6 h5{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 5%;
+  margin-top: 7%;
   width: 84%;
 }
 
