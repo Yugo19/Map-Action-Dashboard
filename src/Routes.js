@@ -17,6 +17,7 @@ import Colaborate from './components/views/askCollaboration';
 import Login from './components/login';
 import NotificationsComponent from './components/Notification/Notification';
 import AdminDashboard from './components/views/AdminDashboard';
+import User from './components/User/User';
 
 const Root = () => {
   const renderNotFound = (
@@ -45,6 +46,7 @@ const Root = () => {
         <Route path='/askCollaboration/:incidentId' element={<Colaborate/>}/>
         <Route path="/notifications" component={NotificationsComponent} />
         <Route path="*" element={<renderNotFound />} />
+        <Route path='/users' element={<User/>}/>
         {/* <Route path="/" element={<Login/>}/> */}
       </Routes>
   );

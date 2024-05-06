@@ -7,6 +7,8 @@ import { config } from '../../config';
 import {useNavigate} from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faT, faTrash } from '@fortawesome/free-solid-svg-icons';
+import Swal from 'sweetalert2';
+import { Audio } from 'react-loader-spinner';
 function Incident(){
     const navigate = useNavigate()
     const [dataReady, setDataReady] = useState(false);
@@ -65,46 +67,44 @@ function Incident(){
     };
     
     const deleteIncident = (e) => {
-        this.setState({ inProgress: true });
-        e.preventDefault();
-        console.log(newIncident.id);
-        var url = config.url + "/MapApi/incident/";
-        axios
-          .delete(url + newIncident.id)
-          .then((response) => {
-            this.setState({ inProgress: !inProgress });
-            this.setState({ show: false });
-            swal("Succes", "Incident Supprime", "Warning");
-            this._getIncidents();
-            console.log(response);
-            this.setState({
-              newIncident: {
-                title: "",
-                zone: "",
-                description: "",
-                photo: "",
-                video: "",
-                audio: "",
-                lattitude: "",
-                longitude: "",
-                user_id: "",
-              },
-            });
-          })
-          .catch((error) => {
-            this.setState({ inProgress: !inProgress });
-            if (error.response) {
-              swal("Erreur", "Veuillez reessayer", "error");
-              console.log(error.response.status);
-              console.log(error.response.data);
-            } else if (error.request) {
-              console.log(error.request.data);
-            } else {
-              console.log(error.message);
-            }
+      setInProgress(true);
+      // e.preventDefault();
+      console.log(newIncident.id);
+      var url = config.url + "/MapApi/incident/";
+      axios
+        .delete(url + newIncident.id)
+        .then((response) => {
+          setInProgress(false);
+          setShow(false);
+          Swal.fire("Succes", "Incident Supprime", "warning");
+          _getIncidents();
+          console.log(response);
+          setNewIncident({
+            title: "",
+            zone: "",
+            description: "",
+            photo: "",
+            video: "",
+            audio: "",
+            lattitude: "",
+            longitude: "",
+            user_id: "",
           });
-      };
-
+        })
+        .catch((error) => {
+          setInProgress(false);
+          if (error.response) {
+            Swal.fire("Erreur", "Veuillez reessayer", "error");
+            console.log(error.response.status);
+            console.log(error.response.data);
+          } else if (error.request) {
+            console.log(error.request.data);
+          } else {
+            console.log(error.message);
+          }
+        });
+  };
+  
 
 
     // Data Tables
@@ -211,13 +211,17 @@ function Incident(){
                   style={{backgroundColor:"transparent", border:"none"}}
                   data-id={item.id}
                 >
-                    <FontAwesomeIcon icon={faEye} size=''/>
+                    <FontAwesomeIcon icon={faEye} />
                 </a>
                 <Button
                   style={{backgroundColor:"transparent", border:"none"}}
-                  onClick={(e) => {
-                    onDeleteIncident(item);
-                    setInProgress(false);
+                  onClick={() => {
+                    if (item && item.id) {
+                      deleteIncident(item.id);
+                      setInProgress(false);
+                  } else {
+                      console.error("L'ID de l'incident est indéfini ou non valide.");
+                  }
                   }}
                 > 
                     <FontAwesomeIcon icon={faTrash} color='red'/>
@@ -383,7 +387,7 @@ function Incident(){
     ];
   
     return(
-        <div className='body' style={{marginTop:"7%"}}>
+        <div className='body' style={{marginTop:"5%"}}>
             <div style={{width:"175vh"}}>
                 { dataReady ?(
                     <ThemeProvider theme={getMuiTheme}>
@@ -395,7 +399,12 @@ function Incident(){
                         />
                     </ThemeProvider>
                 ):(
-                    <p>Data is not ready</p>
+                  <Audio
+                  color="#00BFFF"
+                  height={100}
+                  width={100}
+                  timeout={3000} //3 secs
+                  />
 
                 )}
                 
