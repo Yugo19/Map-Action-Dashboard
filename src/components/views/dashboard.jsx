@@ -397,6 +397,7 @@ function Dashboard(props) {
         }
     }
 
+
     let positions =[]
 
     data.map((incident, idx) => {

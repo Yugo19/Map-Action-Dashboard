@@ -6,13 +6,19 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/css/animate.min.css";
 import "./assets/css/demo.css";
 import "./assets/css/pe-icon-7-stroke.css"
+import Chat from './components/views/llmChat'
+
 const App = () => {
-  return (
-    <BrowserRouter>
-      <Sidebar /> 
-      <Root /> 
-    </BrowserRouter>
- 
-  );
+    return ( <
+        BrowserRouter >
+        <
+        Sidebar / >
+        <
+        Root / >
+
+        <
+        /BrowserRouter>
+
+    );
 };
 export default App;
