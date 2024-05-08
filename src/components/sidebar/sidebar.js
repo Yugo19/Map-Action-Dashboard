@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import './sidebar.scss'; 
 import logo from '../../assets/logo.png'
-import sidebar from '../../assets/img/sidebar-1.jpg'
+import face from '../../assets/img/faces/face-0.jpg'
 import {Link, useLocation} from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { config } from '../../config';
@@ -9,12 +9,25 @@ import axios from 'axios';
 import { faExclamationCircle, faHistory,faFileCsv, faCog, faBarChart, faQuestionCircle, faLifeRing, faSearch, faBell, faAngleDown} from '@fortawesome/free-solid-svg-icons';
 import NotificationsComponent from '../Notification/Notification';
 
-const Sidebar = () => {
+const Sidebar = ({ isAdmin }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [allIncidents, setAllIncidents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [userData, setUserData] = useState(null);
 
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(`${config.url}/MapApi/user_retrieve/`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.token}`,
+        },
+      });
+      setUserData(response.data);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des informations utilisateur :', error.message);
+    }
+  };
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -43,12 +56,15 @@ const Sidebar = () => {
       setLoading(false);
     }
   };
+  
+  const handleProfileClick = () => {
+    console.log(userData);
+  };
 
   useEffect(() => {
     fetchData(searchTerm);
   }, [searchTerm]);
 
-  // Si vous prévoyez de filtrer côté client, assurez-vous d'utiliser filteredIncidents plutôt que allIncidents dans votre composant.
   const filteredIncidents = allIncidents.filter(incident => {
     return incident.title.toLowerCase().includes(searchTerm.toLowerCase());
   });
@@ -69,13 +85,13 @@ const Sidebar = () => {
             value={searchTerm}
             onChange={handleSearchChange}
           />
-          {/* {loading && <p>Chargement...</p>}
-          {error && <p>{error}</p>} */}
+          {searchTerm && (
           <ul>
             {filteredIncidents.map(incident => (
               <li key={incident.id}>{incident.title}</li>
             ))}
           </ul>
+          )}
         </div>
         <div onClick={handleNotificationClick}>
           <FontAwesomeIcon icon={faBell} className="notifi" color='#84818A'/>        
@@ -85,10 +101,10 @@ const Sidebar = () => {
       <div >
         <img className="logo" src={logo} alt="logo_image" />
       </div>
-      <div className='profil'>
-        <img className="profil_img" src={sidebar} alt="side" />
+      <div className='profil' onClick={handleProfileClick}>
+        <img className="profil_img" src={face} alt="side" />
         <div className='profil_info'>
-          <p><strong>@ForestGir</strong></p>
+        <p><strong>{userData ? `@${userData.organisation}` : ''}</strong></p>
           <p className='elu_info'>
             <span>Gestion intégrée <br /> des forets</span>
             <FontAwesomeIcon icon={faAngleDown} className='angle'/>
@@ -96,9 +112,9 @@ const Sidebar = () => {
 
         </div>
       </div>
-      <ul>
+      <ul className='menu-list'>
         <li className="hidden">Menu</li>
-        <li>
+        <li className='item'>
           <Link
             to="/dashboard"
             className={
@@ -109,15 +125,23 @@ const Sidebar = () => {
               Tableau de Bord 
           </Link>
         </li>
-        <li><Link to="/incident" className='link_style'><FontAwesomeIcon icon={faExclamationCircle} color='#84818A'/> Incident</Link></li>
-        <li><Link to="/historique" className='link_style'><FontAwesomeIcon icon={faHistory} color='#84818A'/>   Historique des actions</Link></li>
-        <li><Link to="/export" className='link_style'><FontAwesomeIcon icon={faFileCsv} color='#84818A'/> Exporter les données</Link></li>
-        <li><Link to="/parametres" className='link_style'><FontAwesomeIcon icon={faCog} color='#84818A'/>   Paramètres</Link></li>
+        <li className='item'><Link to="/incident" className='link_style'><FontAwesomeIcon icon={faExclamationCircle} color='#84818A'/> Incident</Link></li>
+        {isAdmin && (
+          <li><Link to="/incident" className='link_style'><FontAwesomeIcon icon={faExclamationCircle} color='#84818A'/> Utilisateurs</Link></li>
+        )}
+        <li className='item'><Link to="/historique" className='link_style'><FontAwesomeIcon icon={faHistory} color='#84818A'/>   Historique des actions</Link></li>
+        <li className='item'><Link to="/export" className='link_style'><FontAwesomeIcon icon={faFileCsv} color='#84818A'/> Exporter les données</Link></li>
+        <li className='item'><Link to="/parametres" className='link_style'><FontAwesomeIcon icon={faCog} color='#84818A'/>   Paramètres</Link></li>
       </ul>
-      <ul>
+      <ul className='menu-list'>
         <li className="hidden">Support</li>
-        <li><Link to="/faq" className='link_style'><FontAwesomeIcon icon={faQuestionCircle} color='#84818A'/>   FAQ</Link></li>
-        <li><Link to="/help" className='link_style'><FontAwesomeIcon icon={faLifeRing} color='#84818A'/>   Aide en Ligne</Link></li>
+        <li className='item'>
+          <Link to="/faq" className='link_style'>
+            <FontAwesomeIcon icon={faQuestionCircle} color='#84818A'/>
+            FAQ
+          </Link>
+        </li>
+        <li className='item'><Link to="/help" className='link_style'><FontAwesomeIcon icon={faLifeRing} color='#84818A'/>   Aide en Ligne</Link></li>
       </ul>
     </div>
   );

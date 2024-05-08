@@ -20,7 +20,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 })
 
-function Dashboard(props) {
+function AdminDashboard(props) {
     const navigate = useNavigate()
     const chartRef = useRef();
     const [countIncidents, setCountIncidents] = useState('');
@@ -172,7 +172,7 @@ function Dashboard(props) {
     
             const aggregatedData = {};
             incidents.forEach(incident => {
-                const userType = incident.user_id ? 'Inscrit' : 'Anonyme'; // Détermine le type d'utilisateur en fonction de user_id
+                const userType = incident.user_id ? 'Inscrit' : 'Anonyme';
                 if (!aggregatedData[incident.zone]) {
                     aggregatedData[incident.zone] = { Anonyme: 0, Inscrit: 0 };
                 }
@@ -185,7 +185,7 @@ function Dashboard(props) {
                     {
                         label: 'Anonyme',
                         backgroundColor: 'purple',
-                        data: Object.values(aggregatedData).map(zoneData => zoneData.Anonyme)
+                        data: [Object.values(aggregatedData).map(zoneData => zoneData.Anonyme)]
                     },
                     {
                         label: 'Inscrit',
@@ -666,7 +666,7 @@ function Dashboard(props) {
                                 <div className="col_header">
                                     <h4>Incidents par Zones</h4>
                                 </div>
-                                <div style={{width:"100%"}}>
+                                <div className="zone">
                                     <canvas id="myConfig" width="400" height="200"></canvas>
                                 </div>
                             </Col> 
@@ -678,4 +678,4 @@ function Dashboard(props) {
     );
 }
 
-export default Dashboard;
+export default AdminDashboard;
