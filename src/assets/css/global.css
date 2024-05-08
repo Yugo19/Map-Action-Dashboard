@@ -477,6 +477,9 @@ img.width-half {
   background-color: #f4f7f7;
   width: 100%;
   background-attachment: fixed;
+  flex: 1;
+  justify-content: space-between;
+  gap: 1.5rem;
 }
 
 .title{
