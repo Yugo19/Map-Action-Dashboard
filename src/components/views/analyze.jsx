@@ -10,6 +10,7 @@ import ReactDOMServer from 'react-dom/server';
 import Select from 'react-select';
 import axios from 'axios';
 
+
 function ExpandableContent({ content }) {
     const [expanded, setExpanded] = useState(false);
 
@@ -252,7 +253,7 @@ function Analyze (){
                                         </div>
                                     </div>
                                     <div className='boutonAnalyse'>
-                                        <Link style={{color:"white", textDecoration:"none"}}>Discussion LLM</Link>
+                                        <Link to={`/llm_chat/${incident.id}`} style={{color:"white", textDecoration:"none"}}>Discussion LLM</Link>
                                     </div>
                                 </div>
                             </Col>

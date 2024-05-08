@@ -5,7 +5,7 @@ import HelpOnline from '../../../components/views/help';
 
 describe('HelpOnline Component', () => {
     test('renders the HelpOnline view text', () => {
-        render(<HelpOnline />);
+        render( < HelpOnline / > );
         const helpOnlineTextElement = screen.getByText('HelpOnline view');
         expect(helpOnlineTextElement).toBeInTheDocument();
     });
