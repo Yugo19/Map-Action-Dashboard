@@ -533,7 +533,7 @@ function Dashboard(props) {
                 </div>
                 <hr className="dash_line"/>
             </div>
-            <div >
+            <div>
                 <div className="static-card">
                     <div className="colle">
                         <div>

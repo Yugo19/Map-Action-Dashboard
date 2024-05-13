@@ -606,7 +606,7 @@ padding: 0;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   justify-content: center;
   flex-direction: column; 
-  width: 25%;
+  min-width: 25%;
 }
 .colle:hover{
   transform: scale(1.04);
@@ -623,6 +623,7 @@ padding: 0;
   flex-direction: column; 
   width: 25%;
 
+
 }
 .compte:hover{
   transform: scale(1.04);
@@ -637,7 +638,8 @@ padding: 0;
   display: flex;
   justify-content: center;
   width: 25%;
-  flex-direction: column; 
+  flex-direction: column;
+
 }
 .resolu:hover{
   transform: scale(1.04);
