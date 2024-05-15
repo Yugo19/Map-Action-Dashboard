@@ -1,12 +1,15 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import HelpOnline from '../../../components/views/help';
+import Help from '../../../components/views/help';
 
-describe('HelpOnline Component', () => {
-    test('renders the HelpOnline view text', () => {
-        render( < HelpOnline / > );
-        const helpOnlineTextElement = screen.getByText('HelpOnline view');
-        expect(helpOnlineTextElement).toBeInTheDocument();
-    });
-});
+
+
+describe('Help', () => {
+            it('renders the correct text', () => {
+                const { getByText } = render( < Help / > );
+                it('renders the correct text', () => {
+                    const { getByText } = render( < Help / > );
+                    expect(getByText('Aide en Ligne')).toBeInTheDocument();
+                });
+            });
