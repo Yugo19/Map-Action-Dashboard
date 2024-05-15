@@ -186,34 +186,35 @@ function GlobalView (){
     }
         return(
             <div className='body'>
-                <div style={{backgroundColor:"#f4f7f7"}}>
-                    <div className="title">
-                        <h3 style={{fontSize:"30px", fontWeight:"700"}}>Tableau de Bord</h3>
-                    </div>
-                    <div className="monthChoice">
-                        <Select
-                            components={{CustomOption}}
-                            value={monthsOptions.find(option => option.value === selectedMonth)}
-                            onChange={handleMonthChange}
-                            options={monthsOptions}
-                            styles={{
-                                // Styles de la zone de contrôle (sélection)
-                                control: (provided, state) => ({
-                                    ...provided,
-                                    border: '1px solid #ccc',
-                                    borderRadius: '15px',
-                                    width:'150px',
-                                    height:'40px',
-                                    justifyContent:'space-around',
-                                    paddingLeft: '3px',
-                                }),
-                                indicatorSeparator: (provided, state) => ({
-                                    ...provided,
-                                    display: 'none' // Pour masquer le séparateur entre l'icône et le contrôle
-                                }),
-                               
-                            }}
-                        />
+                <div>
+                    <div className="head">
+                        <div>
+                            <h3 className="title">Tableau de Bord</h3>
+                        </div>
+                        <div className="monthChoice">
+                            <Select
+                                components={{CustomOption}}
+                                value={monthsOptions.find(option => option.value === selectedMonth)}
+                                onChange={handleMonthChange}
+                                options={monthsOptions}
+                                styles={{
+                                    control: (provided, state) => ({
+                                        ...provided,
+                                        border: '1px solid #ccc',
+                                        borderRadius: '15px',
+                                        width:'150px',
+                                        height:'40px',
+                                        justifyContent:'space-around',
+                                        paddingLeft: '3px',
+                                    }),
+                                    indicatorSeparator: (provided, state) => ({
+                                        ...provided,
+                                        display: 'none'
+                                    }),
+                                
+                                }}
+                            />
+                        </div>
                     </div>
                     <div>
                         <div className="dash">
@@ -234,167 +235,140 @@ function GlobalView (){
                     </div>
                     <hr className="dash_line"/>
                 </div>
-                <div>
-                    <Row>
-                        <Col lg={6} sm={9} className="map-grid-view">
-                            <div className="col_header">
-                                <h4>Carte Interactive</h4>
-                            </div>
-                            <div id="map"> 
-                            {/* && typeof longitude=="number" && typeof latitude=="number"  */}
-                                {latitude !== null && longitude !== null ? (
-                                    <MapContainer center={position} zoom={13}>
-                                        <TileLayer
-                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                        />
-                                        <Marker
-                                        className="icon-marker"
-                                        icon={
-                                            incident.etat === "resolved"
-                                              ? customMarkerIconBlue
-                                              : incident.etat === "taken_into_account"
-                                                ? customMarkerIconOrange
-                                                : customMarkerIconRed
-                                          }
-                                        position={position}
-                                        >
-                                            <Popup>{incident.title}</Popup>
-                                            <Circle center={position} radius={500} color="red"></Circle>
-                                        </Marker>
-                                    </MapContainer>
-                                ) : (
-                                    <p className="danger">Coordonnees non renseignees</p>
-                                )}
-                            </div>
+                <div className='static-card'>
+                    <div className="map-grid-view">
+                        <div className="col_header">
+                            <h4>Carte Interactive</h4>
+                        </div>
+                        <div id="map"> 
+                            {latitude !== null && longitude !== null ? (
+                                <MapContainer center={position} zoom={13}>
+                                    <TileLayer
+                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                    />
+                                    <Marker
+                                    className="icon-marker"
+                                    icon={
+                                        incident.etat === "resolved"
+                                            ? customMarkerIconBlue
+                                            : incident.etat === "taken_into_account"
+                                            ? customMarkerIconOrange
+                                            : customMarkerIconRed
+                                        }
+                                    position={position}
+                                    >
+                                        <Popup>{incident.title}</Popup>
+                                        <Circle center={position} radius={500} color="red"></Circle>
+                                    </Marker>
+                                </MapContainer>
+                            ) : (
+                                <p className="danger">Coordonnees non renseignees</p>
+                            )}
+                        </div>
+                        <div>
+                            <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
                             <div>
-                                <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
+                                <h5 className='colorCode'>Code Couleur</h5>
+                                <div className="codeColor">
                                 <div>
-                                    <h5 style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-35px", fontSize:"18px"}}>Code Couleur</h5>
-                                    <div className="codeColor">
-                                    <div>
-                                        <div className="hr_blue"/>
-                                        <p>Declaré <br/> résolu</p>
-                                    </div>
-                                    <div>
-                                        <div className="hr_orange"/>
-                                        <p>Pris en <br/> compte</p>
-                                    </div>
-                                    <div>
-                                        <div className="hr_red"/>
-                                        <p>Pas d'action</p>
-                                        </div>
+                                    <div className="hr_blue"/>
+                                    <p>Declaré <br/> résolu</p>
+                                </div>
+                                <div>
+                                    <div className="hr_orange"/>
+                                    <p>Pris en <br/> compte</p>
+                                </div>
+                                <div>
+                                    <div className="hr_red"/>
+                                    <p>Pas d'action</p>
                                     </div>
                                 </div>
-                                </div>
-                                <div className="dashed-line"></div>
-                                <div style={{marginLeft:'10px'}}>
-                                    <div>
-                                        <h6>Vidéo</h6>
-                                        <div  className='videoIncident'>
-                                        <Player fluid={false} width={537} height={400}>
-                                            <source src={videoUrl} />
-                                        </Player>
-                                        {videoIsLoading ? <Loader /> : null}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h6>Note Vocal</h6>
-                                        <div className='audioIncident'>
-                                            <label htmlFor="code" className="map-color fs-18">
-                                                {' '}
-                                            </label>
-                                            <br />
-                                            <audio controls src={audioUrl}>
-                                                Your browser does not support the
-                                                <code>audio</code> element.
-                                            </audio>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h6>Description</h6>
-                                        <div className='descriptionIncident'>
-                                            <p>{description}</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <button onClick={handleNavigate} className='boutonAnalyse' style={{border:'none', color:'white'}}>
-                                            Analyses Avancées
-                                        </button>
+                            </div>
+                        </div>
+                        <div className="dashed-line"></div>
+                        <div style={{marginLeft:'10px'}}>
+                            <div>
+                                <h6>Vidéo</h6>
+                                <div  className='videoIncident'>
+                                    <Player fluid={false} width={537} height={400}>
+                                        <source src={videoUrl} />
+                                    </Player>
+                                    {videoIsLoading ? <Loader /> : null}
                                     </div>
                                 </div>
-                            </Col>
-                            <Col lg={3} sm={9}>
-                                <Col>
-                                    <Col lg={12} sm={9} className="chart-grid" style={{paddingTop:'5px'}}>
-                                        <div className="col_header">
-                                            <h4>Image de l'incident</h4>
-                                            <img src={imgUrl} alt="" style={{height:"300px"}}/>{' '}
-                                            <div style={{display:"flex", justifyContent:"space-between"}}>
-                                                <p>Date: {date}</p>
-                                                <p >Heure: {heure}</p>
-                                            </div>
-                                        </div>
-                                    </Col>
-                                    <Col lg={12} sm={9} className='action-grid' style={{paddingTop:'5px', textAlign:'center'}}>
-                                        <div className='col_header'>
-                                            <h4>Actions</h4>
-                                            <div>
-                                                <Select
-                                                    className="basic-single"
-                                                    classNamePrefix="select"
-                                                    value={
-                                                        optionstype.filter(
-                                                        (option) => option.value === EditIncident.etat,
-                                                        )[0]
-                                                    }
-                                                    name="etat"
-                                                    options={optionstype}
-                                                    onChange={handleSelectChange}
-                                                    styles={{
-                                                        // Styles de la zone de contrôle (sélection)
-                                                        control: (provided, state) => ({
-                                                            ...provided,
-                                                            border: '1px solid #ccc',
-                                                            borderRadius: '15px',
-                                                            boxShadow: state.isFocused ? '0 0 0 1px #2684FF' : null,
-                                                            margin:'15px'
-                                                        }),
-                                                    }}
-                                                />
-                                                {successMessage && <p>{successMessage}</p>}
-                                            </div>
-                                            <div>
-                                                <button className='etat' onClick={handleChangeStatus}>Valider</button>
-                                            </div>
-                                        </div>
-                                    </Col>
-                                </Col>
-                            </Col>
-                            <Modal show={showModal} onHide={handleClose}>
-                                <Modal.Header closeButton>
-                                    <Modal.Title>Changer l'état de l'incident</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                    {/* Vous pouvez remplacer ce select avec les différents types d'état disponibles */}
-                                    <select value={newEtat} onChange={(e) => setNewEtat(e.target.value)}>
-                                        <option value="nouvel_etat_1">Nouvel état 1</option>
-                                        <option value="nouvel_etat_2">Nouvel état 2</option>
-                                        {/* Ajoutez d'autres options d'état si nécessaire */}
-                                    </select>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                    <Button variant="secondary" onClick={handleClose}>
-                                        Annuler
-                                    </Button>
-                                    <Button variant="primary" onClick={handleChangeEtat}>
-                                        Changer l'état
-                                    </Button>
-                                </Modal.Footer>
-                            </Modal>
-                    </Row>
+                                <div>
+                                    <h6>Note Vocal</h6>
+                                    <div className='audioIncident'>
+                                        <label htmlFor="code" className="map-color fs-18">
+                                            {' '}
+                                        </label>
+                                        <br />
+                                        <audio controls src={audioUrl}>
+                                            Your browser does not support the
+                                            <code>audio</code> element.
+                                        </audio>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6>Description</h6>
+                                    <div className='descriptionIncident'>
+                                        <p>{description}</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button onClick={handleNavigate} className='boutonAnalyse' style={{border:'none', color:'white'}}>
+                                        Analyses Avancées
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='charts-view'>
+                            <div className="chart-grid" style={{paddingTop:'5px'}}>
+                                <div className="col_header">
+                                    <h4>Image de l'incident</h4>
+                                    <img src={imgUrl} alt="" style={{height:"300px"}}/>{' '}
+                                    <div style={{display:"flex", justifyContent:"space-between"}}>
+                                        <p>Date: {date}</p>
+                                        <p >Heure: {heure}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='action-grid' style={{paddingTop:'5px', textAlign:'center'}}>
+                                <div className='col_header'>
+                                    <h4>Actions</h4>
+                                    <div>
+                                        <Select
+                                            className="basic-single"
+                                            classNamePrefix="select"
+                                            value={
+                                                optionstype.filter(
+                                                (option) => option.value === EditIncident.etat,
+                                                )[0]
+                                            }
+                                            name="etat"
+                                            options={optionstype}
+                                            onChange={handleSelectChange}
+                                            styles={{
+                                                control: (provided, state) => ({
+                                                    ...provided,
+                                                    border: '1px solid #ccc',
+                                                    borderRadius: '15px',
+                                                    boxShadow: state.isFocused ? '0 0 0 1px #2684FF' : null,
+                                                    margin:'15px'
+                                                }),
+                                            }}
+                                        />
+                                        {successMessage && <p>{successMessage}</p>}
+                                    </div>
+                                    <div>
+                                        <button className='etat' onClick={handleChangeStatus}>Valider</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        )
-    }
+            )
+        }
 export default GlobalView;

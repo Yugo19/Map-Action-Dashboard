@@ -131,35 +131,38 @@ function Analyze (){
     };
         return(
             <div className='body'>
-                <div style={{backgroundColor:"#f4f7f7"}}>
-                    <div className="title">
-                        <h3 style={{fontSize:"30px", fontWeight:"700"}}>Tableau de Bord</h3>
+                <div>
+                    <div className="head">
+                        <div >
+                            <h3 className="title">Tableau de Bord</h3>
+                        </div>
+                        <div className="monthChoice">
+                        <Select
+                                components={{CustomOption}}
+                                value={monthsOptions.find(option => option.value === selectedMonth)}
+                                onChange={handleMonthChange}
+                                options={monthsOptions}
+                                styles={{
+                                    // Styles de la zone de contrôle (sélection)
+                                    control: (provided, state) => ({
+                                        ...provided,
+                                        border: '1px solid #ccc',
+                                        borderRadius: '15px',
+                                        width:'150px',
+                                        height:'40px',
+                                        justifyContent:'space-around',
+                                        paddingLeft: '3px',
+                                    }),
+                                    indicatorSeparator: (provided, state) => ({
+                                        ...provided,
+                                        display: 'none' // Pour masquer le séparateur entre l'icône et le contrôle
+                                    }),
+                                
+                                }}
+                            />
+                        </div>
                     </div>
-                    <div className="monthChoice">
-                    <Select
-                            components={{CustomOption}}
-                            value={monthsOptions.find(option => option.value === selectedMonth)}
-                            onChange={handleMonthChange}
-                            options={monthsOptions}
-                            styles={{
-                                // Styles de la zone de contrôle (sélection)
-                                control: (provided, state) => ({
-                                    ...provided,
-                                    border: '1px solid #ccc',
-                                    borderRadius: '15px',
-                                    width:'150px',
-                                    height:'40px',
-                                    justifyContent:'space-around',
-                                    paddingLeft: '3px',
-                                }),
-                                indicatorSeparator: (provided, state) => ({
-                                    ...provided,
-                                    display: 'none' // Pour masquer le séparateur entre l'icône et le contrôle
-                                }),
-                               
-                            }}
-                        />
-                    </div>
+                    
                     <div>
                         <div className="dash">
                             <ul className="dash_ul">

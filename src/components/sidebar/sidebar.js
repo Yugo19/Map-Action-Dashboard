@@ -6,7 +6,19 @@ import {Link, useLocation} from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { config } from '../../config';
 import axios from 'axios';
-import { faExclamationCircle, faHistory,faFileCsv, faCog, faBarChart, faQuestionCircle, faLifeRing, faSearch, faBell, faAngleDown} from '@fortawesome/free-solid-svg-icons';
+import { 
+  faExclamationCircle, 
+  faHistory,faFileCsv, 
+  faCog, 
+  faBarChart, 
+  faQuestionCircle, 
+  faLifeRing, 
+  faSearch, 
+  faBell, 
+  faAngleDown,
+  faAngleLeft,
+  faAngleRight
+} from '@fortawesome/free-solid-svg-icons';
 import NotificationsComponent from '../Notification/Notification';
 
 const Sidebar = ({ isAdmin }) => {
@@ -15,7 +27,10 @@ const Sidebar = ({ isAdmin }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [userData, setUserData] = useState(null);
-
+  const [isCollapsed, setIsCollapsed] = useState(false); 
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
   const fetchUserData = async () => {
     try {
       const response = await axios.get(`${config.url}/MapApi/user_retrieve/`, {
@@ -75,7 +90,7 @@ const Sidebar = ({ isAdmin }) => {
   };
 
   return (
-    <div className={`sidebar`}>
+    <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       <div className="header">
         <div>
           <FontAwesomeIcon icon={faSearch} className="icon" color='#84818A'/>
@@ -93,10 +108,16 @@ const Sidebar = ({ isAdmin }) => {
           </ul>
           )}
         </div>
-        <div onClick={handleNotificationClick}>
-          <FontAwesomeIcon icon={faBell} className="notifi" color='#84818A'/>        
+        <div className='activity'>
+          <div onClick={handleNotificationClick}>
+            <FontAwesomeIcon icon={faBell} className="notifi" color='#84818A'/>        
+          </div>
+          {showNotifications && <NotificationsComponent />}
+          <div className='user_logo'>
+            <img src={ userData ? userData.photo : ''} alt='' />
+          </div>
         </div>
-        {showNotifications && <NotificationsComponent />}
+        
       </div>
       <div >
         <img className="logo" src={logo} alt="logo_image" />
@@ -143,6 +164,9 @@ const Sidebar = ({ isAdmin }) => {
         </li>
         <li className='item'><Link to="/help" className='link_style'><FontAwesomeIcon icon={faLifeRing} color='#84818A'/>   Aide en Ligne</Link></li>
       </ul>
+      <div className="collapse-button" onClick={toggleSidebar}>
+        <FontAwesomeIcon icon={isCollapsed ? faAngleRight : faAngleLeft} />
+      </div>
     </div>
   );
 };
