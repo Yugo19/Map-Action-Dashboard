@@ -9,7 +9,7 @@ import axios from 'axios';
 import { faExclamationCircle, faHistory,faFileCsv, faCog, faBarChart, faQuestionCircle, faLifeRing, faSearch, faBell, faAngleDown} from '@fortawesome/free-solid-svg-icons';
 import NotificationsComponent from '../Notification/Notification';
 
-const Sidebar = () => {
+const Sidebar = ({ isAdmin }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [allIncidents, setAllIncidents] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -112,9 +112,9 @@ const Sidebar = () => {
 
         </div>
       </div>
-      <ul>
+      <ul className='menu-list'>
         <li className="hidden">Menu</li>
-        <li>
+        <li className='item'>
           <Link
             to="/dashboard"
             className={
@@ -125,15 +125,23 @@ const Sidebar = () => {
               Tableau de Bord 
           </Link>
         </li>
-        <li><Link to="/incident" className='link_style'><FontAwesomeIcon icon={faExclamationCircle} color='#84818A'/> Incident</Link></li>
-        <li><Link to="/historique" className='link_style'><FontAwesomeIcon icon={faHistory} color='#84818A'/>   Historique des actions</Link></li>
-        <li><Link to="/export" className='link_style'><FontAwesomeIcon icon={faFileCsv} color='#84818A'/> Exporter les données</Link></li>
-        <li><Link to="/parametres" className='link_style'><FontAwesomeIcon icon={faCog} color='#84818A'/>   Paramètres</Link></li>
+        <li className='item'><Link to="/incident" className='link_style'><FontAwesomeIcon icon={faExclamationCircle} color='#84818A'/> Incident</Link></li>
+        {isAdmin && (
+          <li><Link to="/incident" className='link_style'><FontAwesomeIcon icon={faExclamationCircle} color='#84818A'/> Utilisateurs</Link></li>
+        )}
+        <li className='item'><Link to="/historique" className='link_style'><FontAwesomeIcon icon={faHistory} color='#84818A'/>   Historique des actions</Link></li>
+        <li className='item'><Link to="/export" className='link_style'><FontAwesomeIcon icon={faFileCsv} color='#84818A'/> Exporter les données</Link></li>
+        <li className='item'><Link to="/parametres" className='link_style'><FontAwesomeIcon icon={faCog} color='#84818A'/>   Paramètres</Link></li>
       </ul>
-      <ul>
+      <ul className='menu-list'>
         <li className="hidden">Support</li>
-        <li><Link to="/faq" className='link_style'><FontAwesomeIcon icon={faQuestionCircle} color='#84818A'/>   FAQ</Link></li>
-        <li><Link to="/help" className='link_style'><FontAwesomeIcon icon={faLifeRing} color='#84818A'/>   Aide en Ligne</Link></li>
+        <li className='item'>
+          <Link to="/faq" className='link_style'>
+            <FontAwesomeIcon icon={faQuestionCircle} color='#84818A'/>
+            FAQ
+          </Link>
+        </li>
+        <li className='item'><Link to="/help" className='link_style'><FontAwesomeIcon icon={faLifeRing} color='#84818A'/>   Aide en Ligne</Link></li>
       </ul>
     </div>
   );
