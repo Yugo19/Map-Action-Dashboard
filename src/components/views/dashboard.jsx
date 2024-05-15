@@ -172,7 +172,7 @@ function Dashboard(props) {
     
             const aggregatedData = {};
             incidents.forEach(incident => {
-                const userType = incident.user_id ? 'Inscrit' : 'Anonyme'; // Détermine le type d'utilisateur en fonction de user_id
+                const userType = incident.user_id ? 'Inscrit' : 'Anonyme'; 
                 if (!aggregatedData[incident.zone]) {
                     aggregatedData[incident.zone] = { Anonyme: 0, Inscrit: 0 };
                 }
@@ -410,6 +410,8 @@ function Dashboard(props) {
                 desc: incident.description,
                 etat: incident.etat,
                 img: incident.photo,
+                video: config.url + incident.video,
+                audio: config.url + incident.audio
             }
             positions.push(pos);
         }
@@ -485,31 +487,33 @@ function Dashboard(props) {
     return (
         <div className="body">
             <div className="">
-                <div className="title">
-                    <h3 style={{fontSize:"30px", fontWeight:"700"}}>Tableau de Bord</h3>
-                </div> 
-                <div className="monthChoice">
-                    <Select
-                        components={{CustomOption}}
-                        value={monthsOptions.find(option => option.value === selectedMonth)}
-                        onChange={handleMonthChange}
-                        options={monthsOptions}
-                        styles={{
-                            control: (provided, state) => ({
-                                ...provided,
-                                border: '1px solid #ccc',
-                                borderRadius: '15px',
-                                width:'150px',
-                                height:'40px',
-                                justifyContent:'space-around',
-                                paddingLeft: '3px',
-                            }),
-                            indicatorSeparator: (provided, state) => ({
-                                ...provided,
-                                display: 'none'
-                            }),
-                        }}
-                    />
+                <div className="head">
+                    <div>
+                        <h3 className="title">Tableau de Bord</h3>
+                    </div> 
+                    <div className="monthChoice">
+                        <Select
+                            components={{CustomOption}}
+                            value={monthsOptions.find(option => option.value === selectedMonth)}
+                            onChange={handleMonthChange}
+                            options={monthsOptions}
+                            styles={{
+                                control: (provided, state) => ({
+                                    ...provided,
+                                    border: '1px solid #ccc',
+                                    borderRadius: '15px',
+                                    width:'150px',
+                                    height:'40px',
+                                    justifyContent:'space-around',
+                                    paddingLeft: '3px',
+                                }),
+                                indicatorSeparator: (provided, state) => ({
+                                    ...provided,
+                                    display: 'none'
+                                }),
+                            }}
+                        />
+                    </div>
                 </div>
                 <div>
                     <div className="dash">
@@ -531,8 +535,8 @@ function Dashboard(props) {
                 <hr className="dash_line"/>
             </div>
             <div>
-                <Row>
-                    <Col className="colle col-3">
+                <div className="static-card">
+                    <div className="colle">
                         <div>
                             <div>
                                 <h3 className="titleCard">Nombre d'incidents</h3>
@@ -543,8 +547,8 @@ function Dashboard(props) {
                                 <FontAwesomeIcon icon={faBarChart} className="stat-icon"/>
                             </div>
                         </div>
-                    </Col>
-                    <Col className="compte col-3" onClick={TakenOnMap}>
+                    </div>
+                    <div className="compte" onClick={TakenOnMap}>
                         <div>
                             <div>
                                 <h3 className="titleCard">Pourcentage pris en compte</h3>
@@ -555,8 +559,8 @@ function Dashboard(props) {
                                 <FontAwesomeIcon icon={faBarChart} className="statistic-icon"/>
                             </div>
                         </div>
-                    </Col>
-                    <Col className="resolu col-3" onClick={ResolvedOnMap}>
+                    </div>
+                    <div className="resolu" onClick={ResolvedOnMap}>
                         <div>
                             <div>
                                 <h3 className="titleCard">Pourcentage résolu</h3>
@@ -567,12 +571,12 @@ function Dashboard(props) {
                                 <FontAwesomeIcon icon={faBarChart} className="statist-icon"/>
                             </div>
                         </div>
-                    </Col>
-                </Row>
+                    </div>
+                </div>
             </div>
-            <div style={{marginTop:"15px"}}>
-                <Row>
-                    <Col lg={6} sm={9} className="map-grid">
+            <div style={{marginTop:"20px"}}>
+                <div className="static-card">
+                    <div className="map-grid">
                         <div className="col_header">
                             <h4>Carte Interactive</h4>
                             <p>Carte interactive avec les points reportés par les utilisateurs de l'application mobile</p>
@@ -583,7 +587,7 @@ function Dashboard(props) {
                         <div>
                             <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
                             <div>
-                                <h5 style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-48px", fontSize:"18px"}}>Code Couleur</h5>
+                                <h5 className="colorCode">Code Couleur</h5>
                                 <div className="codeColor">
                                     <div>
                                         <div className="hr_blue" onClick={ResolvedOnMap}/>
@@ -603,8 +607,8 @@ function Dashboard(props) {
                         <div className="dashed-line"></div>
                         <div>
                             <h4 className="repartionText">Repartition des incidents par catégories</h4>
-                            <Row>
-                                <Col lg={6} >
+                            <div>
+                                <div>
                                     <div className="repartition">
                                         <p style={{fontSize:"14px"}}>Déchet Solides</p>
                                         <p style={{float:"right", marginTop:"-25px"}}>25%</p>
@@ -615,8 +619,8 @@ function Dashboard(props) {
                                         <p style={{float:"right", marginTop:"-25px",}}>25%</p>
                                         <hr/>
                                     </div>
-                                </Col>
-                                <Col lg={6} >
+                                </div>
+                                <div>
                                     <div className="repartition">
                                         <p style={{fontSize:"14px"}}>Déchet Solides</p>
                                         <p style={{float:"right", marginTop:"-25px"}}>25%</p>
@@ -627,53 +631,51 @@ function Dashboard(props) {
                                         <p style={{float:"right", marginTop:"-25px"}}>25%</p> 
                                         <hr/>
                                     </div>
-                                </Col>
-                            </Row>
+                                </div>
+                            </div>
                         </div>
-                    </Col>
-                    <Col lg={3} sm={9}>
-                        <Col>
-                            <Col lg={12} sm={9} className="chart-grid" style={{paddingTop:'5px'}}>
-                                <div className="col_header">
-                                    <h4>Incidents par type d’utilisateurs</h4>
-                                    <p>Mar 21 - Apr 21</p>
-                                    <div style={{width:"164px", height:"164px", justifyItems:"center", marginLeft:"60px"}}>
-                                        <canvas ref={chartRef} width="300" height="100"></canvas>
-                                    </div>
-                                    <Row style={{marginTop:'40px'}}>
-                                        <Col lg={6}>
-                                            <div style={{marginLeft:"35px"}}>
-                                                <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{percentageAnonymous}%</p>
-                                                <div style={{display:"flex"}}>
-                                                    <div className="dotpurple"></div>
-                                                    <p className="doghnut_p">Anonymes</p>
-                                                </div>
+                    </div>
+                    <div className="charts">
+                        <div className="chart-grid" style={{paddingTop:'5px'}}>
+                            <div className="col_header">
+                                <h4 style={{marginLeft:"20px"}}>Incidents par type d’utilisateurs</h4>
+                                <p style={{marginLeft:"20px"}}>{selectedMonth}</p>
+                                <div className="pun">
+                                    <canvas ref={chartRef} width="500" height="300"></canvas>
+                                </div>
+                                <Row style={{marginTop:'40px'}}>
+                                    <Col lg={6} sm={6}>
+                                        <div style={{marginLeft:"35px"}}>
+                                            <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{percentageAnonymous}%</p>
+                                            <div style={{display:"flex"}}>
+                                                <div className="dotpurple"></div>
+                                                <p className="doghnut_p">Anonymes</p>
                                             </div>
-                                            <hr className="separate"/>
-                                        </Col>
-                                        <Col>
-                                            <div style={{}}>
-                                                <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{registeredPercentage}%</p>
-                                                <div style={{display:"flex"}}>
-                                                    <div className="dotorange"></div>
-                                                    <p className="doghnut_p">Inscrits</p>
-                                                </div>
+                                        </div>
+                                        <hr className="separate"/>
+                                    </Col>
+                                    <Col lg={6} sm={6}>
+                                        <div style={{}}>
+                                            <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{registeredPercentage}%</p>
+                                            <div style={{display:"flex"}}>
+                                                <div className="dotorange"></div>
+                                                <p className="doghnut_p">Inscrits</p>
                                             </div>
-                                        </Col>
-                                    </Row>
-                                </div>
-                            </Col>
-                           <Col lg={12} sm={9} className="chart-grid" style={{paddingTop:'5px'}}>
-                                <div className="col_header">
-                                    <h4>Incidents par Zones</h4>
-                                </div>
-                                <div style={{width:"100%"}}>
-                                    <canvas id="myConfig" width="400" height="200"></canvas>
-                                </div>
-                            </Col> 
-                        </Col>
-                    </Col>
-                </Row>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </div>
+                        </div>
+                       <div className="chart-grid" style={{paddingTop:'5px'}}>
+                            <div className="col_header">
+                                <h4 style={{marginLeft:"20px", marginBottom:"20%"}}>Incidents par Zones</h4>
+                            </div>
+                            <div style={{width:"100%"}}>
+                                <canvas id="myConfig" width="400" height="200"></canvas>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
             </div>
         </div>
     );

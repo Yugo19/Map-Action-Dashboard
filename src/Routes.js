@@ -16,74 +16,42 @@ import Colaboration from './components/views/colaboration';
 import Colaborate from './components/views/askCollaboration';
 import Login from './components/login';
 import NotificationsComponent from './components/Notification/Notification';
+import AdminDashboard from './components/views/AdminDashboard';
+import User from './components/User/User';
 import Chat from './components/views/llmChat'
 
 const Root = () => {
-    const renderNotFound = ( <
-        div className = "content"
-        style = {
-            { backgroundColor: "#fff" }
-        } >
-        <
-        Container >
-        <
-        Row >
-        <
-        h2 > Page introuvable < /h2> < /
-        Row > <
-        /Container> < /
-        div >
-    );
-    return ( <
-        Routes >
-        <
-        Route exact path = "/"
-        element = { < Dashboard / > }
-        /> <
-        Route path = "/dashboard"
-        element = { < Dashboard / > }
-        /> <
-        Route path = "/incident"
-        element = { < Incident / > }
-        /> <
-        Route path = "/llm_chat/:incidentId"
-        element = { < Chat / > }
-        /> <
-        Route path = "/historique"
-        element = { < Historique / > }
-        /> <
-        Route path = "/export"
-        element = { < DataExport / > }
-        /> <
-        Route path = "/parametres"
-        element = { < Parametres / > }
-        /> <
-        Route path = "/faq"
-        element = { < FAQ / > }
-        /> <
-        Route path = "/help"
-        element = { < HelpOnline / > }
-        /> <
-        Route path = "/incident_view/:incidentId"
-        element = { < GlobalView / > }
-        /> <
-        Route path = "/analyze/:incidentId"
-        element = { < Analyze / > }
-        /> <
-        Route path = "/colaboration"
-        element = { < Colaboration / > }
-        /> <
-        Route path = '/askCollaboration/:incidentId'
-        element = { < Colaborate / > }
-        /> <
-        Route path = "/notifications"
-        component = { NotificationsComponent }
-        /> <
-        Route path = "*"
-        element = { < renderNotFound / > }
-        /> } < /
-        Routes >
-    );
+  const renderNotFound = (
+    <div className="content" style={{ backgroundColor: "#fff" }}>
+      <Container>
+        <Row>
+          <h2>Page introuvable</h2>
+        </Row>
+      </Container>
+    </div>
+  );
+  return (
+      <Routes>
+        <Route exact path="/" element={<Dashboard/>} />
+        <Route path = "/llm_chat/:incidentId" element = {< Chat />} />
+        <Route path="/dashboard" element={<Dashboard/>} />
+        <Route path="/dashboardAdmin" element={<AdminDashboard/>} />
+        <Route path="/incident" element={<Incident/>} />
+        <Route path="/historique" element={<Historique/>} />
+        <Route path="/export" element={<DataExport/>} />
+        <Route path="/parametres" element={<Parametres/>} />
+        <Route path="/faq" element={<FAQ/>} />
+        <Route path="/help" element={<HelpOnline/>} />
+        <Route path="/incident_view/:incidentId" element={<GlobalView/>} />
+        <Route path="/analyze/:incidentId" element={<Analyze/>} />
+        <Route path="/colaboration" element={<Colaboration/>} />
+        <Route path='/askCollaboration/:incidentId' element={<Colaborate/>}/>
+        <Route path="/notifications" component={NotificationsComponent} />
+        <Route path="*" element={<renderNotFound />} />
+        <Route path='/users' element={<User/>}/>
+        {/* <Route path="/" element={<Login/>}/> */}
+      </Routes>
+  );
 };
 
 export default Root;
