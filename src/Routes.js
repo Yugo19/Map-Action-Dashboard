@@ -11,7 +11,6 @@ import Parametres from './components/views/Parametres';
 import FAQ from './components/views/FAQ';
 import HelpOnline from './components/views/help';
 import GlobalView from './components/views/globalView';
-z
 import Analyze from './components/views/analyze';
 import Colaboration from './components/views/colaboration';
 import Colaborate from './components/views/askCollaboration';
