@@ -72,6 +72,7 @@ function Analyze (){
     const piste_solution = prediction ? prediction.piste_solution: '';
     const context = prediction ? prediction.context: '';
     const impact_potentiel = prediction ? prediction.impact_potentiel: '';
+    const type_incident =prediction ? prediction.incident_type: "";
     console.log(impact_potentiel)
     const dateObject = new Date(dataTostring)
     const date = dateObject.toLocaleDateString();
@@ -238,7 +239,7 @@ function Analyze (){
                                 <div className="dashed-line"></div>
                                 <div style={{marginLeft:'10px'}}>
                                     <div style={{marginBottom:'40px'}}>
-                                        <h6>Context & Description</h6>
+                                        <h6>Contexte & Description</h6>
                                         <div className='descriptionIncident'>
                                             <ExpandableContent content={context || ""} />
                                         </div>
@@ -281,6 +282,7 @@ function Analyze (){
                                             <div className='typeIncident'>
                                                 <img src='' alt=''/>
                                             </div>
+                                            <p>{type_incident || ""}</p>
                                         </div>
                                         <div className="col_header">
                                             <h4>Gravité d'incident</h4>

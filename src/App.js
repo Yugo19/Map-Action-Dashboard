@@ -7,21 +7,18 @@ import "./assets/css/animate.min.css";
 // import "./assets/sass/light-bootstrap-dashboard-react.scss?v=1.3.0";
 import "./assets/css/demo.css";
 import "./assets/css/pe-icon-7-stroke.css"
-
-import Chat from './components/views/llmChat'
-
-
+import Login from './components/login';
 const App = () => {
-    return ( <
-        BrowserRouter >
-        <
-        Sidebar / >
-        <
-        Root / >
-
-        <
-        /BrowserRouter>
-
-    );
+  return (
+    <div style={{backgroundColor:"#f4f7f7"}}>
+      <BrowserRouter>
+        {/* <Login /> */}
+        <Sidebar /> 
+        <Root /> 
+      </BrowserRouter>
+    </div>
+    
+ 
+  );
 };
 export default App;
