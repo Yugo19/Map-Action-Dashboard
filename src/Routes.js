@@ -1,7 +1,7 @@
 // Routes.js
 
 import React from 'react';
-import {Row, Container} from "react-bootstrap"
+import { Row, Container } from "react-bootstrap"
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Dashboard from './components/views/dashboard';
 import Incident from './components/views/Incident';
@@ -18,6 +18,7 @@ import Login from './components/login';
 import NotificationsComponent from './components/Notification/Notification';
 import AdminDashboard from './components/views/AdminDashboard';
 import User from './components/User/User';
+import Chat from './components/views/llmChat'
 
 const Root = () => {
   const renderNotFound = (
@@ -32,6 +33,7 @@ const Root = () => {
   return (
       <Routes>
         <Route exact path="/" element={<Dashboard/>} />
+        <Route path = "/llm_chat/:incidentId" element = {< Chat />} />
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/dashboardAdmin" element={<AdminDashboard/>} />
         <Route path="/incident" element={<Incident/>} />

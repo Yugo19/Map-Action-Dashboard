@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect} from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
-import { MapContainer, TileLayer, Circle, Popup, Marker } from 'react-leaflet'
-import '../../assets/css/global.css'
+import { MapContainer, TileLayer, Circle, Popup, Marker } from 'react-leaflet';
+import '../../assets/css/global.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faCalendarPlus, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import { Link, useParams } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { config } from '../../config';
 import ReactDOMServer from 'react-dom/server';
 import Select from 'react-select';
 import axios from 'axios';
+
 
 function ExpandableContent({ content }) {
     const [expanded, setExpanded] = useState(false);
@@ -256,7 +257,7 @@ function Analyze (){
                                         </div>
                                     </div>
                                     <div className='boutonAnalyse'>
-                                        <Link style={{color:"white", textDecoration:"none"}}>Discussion LLM</Link>
+                                        <Link to={`/llm_chat/${incident.id}`} style={{color:"white", textDecoration:"none"}}>Discussion LLM</Link>
                                     </div>
                                 </div>
                             </Col>
