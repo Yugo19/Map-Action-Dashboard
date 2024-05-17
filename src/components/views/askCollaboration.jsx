@@ -212,10 +212,10 @@ function Colaborate (){
                         <div>
                             <div>
                                 <h3 className="titleCard">Nombre d'incidents <br/> pris en compte</h3>
-                                <p className="percentage">+3,19%</p>
+                                <p className="percentage">0%</p>
                             </div>
                             <div className="percent">
-                                <p>824</p>
+                                <p>0</p>
                                 <FontAwesomeIcon icon={faBarChart} className="stat-icon"/>
                             </div>
                         </div>
@@ -225,10 +225,10 @@ function Colaborate (){
                         <div>
                             <div>
                                 <h3 className="titleCard">Nombre d'incidents <br/> avec collaboration</h3>
-                                <p className="percentage">+3,19%</p>
+                                <p className="percentage">0%</p>
                             </div>
                             <div className="percent">
-                                <p>19%</p>
+                                <p>0%</p>
                                 <FontAwesomeIcon icon={faBarChart} className="statistic-icon"/>
                             </div>
                         </div>
@@ -238,10 +238,10 @@ function Colaborate (){
                         <div>
                             <div>
                                 <h3 className="titleCard">Pourcentage <br/> de collaboration</h3>
-                                <p className="resolve-percent">-3,19%</p>
+                                <p className="resolve-percent">0%</p>
                             </div>
                             <div className="percent">
-                                <p>17%</p>
+                                <p>0%</p>
                                 <FontAwesomeIcon icon={faBarChart} className="statist-icon"/>
                             </div>
                         </div>
