@@ -10,6 +10,8 @@ html{
     font-family: "Poppins";
     justify-content: center;
     align-items: center;
+    margin: 0;
+    padding: 0;
   }
 }
 .btn-colored {
@@ -472,11 +474,26 @@ img.width-half {
   margin-left: 19%;
 }
 
+@media screen and (max-width: 795px) {
+  .body {
+    margin-left: 70%;
+  }
+  
+}
+@media screen and (max-width: 1000px) {
+  .body {
+    margin-left: 20%;
+  }
+  .head {
+    margin-top: 80%;
+  }
+  
+}
+
 .title{
   font-weight: 500;
   line-height: 48px;
   font-size: 36px;
-  font: "Poppins";
 }
 .dash{
   /* margin-left: 15%; */
@@ -874,13 +891,14 @@ padding: 0;
   line-height: 26px;
   background-color: #3DA3DE;
   width: 177px;
-  height: 40px;
+  height: 10%;
   margin-top: 105px;
   margin-bottom: 105px;
-  margin-left: 200px;
+  margin-left: 35%;
   border-radius: 20px;
   text-align: center;
   padding: 5px;
+ 
 }
 .alerts{
   font-style: poppins;

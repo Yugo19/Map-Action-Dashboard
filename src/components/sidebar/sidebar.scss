@@ -6,7 +6,33 @@
     background-color: #f4f7f7;
     transition: left 0.3s ease;
     scroll-behavior: smooth;
-    // overflow-y: scroll;
+    // -webkit-transform: translate3d(260px, 0, 0);
+    // -moz-transform: translate3d(260px, 0, 0);
+    // -o-transform: translate3d(260px, 0, 0);
+    // -ms-transform: translate3d(260px, 0, 0);
+    // transform: translate3d(260px, 0, 0);
+    -webkit-transition: all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1);
+    -moz-transition: all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1);
+    -o-transition: all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1);
+    -ms-transition: all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1);
+    transition: all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1);
+    display: block;
+    left: auto;
+    z-index: 1032;
+    visibility: visible;
+    overflow-y: visible;
+    text-align: left;
+  }
+  
+  .sidebar::before {
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    display: block;
+    content: "";
+    z-index: 1;
   }
   .profil {
     border: 1px solid #dddddf;
