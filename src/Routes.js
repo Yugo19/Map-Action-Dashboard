@@ -49,7 +49,7 @@ const Root = () => {
         <Route path="/notifications" component={NotificationsComponent} />
         <Route path="*" element={<renderNotFound />} />
         <Route path='/users' element={<User/>}/>
-        {/* <Route path="/" element={<Login/>}/> */}
+        <Route path="/" element={<Login/>}/>
       </Routes>
   );
 };

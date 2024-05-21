@@ -186,11 +186,11 @@ function User (){
 
     const _getUsers = async() => {
        var url = `${config.url}/MapApi/user`
+       console.log("voir ",sessionStorage.token)
        try {
         let response = await axios.get(url, {
             headers: {
-                Authorization: `Bearer${sessionStorage.token}`,
-      
+                Authorization: `Bearer ${sessionStorage.token}`,
                 "Content-Type": "application/json",
             },
         });
