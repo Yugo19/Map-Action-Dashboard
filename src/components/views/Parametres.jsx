@@ -135,37 +135,40 @@ function Parametres() {
           <span className="organisation">{} Forest Gir</span>
         </div>
         <div className="user-info">
-          <Form>
+          <Form onSubmit={OnUpdateUser}>
             <div className="row">
               <FormGroup className='col-sm-6'>
-                <label htmlFor='prenom'>Prenom:</label>
+                <label htmlFor='first_name'>Prenom:</label>
                 <input 
                   className='form-control'
                   type='text'
-                  id='prenom'
-                  value={user.first_name}
+                  id='first_name'
+                  data-testid='first_name'
+                  value={user.first_name || ''}
                   onChange={(e) => setUser({...user, first_name: e.target.value})}
                 />
               </FormGroup>
               <FormGroup className='col-sm-6'>
-                <label htmlFor='prenom'>Nom:</label>
+                <label htmlFor='last_name'>Nom:</label>
                 <input 
                   className='form-control'
                   type='text'
-                  id='prenom'
-                  value={user.last_name}
+                  id='last_name'
+                  data-testid='last_name'
+                  value={user.last_name || ''}
                   onChange={(e) => setUser({...user, last_name: e.target.value})}
                 />
               </FormGroup>
             </div>
             <div className="row">
               <FormGroup className='col-sm-6'>
-                <label htmlFor='email'>email:</label>
+                <label htmlFor='email'>Email:</label>
                 <input 
                   className='form-control'
                   type='text'
-                  id='prenom'
-                  value={user.email}
+                  id='email'
+                  data-testid='email'
+                  value={user.email || ''}
                   onChange={(e) => setUser({...user, email: e.target.value})}
                 />
               </FormGroup>
@@ -174,8 +177,9 @@ function Parametres() {
                 <input 
                   className='form-control'
                   type='text'
-                  id='prenom'
-                  value={user.adresse}
+                  id='adresse'
+                  data-testid='adresse'
+                  value={user.adresse || ''}
                   onChange={(e) => setUser({...user, adresse: e.target.value})}
                 />
               </FormGroup>
@@ -187,7 +191,8 @@ function Parametres() {
                   className='form-control'
                   type='text'
                   id='phone'
-                  value={user.phone}
+                  data-testid='phone'
+                  value={user.phone || ''}
                   onChange={(e) => setUser({...user, phone: e.target.value})}
                 />
               </FormGroup>
@@ -196,18 +201,16 @@ function Parametres() {
                 <input 
                   className='form-control'
                   type='text'
-                  id='prenom'
-                  value={user.organisation}
+                  id='organisation'
+                  data-testid='organisation'
+                  value={user.organisation || ''}
                   onChange={(e) => setUser({...user, organisation: e.target.value})}
                 />
               </FormGroup>
             </div>
             <Button 
               className='btn btn-warning btn-fill pws'
-              bsStyle="warning"
               onClick={handleModalOpen}
-              pullLeft
-              fill
             >
               Modifier votre mot de passe
             </Button>

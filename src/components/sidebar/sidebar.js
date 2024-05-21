@@ -150,7 +150,12 @@ const Sidebar = ({ isAdmin }) => {
         {isAdmin && (
           <li><Link to="/incident" className='link_style'><FontAwesomeIcon icon={faExclamationCircle} color='#84818A'/> Utilisateurs</Link></li>
         )}
-        <li className='item'><Link to="/historique" className='link_style'><FontAwesomeIcon icon={faHistory} color='#84818A'/>   Historique des actions</Link></li>
+        <li className='item'>
+          <Link to="/historique" className='link_style'>
+            <FontAwesomeIcon icon={faHistory} color='#84818A'/>   
+            Historique des actions
+          </Link>
+        </li>
         <li className='item'><Link to="/export" className='link_style'><FontAwesomeIcon icon={faFileCsv} color='#84818A'/> Exporter les données</Link></li>
         <li className='item'><Link to="/parametres" className='link_style'><FontAwesomeIcon icon={faCog} color='#84818A'/>   Paramètres</Link></li>
       </ul>
