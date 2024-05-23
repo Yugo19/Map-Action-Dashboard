@@ -61,19 +61,9 @@ function Chat() {
         };
     }, []);
 
-    const fetchIncident = async() => {
-        try {
-            const response = await axios.get(`${config.url}/MapApi/incident/${incidentId}`);
-            setIncident(response.data);
-        } catch (error) {
-            console.error('Erreur lors de la récupération des détails de l\'incident :', error);
-        }
-    };
 
 
-
-    return ( <
-        div className = "container" >
+    return ( < div className = "container" >
         <
         h1 > Map Action Chat < /h1> <
         div className = "chat-container" >
@@ -136,4 +126,4 @@ function Chat() {
     );
 }
 
-export default Chat
+export default Chat;
