@@ -42,6 +42,10 @@ $ npm start
 - Interactive maps for data visualization;
 - Real-time updates and notifications;
 
+![Selection_074](https://github.com/223MapAction/Dashboard/assets/64170643/6b3c449d-5b8f-46ca-be3c-2894468e9373)
+
+---
+
 ## Contibute to the project
 Map Action is an open source project. Fell free to fork the source and contribute with your features. Please follow our [contribution guidelines](CONTRIBUTING.md).
 
