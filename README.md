@@ -34,7 +34,7 @@ $ npm start
 - JS
 - CSS
 - React
-- 
+
 ![Selection_078](https://github.com/223MapAction/Dashboard/assets/64170643/cacccdd6-8586-403c-8acf-8a979dc081bd)
 
 
