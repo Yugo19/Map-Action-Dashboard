@@ -7,6 +7,7 @@ function Chat() {
     let { incidentId } = useParams();
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState([]);
+    const [chatMessagesHistory, setChatMessagesHistory] = useState([]);
     const [ws, setWs] = useState(null);
 
     const [clientId, setClientId] = useState(
@@ -26,6 +27,9 @@ function Chat() {
             setMessage(''); // Clear the input after sending
         }
     };
+
+
+
 
     useEffect(() => {
         const websocket = new WebSocket('ws://0.0.0.0:8002/ws/chat');
@@ -55,6 +59,7 @@ function Chat() {
         websocket.onerror = error => {
             console.error('WebSocket Error: ', error);
         };
+
 
         return () => {
             websocket.close();
@@ -105,21 +110,18 @@ function Chat() {
         <
         /div> <
         div className = "input-chat-container" >
-        <
-        input className = "input-chat"
-        type = "text"
-        placeholder = "Chat message ..."
-        onChange = {
-            (e) => setMessage(e.target.value)
-        }
-        value = { message } >
-        <
-        /input> <
-        button className = "submit-chat"
-        onClick = { sendMessage }
-        disabled = {!ws || ws.readyState !== WebSocket.OPEN } >
-        Send <
-        /button> < /
+            <input className = "input-chat"
+            type = "text"
+            placeholder = "Chat message ..."
+            onChange = {
+                (e) => setMessage(e.target.value)
+            }
+            value = { message } >
+            </input> 
+            <button className = "submit-chat"
+                     onClick = { sendMessage }
+                    disabled = {!ws || ws.readyState !== WebSocket.OPEN } >
+        Send </button> < /
         div > <
         /div> < /
         div >

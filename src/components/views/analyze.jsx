@@ -35,6 +35,8 @@ function Analyze (){
     const [incident, setIncident] = useState({});
     const [videoIsLoading, setVideoIsLoading] = useState(false);
     const [prediction, setPredictions] = useState({});
+
+    
     useEffect(() => {
         const fetchIncident = async () => {
             try {
@@ -54,6 +56,26 @@ function Analyze (){
             }
         };
 
+
+        const handleSubmit = async () => {
+            const payload = {
+              image_name: incident.photo,
+              sensitive_structures: ["Ecole"],
+              incident_id: String(incident_id)
+            };
+
+            fetch(config.url2, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+
+              body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+            };
 
         if (incidentId) {
             fetchIncident();
