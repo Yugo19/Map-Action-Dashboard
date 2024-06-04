@@ -13,6 +13,8 @@ import Select from "react-select";
 import {Audio} from "react-loader-spinner";
 import MUIDataTable from "mui-datatables";
 import {createTheme, ThemeProvider} from "@mui/material/"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 function User (){
     const [user, setUser] = useState(false)
@@ -40,7 +42,7 @@ function User (){
           dangerMode: true,
         }).then((willDelete) => {
           if (willDelete) {
-            var url = global.config.url + "/MapApi/user/" + item.id + "/";
+            var url = `${config.url}/MapApi/user/` + item.id + "/";
             console.log(item);
             axios
               .delete(url, item)
@@ -50,7 +52,7 @@ function User (){
                 Swal.fire("Utilisateur Supprime!", {
                   icon: "success",
                 });
-                _getUsers();
+                fetchUserData();
               })
               .catch((error) => {
                 this.setState({ inProgress: !this.state.inProgress });
@@ -184,37 +186,73 @@ function User (){
     });
     
 
-    const _getUsers = async() => {
-       var url = `${config.url}/MapApi/user`
-       console.log("voir ",sessionStorage.token)
-       try {
-        let response = await axios.get(url, {
-            headers: {
-                Authorization: `Bearer ${sessionStorage.token}`,
-                "Content-Type": "application/json",
-            },
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${config.url}/MapApi/user/`, {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.token}`,
+          },
         });
-        setDataReady(true)
+        console.log("User information", response.data.results)
         setData(response.data.results);
-       } catch (error) {
-        console.log(error.message)
-       }
-    }
+        setDataReady(true); 
+      } catch (error) {
+        console.error('Erreur lors de la récupération des informations utilisateur :', error.message);
+      }
+    };
 
     useEffect(() => {
-        _getUsers();
+      fetchUserData();
     }, []);
     
 
-    const _onUpdateUser = async () => {
-
-    }
+    const onUpdateUser = async (e) => {
+      e.preventDefault();
+      setInProgress(true);
+  
+      const new_data = {
+        first_name: newUser.first_name,
+        last_name: newUser.last_name,
+        email: newUser.email,
+        phone: newUser.phone,
+        address: newUser.address,
+        user_type: newUser.user_type,
+        password: "mapaction2020",
+      };
+  
+      const url = `${global.config.url}/MapApi/user/${newUser.id}/`;
+  
+      try {
+        const response = await axios.put(url, new_data);
+        setData((prevData) =>
+          prevData.map((user) => (user.id === newUser.id ? response.data : user))
+        );
+        setInProgress(false);
+        setNewUserModal(false);
+        setEditUserModal(false);
+        setNewUser({
+          id: "",
+          first_name: "",
+          last_name: "",
+          email: "",
+          phone: "",
+          address: "",
+          user_type: "",
+          password: "",
+        });
+        Swal.fire("Succès", "Utilisateur mis à jour avec succès", "success");
+        fetchUserData();
+      } catch (error) {
+        setInProgress(false);
+        handleError(error);
+      }
+    };
     
     const addUser = (e) => {
         e.preventDefault();
         setInProgress(true);
         const new_data = { ...newUser, password: "mapaction2020" };
-        axios.post(global.config.url + "/MapApi/user/", new_data)
+        axios.post(`${config.url}/MapApi/user/`, new_data)
           .then((response) => {
             setData([...data, new_data]);
             setInProgress(false);
@@ -236,10 +274,7 @@ function User (){
           });
       };
 
-    const _onDeleteUser = async () => {
-
-    }
-
+    
     const handleError = (error) => {
         if (error.response) {
           Swal.fire("Erreur Ajout", "Veuillez reessayer", "error");
@@ -266,6 +301,211 @@ function User (){
         setNewUser({ ...newUser, user_type: selectedOption.value });
     };
 
+    const renderNewUserModal = () => {
+      return (
+        <Modal show={newUserModal} onHide={handleModalOpen}>
+          <Modal.Header closeButton>Nouveau Utilisateur</Modal.Header>
+          <Form>
+            <Modal.Body className="col-sm-12">
+              <FormGroup className="col-sm-6">
+                <label htmlFor="prenom">Prenom:</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  id="prenom"
+                  name="first_name"
+                  value={newUser.first_name}
+                  onChange={(e) => setNewUser({ ...newUser, first_name: e.target.value })}
+                />
+              </FormGroup>
+              <FormGroup className="col-sm-6">
+                <label htmlFor="nom">Nom:</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  id="nom"
+                  name="last_name"
+                  value={newUser.last_name}
+                  onChange={(e) => setNewUser({ ...newUser, last_name: e.target.value })}
+                />
+              </FormGroup>
+              <FormGroup className="col-sm-6">
+                <label htmlFor="email">Email:</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  id="email"
+                  name="email"
+                  value={newUser.email}
+                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                />
+              </FormGroup>
+              <FormGroup className="col-sm-6">
+                <label htmlFor="phone">Telephone:</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  id="phone"
+                  name="phone"
+                  value={newUser.phone}
+                  onChange={(e) => setNewUser({ ...newUser, phone: e.target.value })}
+                />
+              </FormGroup>
+              <FormGroup className="col-sm-6">
+                <label htmlFor="adress">Adresse:</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  id="adress"
+                  name="adress"
+                  value={newUser.address}
+                  onChange={(e) => setNewUser({ ...newUser, address: e.target.value })}
+                />
+              </FormGroup>
+              <FormGroup className="col-sm-6">
+                <label htmlFor="user_type">Type Utilisateur:</label>
+                <Select
+                  name="user_type"
+                  options={[
+                    { value: 'admin', label: 'Admin' },
+                    { value: 'elu', label: 'Elu' },
+                    { value: 'business', label: 'Business' },
+                    { value: 'reporter', label: 'Reporter' },
+                    { value: 'citizen', label: 'Citizen' },
+                    { value: 'visitor', label: 'Visitor' }
+                  ]}
+                  value={newUser.user_type}
+                  onChange={handleSelectChange}
+                  classNamePrefix="select"
+                />
+              </FormGroup>
+            </Modal.Body>
+            <Modal.Footer>
+              {!inProgress ? (
+                <Button className="btn btn-primary" onClick={addUser}>
+                  Ajouter
+                </Button>
+              ) : (
+                <Button className="btn btn-primary">
+                  Loading...
+                  <i className="fa fa-spin fa-spinner" aria-hidden="true"></i>
+                </Button>
+              )}{" "}
+              <Button className="btn btn-danger" onClick={handleModalOpen}>
+                Annuler
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Modal>
+      );
+  };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewUser((prevUser) => ({ ...prevUser, [name]: value }));
+  };
+  
+  const renderEditUserModal = () => {
+    const optionstype = [
+      { value: 'admin', label: 'Admin' },
+      { value: 'elu', label: 'Elu' },
+      { value: 'business', label: 'Business' },
+      { value: 'reporter', label: 'Reporter' },
+      { value: 'citizen', label: 'Citizen' },
+      { value: 'visitor', label: 'Visitor' }
+    ]
+      return (
+        <Modal show={editUserModal} onHide={handleEditModal}>
+          <Modal.Header closeButton>Modification</Modal.Header>
+          <Form>
+            <Modal.Body className="col-sm-12">
+              <FormGroup className="col-sm-6">
+                <label htmlFor="prenom">Prenom:</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  id="prenom"
+                  name="first_name"
+                  value={newUser.first_name}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+              <FormGroup className="col-sm-6">
+                <label htmlFor="nom">Nom:</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  id="nom"
+                  name="last_name"
+                  value={newUser.last_name}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+              <FormGroup className="col-sm-6">
+                <label htmlFor="email">Email:</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  id="email"
+                  name="email"
+                  value={newUser.email}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+              <FormGroup className="col-sm-6">
+                <label htmlFor="phone">Telephone:</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  id="phone"
+                  name="phone"
+                  value={newUser.phone}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+              <FormGroup className="col-sm-6">
+                <label htmlFor="address">Adresse:</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  id="address"
+                  name="address"
+                  value={newUser.address}
+                  onChange={handleChange}
+                />
+              </FormGroup>
+              <FormGroup className="col-sm-6">
+                <label htmlFor="user_type">Type Utilisateur:</label>
+                <Select
+                  name="user_type"
+                  options={optionstype}
+                  className="basic-multi-select map-color mt-4 col-md-6 col-offset-4"
+                  onChange={(selectedOption) =>
+                    setNewUser((prevUser) => ({ ...prevUser, user_type: selectedOption.value }))
+                  }
+                  classNamePrefix="select"
+                />
+              </FormGroup>
+            </Modal.Body>
+            <Modal.Footer>
+              {!inProgress ? (
+                <Button className="btn btn-primary" onClick={onUpdateUser}>
+                  Modifier
+                </Button>
+              ) : (
+                <Button className="btn btn-primary">
+                  Loading...
+                  <i className="fa fa-spin fa-spinner" aria-hidden="true"></i>
+                </Button>
+              )}{" "}
+              <Button className="btn btn-danger" onClick={handleEditModal}>
+                Annuler
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Modal>
+      );
+  };
+
     const formatType = (type) => {
         if (type === "admin") {
           return <label className="admin-s">{type}</label>;
@@ -285,11 +525,12 @@ function User (){
     return(
        <div className="body">
         <h3 style={{marginTop: "5%"}}>La table des utilisateurs</h3>
-        <Button className="pull-right" onClick={handleModalOpen}>
+        <Button className="pull-right map-color" onClick={handleModalOpen}>
             <i className="fa fa-download"></i>
             Nouveau Utilisateur
         </Button>
-        {dataReady ? (
+        <div style={{maxWidth:"163vh"}}>
+          {dataReady ? (
             <ThemeProvider theme={getMuiTheme}>
             <MUIDataTable
                 title={"Liste des Utilisateurs"}
@@ -306,7 +547,7 @@ function User (){
                     className="btn btn-default btn-xs map-color nb"
                     data-id={item.id}
                     >
-                    <i className="fas fa-edit fa-x"></i>
+                      <FontAwesomeIcon icon={faEdit} color="red" />
                     </button>
                     <Button
                     className="btn btn-danger btn-xs red-color nb"
@@ -315,7 +556,7 @@ function User (){
                         setInProgress(false);
                     }}
                     >
-                    <i className="fas fa-trash fa-x"></i>
+                      <FontAwesomeIcon icon={faTrash} color="white" />
                     </Button>
                 </div>,
                 ])}
@@ -331,64 +572,11 @@ function User (){
             timeout={3000} //3 secs
             />
         )}
+        </div>
+        
         {newUserModal && renderNewUserModal()}
         {editUserModal && renderEditUserModal()}
        </div>
     );
 } export default User
 
-const renderNewUserModal = () => {
-    return (
-      <Modal show={newUserModal} onHide={handleModalOpen}>
-        <Modal.Header closeButton>Nouveau Utilisateur</Modal.Header>
-        <Form>
-          <Modal.Body className="col-sm-12">
-            {/* Form inputs */}
-          </Modal.Body>
-          <Modal.Footer>
-            {!inProgress ? (
-              <Button className="btn btn-primary" onClick={addUser}>
-                Ajouter
-              </Button>
-            ) : (
-              <Button className="btn btn-primary">
-                Loading...
-                <i className="fa fa-spin fa-spinner" aria-hidden="true"></i>
-              </Button>
-            )}{" "}
-            <Button className="btn btn-danger" onClick={handleModalOpen}>
-              Annuler
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
-    );
-};
-
-const renderEditUserModal = () => {
-    return (
-      <Modal show={editUserModal} onHide={handleEditModal}>
-        <Modal.Header closeButton>Modification</Modal.Header>
-        <Form>
-          <Modal.Body className="col-sm-12">
-            {/* Form inputs */}
-          </Modal.Body>
-          <Modal.Footer>
-            {!inProgress ? (
-              <Button className="btn btn-primary" onClick={onUpdateUser}>
-                Modifier
-              </Button>
-            ) : (
-              <Button className="btn btn-primary">
-                Loading...
-                <i className="fa fa-spin fa-spinner" aria-hidden="true"></i>
-              </Button>
-            )}{" "}
-            <Button className="btn btn-danger" onClick={handleEditModal}>
-              Annuler
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
-    );
-};

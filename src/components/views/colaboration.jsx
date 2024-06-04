@@ -254,8 +254,8 @@ function Colaboration () {
                     <hr className="dash_line"/>
                 </div>
                 <div>
-                    <Row>
-                        <Col lg={3} sm={9} className="colle">
+                    <div className="static-card">
+                        <div className="colle">
                             <div>
                                 <div>
                                     <h3 className="titleCard">Nombre d'incidents <br/> pris en compte</h3>
@@ -268,9 +268,9 @@ function Colaboration () {
                                 <div>
                                 </div>
                             </div>
-                        </Col>
+                        </div>
 
-                        <Col lg={3} sm={9} className="compte">
+                        <div className="compte">
                             <div>
                                 <div>
                                     <h3 className="titleCard">Nombre d'incidents <br/> avec collaboration</h3>
@@ -283,9 +283,9 @@ function Colaboration () {
                                 <div>
                                 </div>
                             </div>
-                        </Col>
+                        </div>
 
-                        <Col lg={3} sm={9} className="resolu">
+                        <div className="resolu">
                             <div>
                                 <div>
                                     <h3 className="titleCard">Pourcentage <br/> de collaboration</h3>
@@ -298,44 +298,38 @@ function Colaboration () {
                                 <div>
                                 </div>
                             </div>
-                        </Col>
-                    </Row>
+                        </div>
+                    </div>
                 </div>
                 <div style={{marginTop:"15px"}}>
-                        <div className="map-grid-colabor" style={{paddingTop:'5px'}}>
-                            <div className="col_header">
-                                <h4 style={{marginLeft:"30px"}}>Carte Interactive</h4>
-                            </div>
-                            <div id="map"> 
-                                {map}
-                            </div>
-                            <div>
-                                <Row>
-                                    <Col lg={6} sm={6}>
-                                        <h4 style={{fontSize:"small", marginLeft:"10px", lineHeight:"21px", fontWeight:"400"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
-                                    </Col>
-                                    <Col lg={6} sm={6}>
+                    <div className="map-grid-colabor" style={{paddingTop:'5px'}}>
+                        <div className="col_header">
+                            <h4 style={{marginLeft:"30px"}}>Carte Interactive</h4>
+                        </div>
+                        <div id="map"> 
+                            {map}
+                        </div>
+                        <div>
+                            <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
+                            <div style={{marginTop:'2%'}}>
+                                <h5 className="colorCode">Code Couleur</h5>
+                                <div className="codeColor">
                                     <div>
-                                        <h5 style={{marginLeft:'200px'}}>Code Couleur</h5>
-                                        <div className="code">
-                                            <div>
-                                                <div className="hr_blue"/>
-                                                <p>Declaré <br/> résolu</p>
-                                            </div>
-                                            <div>
-                                                <div className="hr_orange"/>
-                                                <p>Pris en <br/> compte</p>
-                                            </div>
-                                            <div>
-                                                <div className="hr_red"/>
-                                                <p>Pas d'action</p>
-                                            </div>
-                                        </div>
+                                        <div className="hr_blue" />
+                                        <p>Declaré <br/> résolu</p>
                                     </div>
-                                </Col>
-                                </Row>
+                                    <div>
+                                        <div className="hr_orange" />
+                                        <p>Pris en <br/> compte</p>
+                                    </div>
+                                    <div>
+                                        <div className="hr_red" />
+                                        <p>Pas d'action</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
         )

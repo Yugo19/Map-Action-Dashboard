@@ -204,6 +204,15 @@ function GlobalView (){
           </components.Option>
         );
     };
+    function RecenterMap({ lat, lon }) {
+        const map = useMap();
+        useEffect(() => {
+          if (lat && lon) {
+            map.setView([lat, lon], 13);
+          }
+        }, [lat, lon, map]);
+        return null;
+    }
 
 
     const iconHTML = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faMapMarkerAlt} color="blue" size="2x"/>)
@@ -281,30 +290,31 @@ function GlobalView (){
                         <div className="col_header">
                             <h4>Carte Interactive</h4>
                         </div>
-                        <div id="map"> 
-                            {latitude !== null && longitude !== null ? (
-                                <MapContainer center={position} zoom={13}>
-                                    <TileLayer
-                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                    />
-                                    <Marker
-                                    className="icon-marker"
-                                    icon={
-                                        incident.etat === "resolved"
-                                            ? customMarkerIconBlue
-                                            : incident.etat === "taken_into_account"
-                                            ? customMarkerIconOrange
-                                            : customMarkerIconRed
-                                        }
-                                    position={position}
-                                    >
-                                        <Popup>{incident.title}</Popup>
-                                        <Circle center={position} radius={500} color="red"></Circle>
-                                    </Marker>
-                                </MapContainer>
+                        <div id="map">
+                            {latitude !== 0 && longitude !== 0 ? (
+                            <MapContainer center={position} zoom={13} style={{ height: '600px', width: '100%' }}>
+                                <RecenterMap lat={latitude} lon={longitude} />
+                                <TileLayer
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                />
+                                <Marker
+                                className="icon-marker"
+                                icon={
+                                    incident.etat === "resolved"
+                                      ? customMarkerIconBlue
+                                      : incident.etat === "taken_into_account"
+                                        ? customMarkerIconOrange
+                                        : customMarkerIconRed
+                                }
+                                position={position}
+                                >
+                                <Popup>{incident.title}</Popup>
+                                <Circle center={position} radius={500} color="red"></Circle>
+                                </Marker>
+                            </MapContainer>
                             ) : (
-                                <p className="danger">Coordonnees non renseignees</p>
+                            <p className="danger">Coordonnees non renseignees</p>
                             )}
                         </div>
                         <div>
@@ -332,8 +342,16 @@ function GlobalView (){
                             <div>
                                 <h6>Vidéo</h6>
                                 <div  className='videoIncident'>
-                                    <Player fluid={false} width={537} height={400}>
-                                        <source src={videoUrl} />
+                                    <Player
+                                     fluid={false} 
+                                     width={537} 
+                                     height={400}
+                                     onLoadStart={() => setVideoIsLoading(true)}
+                                     onLoadedData={() => setVideoIsLoading(false)}
+                                     onError={() => setVideoIsLoading(false)}
+                                    //  src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
+                                     src={videoUrl} 
+                                    >
                                     </Player>
                                     {videoIsLoading ? <Loader /> : null}
                                     </div>
