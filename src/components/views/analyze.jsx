@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
-import { MapContainer, TileLayer, Circle, Popup, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer, Circle, Popup, Marker, useMap } from 'react-leaflet';
 import '../../assets/css/global.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faCalendarPlus, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
@@ -35,6 +35,7 @@ function Analyze (){
     const [incident, setIncident] = useState({});
     const [videoIsLoading, setVideoIsLoading] = useState(false);
     const [prediction, setPredictions] = useState({});
+    const [nearbyPlaces, setNearbyPlaces] = useState([])
     useEffect(() => {
         const fetchIncident = async () => {
             try {
@@ -47,7 +48,7 @@ function Analyze (){
         const fetchPredictions = async () => {
             try {
                 const response = await axios.get(`${config.url}/MapApi/prediction/${incidentId}`);
-                console.log("les reponses du serveur", response.data)
+                // console.log("les reponses du serveur", response.data)
                 setPredictions(response.data[0]);
             } catch (error) {
                 console.error('Erreur lors de la récupération des prédictions :', error);
@@ -81,6 +82,23 @@ function Analyze (){
     const customMarkerIconBlue = new L.DivIcon({
         html: iconHTML,
     });
+
+    useEffect(() => {
+        if (incident.lattitude && incident.longitude) {
+            const apiUrl = `${config.url}/MapApi/overpass/?latitude=${incident.lattitude}&longitude=${incident.longitude}`;
+            
+            axios.get(apiUrl)
+                .then(response => {
+                    console.log(response.data);
+                    setNearbyPlaces(response.data); 
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+    }, [incident.lattitude, incident.longitude]);
+
+
 
     const iconHTMLRed = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faMapMarkerAlt} color="red" size="2x"/>)
     const customMarkerIconRed = new L.DivIcon({
@@ -130,6 +148,15 @@ function Analyze (){
           </components.Option>
         );
     };
+    function RecenterMap({ lat, lon }) {
+        const map = useMap();
+        useEffect(() => {
+          if (lat && lon) {
+            map.setView([lat, lon], 13);
+          }
+        }, [lat, lon, map]);
+        return null;
+    }
         return(
             <div className='body'>
                 <div>
@@ -144,7 +171,6 @@ function Analyze (){
                                 onChange={handleMonthChange}
                                 options={monthsOptions}
                                 styles={{
-                                    // Styles de la zone de contrôle (sélection)
                                     control: (provided, state) => ({
                                         ...provided,
                                         border: '1px solid #ccc',
@@ -156,7 +182,7 @@ function Analyze (){
                                     }),
                                     indicatorSeparator: (provided, state) => ({
                                         ...provided,
-                                        display: 'none' // Pour masquer le séparateur entre l'icône et le contrôle
+                                        display: 'none' 
                                     }),
                                 
                                 }}
@@ -189,37 +215,37 @@ function Analyze (){
                             <div className="col_header">
                                 <h4>Carte Interactive</h4>
                             </div>
-                            <div id="map"> 
-                            {/* && typeof longitude=="number" && typeof latitude=="number"  */}
-                                {latitude !== null && longitude !== null ? (
-                                    <MapContainer center={position} zoom={13}>
-                                        <TileLayer
-                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                        />
-                                        <Marker
-                                        className="icon-marker"
-                                        icon={
-                                            incident.etat === "resolved"
-                                              ? customMarkerIconBlue
-                                              : incident.etat === "taken_into_account"
-                                                ? customMarkerIconOrange
-                                                : customMarkerIconRed
-                                          }
-                                        position={position}
-                                        >
-                                            <Popup>{incident.title}</Popup>
-                                            <Circle center={position} radius={500} color="red"></Circle>
-                                        </Marker>
-                                    </MapContainer>
+                            <div id="map">
+                                {latitude !== 0 && longitude !== 0 ? (
+                                <MapContainer center={position} zoom={13} style={{ height: '600px', width: '100%' }}>
+                                    <RecenterMap lat={latitude} lon={longitude} />
+                                    <TileLayer
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                    />
+                                    <Marker
+                                    className="icon-marker"
+                                    icon={
+                                        incident.etat === "resolved"
+                                        ? customMarkerIconBlue
+                                        : incident.etat === "taken_into_account"
+                                            ? customMarkerIconOrange
+                                            : customMarkerIconRed
+                                    }
+                                    position={position}
+                                    >
+                                    <Popup>{incident.title}</Popup>
+                                    <Circle center={position} radius={500} color="red"></Circle>
+                                    </Marker>
+                                </MapContainer>
                                 ) : (
-                                    <p className="danger">Coordonnees non renseignees</p>
+                                <p className="danger">Coordonnees non renseignees</p>
                                 )}
                             </div>
                             <div>
                                 <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
                                 <div>
-                                    <h5 style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-45px", fontSize:"18px"}}>Code Couleur</h5>
+                                    <h5 className='colorCode'>Code Couleur</h5>
                                     <div className="codeColor">
                                         <div>
                                             <div className="hr_blue"/>
@@ -254,6 +280,14 @@ function Analyze (){
                                         <h6>Pistes de solutions envisageables</h6>
                                         <div className='descriptionIncident'>
                                             <ExpandableContent content={piste_solution || ""} />
+                                            <h6>Lieux à proximité:</h6>
+                                            <div>
+                                            {nearbyPlaces.map(place => (
+                                                <div key={place.id} style={{ marginBottom: '10px' }}>
+                                                <p>{place.name}</p>
+                                                </div>
+                                            ))}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className='boutonAnalyse'>

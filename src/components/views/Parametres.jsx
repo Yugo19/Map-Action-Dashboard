@@ -28,23 +28,20 @@ function Parametres() {
   const [confirmPwd, setConfirmPwd] = useState('');
 
   useEffect(() => {
-    _getUser();
+    fetchUserData();
   }, []);
 
-  const _getUser = async () => {
-    const url = config.url + '/MapApi/user_retrieve';
-
-    const configs = {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`
-      }
-    };
-
+  const fetchUserData = async () => {
     try {
-      const response = await axios.get(url, configs);
+      const response = await axios.get(`${config.url}/MapApi/user_retrieve/`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.token}`,
+        },
+      });
+      console.log("User information", response.data.data)
       setUser(response.data.data);
     } catch (error) {
-      console.log('Erreur:', error);
+      console.error('Erreur lors de la récupération des informations utilisateur :', error.message);
     }
   };
 
@@ -131,8 +128,8 @@ function Parametres() {
       <div className="user-profile">
         <div className="user-detail">
           <img src={avatar} alt='' />
-          <h3 className="email">{} Forest@contact.com</h3>
-          <span className="organisation">{} Forest Gir</span>
+          <h3 className="email">{user.email} </h3>
+          <span className="organisation">{user.first_name}</span>
         </div>
         <div className="user-info">
           <Form onSubmit={OnUpdateUser}>

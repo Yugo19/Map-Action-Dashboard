@@ -19,20 +19,21 @@ import NotificationsComponent from './components/Notification/Notification';
 import AdminDashboard from './components/views/AdminDashboard';
 import User from './components/User/User';
 import Chat from './components/views/llmChat'
+import "../src/assets/css/global.css"
 
+const NotFound = () => (
+  <div className="content" style={{ backgroundColor: "#fff" }}>
+    <Container>
+      <Row>
+        <h2 className='map-color'>Page introuvable</h2>
+      </Row>
+    </Container>
+  </div>
+);
 const Root = () => {
-  const renderNotFound = (
-    <div className="content" style={{ backgroundColor: "#fff" }}>
-      <Container>
-        <Row>
-          <h2>Page introuvable</h2>
-        </Row>
-      </Container>
-    </div>
-  );
+  
   return (
       <Routes>
-        <Route exact path="/" element={<Dashboard/>} />
         <Route path = "/llm_chat/:incidentId" element = {< Chat />} />
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/dashboardAdmin" element={<AdminDashboard/>} />
@@ -47,7 +48,7 @@ const Root = () => {
         <Route path="/colaboration" element={<Colaboration/>} />
         <Route path='/askCollaboration/:incidentId' element={<Colaborate/>}/>
         <Route path="/notifications" component={NotificationsComponent} />
-        <Route path="*" element={<renderNotFound />} />
+        <Route path="*" element={<NotFound />} />
         <Route path='/users' element={<User/>}/>
         <Route path="/" element={<Login/>}/>
       </Routes>

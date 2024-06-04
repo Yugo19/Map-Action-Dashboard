@@ -2,6 +2,7 @@ import React,{useState, useEffect} from 'react'
 import { Grid, Row, Col } from 'react-bootstrap';
 import { MapContainer, TileLayer, useMap, Popup, Marker, Circle } from 'react-leaflet'
 import '../../assets/css/global.css'
+import face from '../../assets/img/faces/face-0.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown,faBarChart, faCalendarPlus, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -215,7 +216,7 @@ function Colaborate (){
                                 <p className="percentage">0%</p>
                             </div>
                             <div className="percent">
-                                <p>0</p>
+                                <p>2</p>
                                 <FontAwesomeIcon icon={faBarChart} className="stat-icon"/>
                             </div>
                         </div>
@@ -304,13 +305,13 @@ function Colaborate (){
                         <div className="dashed-line"></div>
                         <Row className='organisation-info'>
                             <Col lg={3}>
-                                <img src='' alt=''/>{''}
+                                <img src={face} alt=''/>{''}
                             </Col>
                             <Col lg={6} className='alerts'>
-                                <p style={{lineHeight:'28px'}}>Organisation ayant pris en compte: <span>{}</span><br/>
-                                    Date de pris en compte: {} <br/>
-                                    Contacts:{}/{} <br/>
-                                    En savoir plus sur <span>{}</span>
+                                <p style={{lineHeight:'28px'}}>Organisation ayant pris en compte: <span>{} </span><br/>
+                                    Date de pris en compte: {} 29/05/2024 <br/>
+                                    Contacts:{}elu@gmail.com/{} 50505051<br/>
+                                    {/* En savoir plus sur <span>{}</span> */}
                                 </p>
                             </Col>
                                 
