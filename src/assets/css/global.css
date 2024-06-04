@@ -471,7 +471,7 @@ img.width-half {
   background-attachment: fixed;
   flex: 1;
   gap: 1.5rem;
-  margin-left: 19%;
+  margin-left: 15%;
 }
 
 @media screen and (max-width: 795px) {
@@ -624,6 +624,10 @@ padding: 0;
   justify-content: center;
   flex-direction: column; 
   min-width: 25%;
+  padding-right: 1.5%;
+  padding-bottom: 1.5%;
+
+
 }
 .colle:hover{
   transform: scale(1.04);
@@ -639,6 +643,8 @@ padding: 0;
   justify-content: center;
   flex-direction: column; 
   width: 25%;
+  padding-right: 1.5%;
+  padding-bottom: 1.5%;
 
 
 }
@@ -656,7 +662,8 @@ padding: 0;
   justify-content: center;
   width: 25%;
   flex-direction: column;
-
+  padding-right: 1.5%;
+  padding-bottom: 1.5%;
 }
 .resolu:hover{
   transform: scale(1.04);
@@ -878,7 +885,6 @@ padding: 0;
 .videoIncident{
   width: 686px;
   height: 495px;
-  margin: auto;
 
 }
 .audioIncident{
@@ -1034,12 +1040,17 @@ h6 h5{
   width: 50%;
   flex-direction: column;
   display: flex;
-  margin-top: -1%;
+  /* margin-top: -4%; */
 }
 
 .charts-view {
   width: 50%;
   flex-direction: column;
   display: flex;
-  margin-top: -56%;
+  margin-top: -65%;
+}
+.choiceData{
+  display: flex;
+  gap: 20px;
+  margin-bottom: 12px;
 }
