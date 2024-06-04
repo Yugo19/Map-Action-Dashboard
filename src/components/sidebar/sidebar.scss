@@ -31,7 +31,6 @@
     width: 100%;
     position: absolute;
     display: block;
-    content: "";
     
   }
   .profil {
@@ -39,13 +38,14 @@
     align-items: center;
     text-align: center;
     width: 220px;
-    height: 72px;
+    min-height: 72px;
     margin-top: 100px;
     margin-left: 12px;
     background-color: #fff;
     border-radius: 20px;
-    flex-direction: row;
+    flex-direction: column;
     cursor: pointer;
+    display: flex;
   }
   .profil_info{
     margin-top: -50px;
@@ -172,8 +172,9 @@
   .user_logo {
     border-radius: 30%;
     background: #fff;
-    padding: 10px;
-    width: 40px;
+    padding: 5px;
+    width: 45px;
+    height: 35%;
   }
 
   .user_logo:hover {
@@ -183,7 +184,25 @@
   .activity {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
   }
-
-  
+.logout-button{
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #f4f7f7;
+  transition: background-color 0.3s ease;
+}
+.logout-button:hover{
+  transform: scale(1.04)
+}
+.user_info {
+  font-size: 12px;
+  display: flex;
+}
+.user_info strong{
+  font-size: 12px;
+  color: #38a0db;
+}

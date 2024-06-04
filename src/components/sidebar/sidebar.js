@@ -17,7 +17,9 @@ import {
   faBell, 
   faAngleDown,
   faAngleLeft,
-  faAngleRight
+  faAngleRight,
+  faSignOutAlt,
+  faUsers
 } from '@fortawesome/free-solid-svg-icons';
 import NotificationsComponent from '../Notification/Notification';
 
@@ -27,7 +29,9 @@ const Sidebar = ({ isAdmin }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [userData, setUserData] = useState(null);
-  const [isCollapsed, setIsCollapsed] = useState(false); 
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [showUserInfo, setShowUserInfo] = useState(false);
+  const photo_user = userData ? config.url + userData.avatar: ""
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
@@ -38,7 +42,8 @@ const Sidebar = ({ isAdmin }) => {
           Authorization: `Bearer ${sessionStorage.token}`,
         },
       });
-      setUserData(response.data);
+      console.log("User information", response.data.data)
+      setUserData(response.data.data);
     } catch (error) {
       console.error('Erreur lors de la récupération des informations utilisateur :', error.message);
     }
@@ -73,11 +78,12 @@ const Sidebar = ({ isAdmin }) => {
   };
   
   const handleProfileClick = () => {
-    console.log(userData);
+    setShowUserInfo(!showUserInfo);
   };
 
   useEffect(() => {
     fetchData(searchTerm);
+    fetchUserData();
   }, [searchTerm]);
 
   const filteredIncidents = allIncidents.filter(incident => {
@@ -89,6 +95,10 @@ const Sidebar = ({ isAdmin }) => {
     setShowNotifications(!showNotifications);
   };
 
+  const logOut = () => {
+    sessionStorage.clear();
+    window.location.pathname = "/";
+  };
   return (
     <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       <div className="header">
@@ -113,8 +123,11 @@ const Sidebar = ({ isAdmin }) => {
             <FontAwesomeIcon icon={faBell} className="notifi" color='#84818A'/>        
           </div>
           {showNotifications && <NotificationsComponent />}
-          <div className='user_logo'>
-            <img src={ userData ? userData.photo : ''} alt='' />
+          <div>
+            <img src={photo_user} alt='' className='user_logo' />
+          </div>
+          <div onClick={logOut} className="logout-button">
+            <FontAwesomeIcon icon={faSignOutAlt} color='#38a0db' title="Déconnexion" />
           </div>
         </div>
         
@@ -123,16 +136,23 @@ const Sidebar = ({ isAdmin }) => {
         <img className="logo" src={logo} alt="logo_image" />
       </div>
       <div className='profil' onClick={handleProfileClick}>
-        <img className="profil_img" src={face} alt="side" />
+        <img className="profil_img" src={photo_user} alt="" />
         <div className='profil_info'>
-        <p><strong>{userData ? `@${userData.organisation}` : ''}</strong></p>
+        <p><strong>{userData ? `@${userData.last_name}` : ''}</strong></p>
           <p className='elu_info'>
-            <span>Gestion intégrée <br /> des forets</span>
+            <span>{userData ? `${userData.first_name}` : ''}</span>
             <FontAwesomeIcon icon={faAngleDown} className='angle'/>
           </p>
-
         </div>
+        {showUserInfo && (
+        <div className='user_info'>
+          <p><strong>Nom : </strong>{userData ? userData.last_name : ''}</p>
+          <p><strong>Phone : </strong>{userData ? userData.phone : ''}</p>
+          <p><strong>Email : </strong>{userData ? userData.email : ''}</p>
+        </div>
+      )}
       </div>
+      
       <ul className='menu-list'>
         <li className="hidden">Menu</li>
         <li className='item'>
@@ -147,8 +167,13 @@ const Sidebar = ({ isAdmin }) => {
           </Link>
         </li>
         <li className='item'><Link to="/incident" className='link_style'><FontAwesomeIcon icon={faExclamationCircle} color='#84818A'/> Incident</Link></li>
-        {isAdmin && (
-          <li><Link to="/incident" className='link_style'><FontAwesomeIcon icon={faExclamationCircle} color='#84818A'/> Utilisateurs</Link></li>
+        {userData && userData.user_type === "admin" && (
+          <li className='item'>
+            <Link to="/users" className='link_style'>
+              <FontAwesomeIcon icon={faUsers} color='#84818A'/>
+              Utilisateurs
+            </Link>
+          </li>
         )}
         <li className='item'>
           <Link to="/historique" className='link_style'>
