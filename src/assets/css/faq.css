@@ -1,0 +1,25 @@
+.faq-container {
+    display:flex;
+    gap:20px;
+    margin-top: 5%;
+    margin-right: 16%;
+}
+.faq-item h3{
+    color:#38a0db;
+}
+.body h2{
+    color: #38a0db;
+    margin-top: 5%;
+}
+.faq-item{
+    min-width: 10%;
+    border-radius: 20px;
+    min-height: 10%;
+    padding: 5%;
+    background: rgb(236, 233, 233);
+    margin-bottom: 15px;
+    box-shadow: 0px 0px 10px rgba(229, 216, 216, 0.1);
+}
+.faq-item:hover{
+    transform: scale(1.04);
+}

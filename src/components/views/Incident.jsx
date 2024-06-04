@@ -66,17 +66,15 @@ function Incident(){
         setShow(true);
     };
     
-    const deleteIncident = (e) => {
+    const deleteIncident = (incidentId) => {
       setInProgress(true);
-      // e.preventDefault();
-      console.log(newIncident.id);
       var url = config.url + "/MapApi/incident/";
       axios
-        .delete(url + newIncident.id)
+        .delete(url + incidentId)
         .then((response) => {
           setInProgress(false);
           setShow(false);
-          Swal.fire("Succes", "Incident Supprime", "warning");
+          Swal.fire("Succès", "Incident supprimé", "warning");
           _getIncidents();
           console.log(response);
           setNewIncident({
@@ -94,17 +92,17 @@ function Incident(){
         .catch((error) => {
           setInProgress(false);
           if (error.response) {
-            Swal.fire("Erreur", "Veuillez reessayer", "error");
+            Swal.fire("Erreur", "Veuillez réessayer", "error");
             console.log(error.response.status);
             console.log(error.response.data);
           } else if (error.request) {
-            console.log(error.request.data);
+            console.log(error.request);
           } else {
             console.log(error.message);
           }
         });
   };
-  
+    
 
 
     // Data Tables
@@ -214,18 +212,18 @@ function Incident(){
                     <FontAwesomeIcon icon={faEye} />
                 </a>
                 <Button
-                  style={{backgroundColor:"transparent", border:"none"}}
+                  style={{ backgroundColor: "transparent", border: "none" }}
                   onClick={() => {
                     if (item && item.id) {
                       deleteIncident(item.id);
-                      setInProgress(false);
-                  } else {
+                    } else {
                       console.error("L'ID de l'incident est indéfini ou non valide.");
-                  }
+                    }
                   }}
                 > 
-                    <FontAwesomeIcon icon={faTrash} color='red'/>
+                  <FontAwesomeIcon icon={faTrash} color="red" />
                 </Button>
+
             </div>,
         ];
     });
@@ -388,7 +386,7 @@ function Incident(){
   
     return(
         <div className='body' style={{marginTop:"5%"}}>
-            <div style={{width:"175vh"}}>
+            <div style={{maxWidth:"165vh"}}>
                 { dataReady ?(
                     <ThemeProvider theme={getMuiTheme}>
                         <MUIDataTable
