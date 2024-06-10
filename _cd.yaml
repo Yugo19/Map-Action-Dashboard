@@ -3,12 +3,14 @@ version: '3'
 services:
 
   map-action-dashboard:
-    image: map-action-dashboard
+    container_name: map-action-dashboard
     build:
       context: .
       dockerfile: Dockerfile
     expose:
       - 3000
+    volumes:
+      - ~/web-dasboard:/app
     networks:
       mapaction_micro-services-network:
           ipv4_address: 192.168.0.15
