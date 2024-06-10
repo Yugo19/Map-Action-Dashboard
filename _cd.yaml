@@ -10,7 +10,7 @@ services:
     expose:
       - 3000
     volumes:
-      - ~/web-dasboard:/app
+      - .:/app
     networks:
       mapaction_micro-services-network:
           ipv4_address: 192.168.0.15
