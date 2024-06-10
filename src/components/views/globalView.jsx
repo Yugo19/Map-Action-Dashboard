@@ -18,8 +18,10 @@ function GlobalView (){
     const [showModal, setShowModal] = useState(false);
     const [newEtat, setNewEtat] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [user, setUser] = useState({});
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
+    
 
     const handleChangeEtat = () => {
         console.log('Nouvel état sélectionné :', newEtat);
@@ -28,20 +30,38 @@ function GlobalView (){
     const { incidentId } = useParams(); 
     const [incident, setIncident] = useState({});
     const [videoIsLoading, setVideoIsLoading] = useState(false);
+    const [storedPredictionId, setStoredPredictionId] = useState('');
     console.log('Incident updated:', incident);
 
     const fetchHistories = async () => {
             try {
-                const response = await axios.get(`${config.url}/MapApi/prediction/${incidentId}`);
-                return response;
+                const response = await axios.get(`${config.url}/MapApi/prediction/${predictionId}`);
                 console.log("les reponses du serveur", response.data)
+                setStoredPredictionId(response.data.prediction_id);
+                return response.data;
             } catch (error) {
                 console.error('Erreur lors de la récupération des prédictions :', error);
             }
         };
 
 
+    const fetchUserData = async () => {
+        try {
+          const response = await axios.get(`${config.url}/MapApi/user_retrieve/`, {
+            headers: {
+              Authorization: `Bearer ${sessionStorage.token}`,
+            },
+          });
+          console.log("User information", response.data.data)
+          setUser(response.data.data);
+        } catch (error) {
+          console.error('Erreur lors de la récupération des informations utilisateur :', error.message);
+        }
+  };
+
+
     useEffect(() => {
+        fetchUserData();
         const fetchIncident = async () => {
             try {
                 const response = await axios.get(`${config.url}/MapApi/incident/${incidentId}`);
@@ -52,6 +72,10 @@ function GlobalView (){
             }
         };
 
+
+
+        
+
         if (incidentId) {
             fetchIncident(); 
         }
@@ -59,33 +83,9 @@ function GlobalView (){
 
 
     const handleNavigate = async () => {
-        navigate(`/analyze/${incident.id}`);
+        const userId = user.id;
+        navigate(`/analyze/${incident.id}/${userId}`);
 
-        const fastapiUrl = config.url2;
-
-        const prediction = fetchHistories();
-
-        const predId = prediction.data[0].prediction_id;
-        predictionId = user_id + incidentId
-
-        if (predictionId == predId){
-            console.log("session identique")
-            } else {
-
-            const payload = {
-            image_name: incident.photo,
-            sensitive_structures: ['Ecole'],
-            incident_id: String(incidentId),
-            user_id: String(incident.user_id),
-            };    
-
-            try {
-                const response = await axios.post(fastapiUrl, payload);
-
-              } catch (error) {
-                throw new Error('Internal Server Error');
-              }
-        }
         };
 
      

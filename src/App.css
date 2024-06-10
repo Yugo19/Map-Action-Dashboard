@@ -58,7 +58,9 @@
 }
 
 .chat:-webkit-scrollbar {
-    display: none;
+    /*display: none;
+
+    */
 }
 
 .input-chat-container {

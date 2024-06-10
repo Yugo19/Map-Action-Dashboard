@@ -34,7 +34,7 @@ const Root = () => {
   
   return (
       <Routes>
-        <Route path = "/llm_chat/:incidentId" element = {< Chat />} />
+        <Route path = "/llm_chat/:incidentId/:userId" element = {< Chat />} />
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/dashboardAdmin" element={<AdminDashboard/>} />
         <Route path="/incident" element={<Incident/>} />
@@ -44,7 +44,7 @@ const Root = () => {
         <Route path="/faq" element={<FAQ/>} />
         <Route path="/help" element={<HelpOnline/>} />
         <Route path="/incident_view/:incidentId" element={<GlobalView/>} />
-        <Route path="/analyze/:incidentId" element={<Analyze/>} />
+        <Route path="/analyze/:incidentId/:userId" element={<Analyze/>} />
         <Route path="/colaboration" element={<Colaboration/>} />
         <Route path='/askCollaboration/:incidentId' element={<Colaborate/>}/>
         <Route path="/notifications" component={NotificationsComponent} />
