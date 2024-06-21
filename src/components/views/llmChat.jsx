@@ -49,7 +49,7 @@ function Chat() {
             setTimeout(() => {
                 if ([WebSocket.CLOSED, WebSocket.CLOSING].includes(websocket.readyState)) {
                     console.log('Reconnecting WebSocket...');
-                    setWs(new WebSocket('ws://0.0.0.0:8002/ws/chat'));
+                    setWs(new WebSocket('ws://51.159.141.113:8002/ws/chat'));
                 }
             }, 3000); // Attempt to reconnect every 3 seconds
         };
