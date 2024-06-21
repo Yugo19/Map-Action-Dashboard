@@ -4,12 +4,11 @@ import { MapContainer, TileLayer, Circle, Popup, Marker, useMap } from 'react-le
 import '../../assets/css/global.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faCalendarPlus, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import { config } from '../../config';
 import ReactDOMServer from 'react-dom/server';
 import Select from 'react-select';
 import axios from 'axios';
-
 
 function ExpandableContent({ content }) {
     const [expanded, setExpanded] = useState(false);
@@ -36,7 +35,10 @@ function Analyze (){
     const [videoIsLoading, setVideoIsLoading] = useState(false);
     const [prediction, setPredictions] = useState([]);
     const [nearbyPlaces, setNearbyPlaces] = useState([]);
-    const predictionId = userId+incidentId
+    const predictionId = userId+incidentId;
+    const location = useLocation();
+    const pictUrl = location.state.pictUrl;
+    const nearbyPlacesDic = location.state.nearbyPlaces;
 
 
     useEffect(() => {
@@ -54,7 +56,7 @@ function Analyze (){
             try {
                 const response = await axios.get(`${config.url}/MapApi/prediction/${predictionId}`);
                 console.log("les reponses du serveur", response.data)
-                setPredictions(response.data);
+                setPredictions(response.data[0]);
 
             } catch (error) {
                 console.error('Erreur lors de la récupération des prédictions :', error);
@@ -67,6 +69,7 @@ function Analyze (){
             fetchPredictions(); 
         }
 
+        sendPrediction();
         
     }, [incidentId]);
 
@@ -105,55 +108,47 @@ function Analyze (){
                 });
         }
     }, [incident.lattitude, incident.longitude]);
+ 
 
-    const timer = setTimeout(() => {
-          sendPrediction(prediction, incident);
-        }, 10000);        
-
-    const sendPrediction = async (prediction, incident) => {
+    const sendPrediction = async () => {
         try {
 
         const fastapiUrl = config.url2;
 
         let sensitiveStructures = [];
 
-        for (let i = 0; i < nearbyPlaces.length; i++) {
-            if (nearbyPlaces[i].amenity == 'school') {
+        for (let i = 0; i < nearbyPlacesDic.length; i++) {
+            if (nearbyPlacesDic[i].amenity == 'school') {
                 sensitiveStructures.push('ecole');
-            }else if (nearbyPlaces[i].amenity == 'clinic') {
+            }else if (nearbyPlacesDic[i].amenity == 'clinic') {
                 sensitiveStructures.push('Clinique');
-            } else if (nearbyPlaces[i].amenity == 'river') {
+            } else if (nearbyPlacesDic[i].amenity == 'river') {
                 sensitiveStructures.push('Rivière');
-            } else if (nearbyPlaces[i].amenity == 'marigot') {
+            } else if (nearbyPlacesDic[i].amenity == 'marigot') {
                 sensitiveStructures.push('marigot');
             }else{
-                sensitiveStructures.push(nearbyPlaces[i].amenity);
+                sensitiveStructures.push(nearbyPlacesDic[i].amenity);
             }
             
         }
-        console.log("prediction", Object.keys(prediction).length)
 
-        if (prediction && Object.keys(prediction).length != 0) {
-            console.log("session identique");
-        } else if(prediction || Object.keys(prediction).length === 0) {
-
-            const payload = {
-            image_name: incident.photo,
+        const payload = {
+            image_name: pictUrl,
             sensitive_structures: sensitiveStructures,
             incident_id: incidentId,
             user_id: userId,
             };    
 
-            try {
+        try {
 
-                console.log("payload", payload);
-                const response = await axios.post(fastapiUrl, payload);
+            console.log("payload", payload);
+            const response = await axios.post(fastapiUrl, payload);
 
-              } catch (error) {
-                throw new Error('Internal Server Error');
-              }
-
+        } catch (error) {
+            throw new Error('Internal Server Error');
         }
+
+        
 
     } catch (error) {
         console.error('Error sending prediction:', error);

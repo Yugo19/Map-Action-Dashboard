@@ -37,7 +37,7 @@ function Chat() {
 
 
     useEffect(() => {
-        const websocket = new WebSocket('ws://0.0.0.0:8002/ws/chat');
+        const websocket = new WebSocket('ws://51.159.141.113:8002/ws/chat');
 
         const connectWebSocket = () => {
             console.log('WebSocket Connected');
@@ -63,7 +63,7 @@ function Chat() {
         };
         websocket.onclose = closeWebSocket;
         websocket.onerror = error => {
-            console.error('WebSocket Error: ', error);
+            console.error('WebSocket Error: ', error);1
         };
 
         return () => {
