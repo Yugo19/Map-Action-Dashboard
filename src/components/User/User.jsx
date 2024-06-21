@@ -524,7 +524,7 @@ function User (){
 
     return(
        <div className="body">
-        <h3 style={{marginTop: "5%"}}>La table des utilisateurs</h3>
+        <h2 style={{marginTop: "5%"}}>La table des utilisateurs</h2>
         <Button className="pull-right map-color" onClick={handleModalOpen}>
             <i className="fa fa-download"></i>
             Nouveau Utilisateur

@@ -11,6 +11,7 @@ import "video-react/dist/video-react.css";
 import axios from 'axios';
 import ReactDOMServer from 'react-dom/server';
 import Select from 'react-select'
+import Swal from 'sweetalert2';
 
 
 function GlobalView (){
@@ -134,15 +135,65 @@ function GlobalView (){
         console.log(EditIncident);
     };
     
+    // const handleChangeStatus = async (e) => {
+    //     e.preventDefault();
+    //     setState(true);
+    //     var new_data = new FormData();
+    //     new_data.append('etat', EditIncident.etat);
+    //     new_data.append('zone', incident.zone);
+    //     var url = config.url + '/MapApi/incident/' + incidentId;
+    //     try {
+    //         const response = await axios.put(url, new_data);
+    //         console.log(response);
+    //         setState(false);
+    //         setisChanged(false);
+    //         setEditIncident({
+    //             title: '',
+    //             zone: '',
+    //             description: '',
+    //             lattitude: '',
+    //             longitude: '',
+    //             user_id: '',
+    //             etat: '',
+    //             indicateur_id: '',
+    //             category_ids: [],
+    //         });
+    //         Swal.fire('Changement de status effectué avec succés')
+    //     } catch (error) {
+    //         setProgress(false);
+    //         setState(false);
+    //         setisChanged(false);
+    //         if (error.response) {
+    //             console.log(error.response.status);
+    //             console.log(error.response.data);
+    //         } else if (error.request) {
+    //             console.log(error.request.data);
+    //         } else {
+    //             console.log(error.message);
+    //         }
+    //     }
+    // };
     const handleChangeStatus = async (e) => {
         e.preventDefault();
         setState(true);
-        var new_data = new FormData();
-        new_data.append('etat', EditIncident.etat);
-        new_data.append('zone', incident.zone);
-        var url = config.url + '/MapApi/incident/' + incidentId;
+    
+        const action = EditIncident.etat;
+        const url = config.url + '/MapApi/hadleIncident/' + incidentId;
+        const token = sessionStorage.getItem('token');
+    
+        if (!token) {
+            Swal.fire("Token not found. Please log in.");
+            setState(false);
+            setisChanged(false);
+            return;
+        }
+    
         try {
-            const response = await axios.put(url, new_data);
+            const response = await axios.post(url, { action }, {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                }
+            });
             console.log(response);
             setState(false);
             setisChanged(false);
@@ -157,21 +208,55 @@ function GlobalView (){
                 indicateur_id: '',
                 category_ids: [],
             });
-            setSuccessMessage('Changement d\'état effectué avec succès.');
+            Swal.fire('Changement de status effectué avec succès');
         } catch (error) {
-            setProgress(false);
-            setState(false);
-            setisChanged(false);
-            if (error.response) {
-                console.log(error.response.status);
-                console.log(error.response.data);
-            } else if (error.request) {
-                console.log(error.request.data);
+            if (error.response && error.response.data.code === 'token_not_valid') {
+                try {
+                    const refreshToken = localStorage.getItem('refresh_token');
+                    const refreshResponse = await axios.post(config.url + '/api/token/refresh/', { refresh: refreshToken });
+                    localStorage.setItem('token', refreshResponse.data.access);
+                    const retryResponse = await axios.post(url, { action }, {
+                        headers: {
+                            Authorization: `Bearer ${refreshResponse.data.access}`, 
+                        }
+                    });
+                    console.log(retryResponse);
+                    setState(false);
+                    setisChanged(false);
+                    setEditIncident({
+                        title: '',
+                        zone: '',
+                        description: '',
+                        lattitude: '',
+                        longitude: '',
+                        user_id: '',
+                        etat: '',
+                        indicateur_id: '',
+                        category_ids: [],
+                    });
+                    Swal.fire('Changement de status effectué avec succès');
+                } catch (refreshError) {
+                    console.log(refreshError);
+                    Swal.fire("Session expired. Please log in again.");
+                }
             } else {
-                console.log(error.message);
+                setState(false);
+                setisChanged(false);
+                if (error.response) {
+                    console.log(error.response.status);
+                    console.log(error.response.data);
+                    Swal.fire("Désolé",
+                        "Cet incident est déjà pris en compte."
+                    );
+                } else if (error.request) {
+                    console.log(error.request);
+                } else {
+                    console.log(error.message);
+                }
             }
         }
     };
+    
     // Selection des Mois
     const handleMonthChange = (selectedOption) => {
         console.log("Selected month:", selectedOption); 
@@ -418,7 +503,7 @@ function GlobalView (){
                                                 }),
                                             }}
                                         />
-                                        {successMessage && <p>{successMessage}</p>}
+                                        {/* {successMessage && <p>{successMessage}</p>} */}
                                     </div>
                                     <div>
                                         <button className='etat' onClick={handleChangeStatus}>Valider</button>

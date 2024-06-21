@@ -9,7 +9,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import ReactDOMServer from 'react-dom/server';
 import { config } from '../../config';
-import Select from "react-select"
+import Select from "react-select";
+import Swal from 'sweetalert2';
 
 function Colaborate (){
     const navigate = useNavigate();
@@ -18,7 +19,6 @@ function Colaborate (){
     const [videoIsLoading, setVideoIsLoading] = useState(false);
     console.log('Incident updated:', incident);
     const [collaborations, setCollaborations] = useState([]);
-    const [newCollaborationData, setNewCollaborationData] = useState({});
     const imgUrl = incident ? config.url + incident.photo : '';
     const audioUrl = incident ? config.url + incident.audio : '';
     const videoUrl = incident ? config.url + incident.video : '';
@@ -32,26 +32,49 @@ function Colaborate (){
     const date = dateObject.toLocaleDateString();
     const heure = dateObject.toLocaleTimeString()
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+    const [actions, setActions] = useState([]);
+    const [percentageVsTaken, setPercentageVsTaken] = useState(0)
+    const [countIncidents, setCountIncidents] = useState('');
+    const [data, setData] = useState([]);
+    const [incidentDetails, setIncidentDetails] = useState({});
+    const [userDetails, setUserDetails] = useState({});
+    const [actionDetails, setActionDetails] = useState({});
+    const userId = sessionStorage.getItem('user_id');
+
+    const [newCollaborationData, setNewCollaborationData] = useState({
+        incident: incidentId,
+        user: userId,
+        end_date: '2024-06-25'
+    });
 
     const fetchCollaborations = async () => {
         try {
-            var url = `${config.url}/MapApi/collaboration`
-            const response = await axios.get(url);
-            setCollaborations(response.data.length);
+            const response = await axios.get(`${config.url}/MapApi/collaboration`);
+            setCollaborations(response.data);
         } catch (error) {
             console.error('Erreur lors de la récupération des collaborations : ', error);
         }
     };
+
     const createCollaboration = async () => {
         try {
-            var url = config.url + "/MapApi/collaboration/"
-            const response = await axios.post(url, newCollaborationData);
+            const response = await axios.post(`${config.url}/MapApi/collaboration/`, newCollaborationData, {
+                headers: {
+                    'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             fetchCollaborations();
-            setNewCollaborationData({});
+            setNewCollaborationData({
+                incident: incidentId,
+                user: userId,
+            });
         } catch (error) {
             console.error('Erreur lors de la création de la collaboration : ', error);
+            throw error;
         }
     };
+
     useEffect(() => {
         const fetchIncident = async () => {
             try {
@@ -63,25 +86,97 @@ function Colaborate (){
             }
         };
         fetchCollaborations();
+        _getPercentageVsTaken();
+        _getIncidents();
+        getIncidentDetails();
 
         if (incidentId) {
             fetchIncident(); 
         }
     }, [incidentId]);
+    const _getIncidents = async () => {
+        var url = `${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`
+        try {
+            let res = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer${sessionStorage.token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
+            setCountIncidents(res.data.data.filter(incident => incident.etat === "taken_into_account").length);
+            setData(res.data.data.filter(incident => incident.etat === "taken_into_account"));
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    const _getPercentageVsTaken = async () => {
+        const previousMonth = selectedMonth - 1;
+        const currentMonthUrl = `${config.url}/MapApi/incidentByMonth/?month=${selectedMonth}`;
+        const previousMonthUrl = `${config.url}/MapApi/incidentByMonth/?month=${previousMonth}`;
+        try {
+            const [currentMonthRes, previousMonthRes] = await Promise.all([
+                axios.get(currentMonthUrl, {
+                    headers: {
+                        Authorization: `Bearer${sessionStorage.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }),
+                axios.get(previousMonthUrl, {
+                    headers: {
+                        Authorization: `Bearer${sessionStorage.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
+            ]);
+            const incidentsCurrentMonth = currentMonthRes.data.data.filter(incident => incident.etat === "taken_into_account").length;
+            const incidentsPreviousMonth = previousMonthRes.data.data.filter(incident => incident.etat === "taken_into_account").length;
+            const percentageVsPreviousMonth = incidentsPreviousMonth !== 0 ? (incidentsCurrentMonth / incidentsPreviousMonth) * 100 : 0;
+            setPercentageVsTaken(percentageVsPreviousMonth)
+            console.log(`Pourcentage des incidents en ${selectedMonth} par rapport à ${previousMonth}: ${percentageVsPreviousMonth}%`);
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
 
     const handleCollaborationRequest = async () => {
         const confirmation = window.confirm("Voulez-vous faire une demande de collaboration sur cet incident ?");
         if (confirmation) {
             try {
                 await createCollaboration();
-                alert("La demande de collaboration a été envoyée !");
+                Swal.fire("Succès","La demande de collaboration a été envoyée !");
             } catch (error) {
                 console.error('Erreur lors de la création de la collaboration : ', error);
-                alert("Une erreur s'est produite lors de l'envoi de la demande de collaboration. Veuillez réessayer plus tard.");
+                Swal.fire("Erreur",
+                    "Une erreur s'est produite lors de l'envoi de la demande de collaboration. Veuillez réessayer plus tard.");
             }
         }
     };
     
+    
+    const getIncidentDetails = async () => {
+        try {
+            const url = `${config.url}/MapApi/incidentDetail/${incidentId}`;
+            const token = sessionStorage.getItem("token");
+            console.log("Requesting URL:", url);
+            console.log("Using token:", token);
+
+            const response = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            setIncidentDetails(response.data);
+            setUserDetails(response.data.user);
+            setActionDetails(response.data.action)
+            console.log("Incident details", response.data);
+        } catch (error) {
+            console.error('Error fetching incident details:', error);
+            throw error;
+        }
+    };
     
     const filterIncidents = async () => {
         var url = config.url + "/MapApi/incident"
@@ -166,6 +261,16 @@ function Colaborate (){
             </div>
         )
     }
+    function RecenterMap({ lat, lon }) {
+        const map = useMap();
+        useEffect(() => {
+          if (lat && lon) {
+            map.setView([lat, lon], 13);
+          }
+        }, [lat, lon, map]);
+        return null;
+    }
+    const avatar = config.url + userDetails.avatar
     return(
         <div className='body'>
             <div style={{backgroundColor:"#f4f7f7"}}>
@@ -198,10 +303,10 @@ function Colaborate (){
                 <div>
                     <div className="dash">
                         <ul className="dash_ul">
-                            <li style={{ textDecoration: 'none'}}><Link to="/dashboard" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Vue d'ensemble</Link></li>
-                            <li><Link to="/incident_view" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Vue incident</Link></li>
-                            <li><Link to="/analyze" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Analyses Avancées</Link></li>
-                            <li><Link to="/colaboration" style={{ textDecoration: 'none', color:"#202020", fontWeight:"500", fontSize:"16px", lineHeight:"24px", fontStyle:"poppins" }}>Collaboration</Link></li>
+                            <li><Link to="/dashboard" className="link">Vue d'ensemble</Link></li>
+                            <li><Link to="/incident_view" className="link non-clickable">Vue incident</Link></li>
+                            <li><Link to="/analyze" className="link non-clickable">Analyses Avancées</Link></li>
+                            <li><Link to="/colaboration" className="link">Collaboration</Link></li>
                         </ul>
                     </div>
                 </div>
@@ -213,10 +318,10 @@ function Colaborate (){
                         <div>
                             <div>
                                 <h3 className="titleCard">Nombre d'incidents <br/> pris en compte</h3>
-                                <p className="percentage">0%</p>
+                                <p className="percentage">{percentageVsTaken}%</p>
                             </div>
                             <div className="percent">
-                                <p>2</p>
+                                <p>{countIncidents}</p>
                                 <FontAwesomeIcon icon={faBarChart} className="stat-icon"/>
                             </div>
                         </div>
@@ -256,9 +361,9 @@ function Colaborate (){
                             <h4>Carte Interactive</h4>
                         </div>
                         <div id="map"> 
-                            {/* && typeof longitude=="number" && typeof latitude=="number"  */}
-                            {incident ? (
+                            {latitude !== 0 && longitude !== 0 ? (
                                 <MapContainer center={position} zoom={13}>
+                                    <RecenterMap lat={latitude} lon={longitude} />
                                     <TileLayer
                                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -285,7 +390,7 @@ function Colaborate (){
                         <div>
                             <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
                             <div>
-                                <h5 style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-45px", fontSize:"18px"}}>Code Couleur</h5>
+                                <h5 className='colorCode'>Code Couleur</h5>
                                 <div className="codeColor">
                                     <div>
                                         <div className="hr_blue" onClick={() => setSelectedFilter("resolved")}/>
@@ -305,12 +410,12 @@ function Colaborate (){
                         <div className="dashed-line"></div>
                         <Row className='organisation-info'>
                             <Col lg={3}>
-                                <img src={face} alt=''/>{''}
+                                <img src={avatar} alt='' className='organi_image'/>{''}
                             </Col>
                             <Col lg={6} className='alerts'>
-                                <p style={{lineHeight:'28px'}}>Organisation ayant pris en compte: <span>{} </span><br/>
-                                    Date de pris en compte: {} 29/05/2024 <br/>
-                                    Contacts:{}elu@gmail.com/{} 50505051<br/>
+                                <p style={{lineHeight:'28px'}}>Organisation ayant pris en compte: <span>{userDetails.organisation} </span><br/>
+                                    Date de pris en compte: {} 11 <br/>
+                                    Contacts: {userDetails.email} / {userDetails.phone}<br/>
                                     {/* En savoir plus sur <span>{}</span> */}
                                 </p>
                             </Col>
