@@ -24,6 +24,7 @@ function Dashboard(props) {
     const navigate = useNavigate()
     const chartRef = useRef();
     const [countIncidents, setCountIncidents] = useState('');
+    const [countCategory, setCountCategory] = useState('');
     const [data, setData] = useState([]);
     const [resolus, setResolus] = useState('');
     const [taken_into, setTaken] = useState('');
@@ -39,6 +40,8 @@ function Dashboard(props) {
     const [showOnlyTakenIntoAccount, setShowOnlyTakenIntoAccount] = useState(false);
     const [showOnlyResolved, setShowOnlyResolved] = useState(false);
     const [showOnlyDeclared, setShowOnlyDeclared] = useState(false);
+    const [preduct, setPreduct] = useState([])
+
     useEffect(() => {
         _getIncidents();
         _getIndicateur();
@@ -49,6 +52,7 @@ function Dashboard(props) {
         _getPercentageVsTaken();
         _getPercentageVsResolved();
         _getZone();
+        _getCategory();
         _getRegistered();
     }, [selectedMonth]);
 
@@ -280,6 +284,40 @@ function Dashboard(props) {
             console.log(error.message);
         }
     };
+    const _getCategory = async () => {
+        try {
+            const res = await axios.get(`${config.url}/MapApi/prediction/`, {
+                headers: {
+                  Authorization: `Bearer ${sessionStorage.token}`,
+                },
+              });
+            console.log("Ici log", res.data);
+            let predictions = res.data;
+    
+            let incidentCounts = predictions.reduce((acc, prediction) => {
+                acc[prediction.incident_type] = (acc[prediction.incident_type] || 0) + 1;
+                return acc;
+            }, {});
+    
+            let totalIncidents = predictions.length;
+    
+            let incidentPercentages = Object.entries(incidentCounts).map(([type, count]) => {
+                return {
+                    type,
+                    count,
+                    percentage: ((count / totalIncidents) * 100).toFixed(2) + '%'
+                };
+            });
+    
+            console.log('Nombre total d\'incidents:', totalIncidents);
+            console.log('Détails des incidents:', incidentPercentages);
+    
+            setCountCategory(totalIncidents);
+            setPreduct(incidentPercentages);
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
 
     // Percentage previous 
     const _getPercentageVsResolved = async () => {
@@ -359,15 +397,17 @@ function Dashboard(props) {
     const TakenOnMap = async () => {
         setShowOnlyTakenIntoAccount(!showOnlyTakenIntoAccount);
         setShowOnlyResolved(false);
+        setShowOnlyDeclared(false)
     }
 
     const ResolvedOnMap = async () => {
         setShowOnlyResolved(!showOnlyResolved);
+        setShowOnlyDeclared(false)
         setShowOnlyTakenIntoAccount(false);
     }
 
     const DeclaredOnMap = async () => {
-        setShowOnlyResolved(!showOnlyDeclared);
+        setShowOnlyDeclared(!showOnlyDeclared);
         setShowOnlyTakenIntoAccount(false);
         setShowOnlyResolved(false);
     }
@@ -607,29 +647,14 @@ function Dashboard(props) {
                         <div>
                             <h4 className="repartionText">Repartition des incidents par catégories</h4>
                             <div>
-                                <div>
-                                    <div className="repartition">
-                                        <p style={{fontSize:"14px"}}>Déchet Solides</p>
-                                        <p style={{float:"right", marginTop:"-25px"}}>25%</p>
+                                <div className="repartition">
+                                {preduct.map((incident, index) => (
+                                    <div key={index}>
+                                        <p style={{fontSize:"14px"}}>{incident.type}</p>
+                                        <p style={{float:"right", marginTop:"-25px",}}>{incident.percentage}</p>
                                         <hr/>
                                     </div>
-                                    <div className="repartition">
-                                        <p style={{fontSize:"14px"}}>Déchet Solides</p>
-                                        <p style={{float:"right", marginTop:"-25px",}}>25%</p>
-                                        <hr/>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="repartition">
-                                        <p style={{fontSize:"14px"}}>Déchet Solides</p>
-                                        <p style={{float:"right", marginTop:"-25px"}}>25%</p>
-                                        <hr/>
-                                    </div>
-                                    <div className="repartition">
-                                        <p style={{fontSize:"14px"}}>Déchet Solides</p>
-                                        <p style={{float:"right", marginTop:"-25px"}}>25%</p> 
-                                        <hr/>
-                                    </div>
+                                ))}
                                 </div>
                             </div>
                         </div>

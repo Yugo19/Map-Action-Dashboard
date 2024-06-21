@@ -15,7 +15,7 @@ import {
 import Swal from 'sweetalert2';
 import { config } from '../../config';
 import { UserCard } from '../UserCard/UserCard.jsx';
-import avatar from '../../assets/img/faces/face-0.jpg';
+// import avatar from '../../assets/img/faces/face-0.jpg';
 import "../../assets/css/profile.css"
 import ProfileHeader from "../ProfileHeader.jsx"
 
@@ -30,7 +30,7 @@ function Parametres() {
   useEffect(() => {
     fetchUserData();
   }, []);
-
+  const avatar = config.url + user.avatar
   const fetchUserData = async () => {
     try {
       const response = await axios.get(`${config.url}/MapApi/user_retrieve/`, {
