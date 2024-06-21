@@ -31,15 +31,20 @@ function ExpandableContent({ content }) {
 }
 
 function Analyze (){
-    const { incidentId } = useParams(); 
+    const { incidentId, userId} = useParams(); 
     const [incident, setIncident] = useState({});
     const [videoIsLoading, setVideoIsLoading] = useState(false);
-    const [prediction, setPredictions] = useState({});
-    const [nearbyPlaces, setNearbyPlaces] = useState([])
+    const [prediction, setPredictions] = useState([]);
+    const [nearbyPlaces, setNearbyPlaces] = useState([]);
+    const predictionId = userId+incidentId
+
+
     useEffect(() => {
+
         const fetchIncident = async () => {
             try {
                 const response = await axios.get(`${config.url}/MapApi/incident/${incidentId}`);
+                console.log('Incident data', response.data)
                 setIncident(response.data);
             } catch (error) {
                 console.error('Erreur lors de la récupération des détails de l\'incident :', error);
@@ -47,19 +52,22 @@ function Analyze (){
         };
         const fetchPredictions = async () => {
             try {
-                const response = await axios.get(`${config.url}/MapApi/prediction/${incidentId}`);
-                // console.log("les reponses du serveur", response.data)
-                setPredictions(response.data[0]);
+                const response = await axios.get(`${config.url}/MapApi/prediction/${predictionId}`);
+                console.log("les reponses du serveur", response.data)
+                setPredictions(response.data);
+
             } catch (error) {
                 console.error('Erreur lors de la récupération des prédictions :', error);
             }
         };
-
+        
 
         if (incidentId) {
             fetchIncident();
             fetchPredictions(); 
         }
+
+        
     }, [incidentId]);
 
     const imgUrl = incident ? config.url + incident.photo : '';
@@ -98,7 +106,62 @@ function Analyze (){
         }
     }, [incident.lattitude, incident.longitude]);
 
+    const timer = setTimeout(() => {
+          sendPrediction(prediction, incident);
+        }, 10000);        
 
+    const sendPrediction = async (prediction, incident) => {
+        try {
+
+        const fastapiUrl = config.url2;
+
+        let sensitiveStructures = [];
+
+        for (let i = 0; i < nearbyPlaces.length; i++) {
+            if (nearbyPlaces[i].amenity == 'school') {
+                sensitiveStructures.push('ecole');
+            }else if (nearbyPlaces[i].amenity == 'clinic') {
+                sensitiveStructures.push('Clinique');
+            } else if (nearbyPlaces[i].amenity == 'river') {
+                sensitiveStructures.push('Rivière');
+            } else if (nearbyPlaces[i].amenity == 'marigot') {
+                sensitiveStructures.push('marigot');
+            }else{
+                sensitiveStructures.push(nearbyPlaces[i].amenity);
+            }
+            
+        }
+        console.log("prediction", Object.keys(prediction).length)
+
+        if (prediction && Object.keys(prediction).length != 0) {
+            console.log("session identique");
+        } else if(prediction || Object.keys(prediction).length === 0) {
+
+            const payload = {
+            image_name: incident.photo,
+            sensitive_structures: sensitiveStructures,
+            incident_id: incidentId,
+            user_id: userId,
+            };    
+
+            try {
+
+                console.log("payload", payload);
+                const response = await axios.post(fastapiUrl, payload);
+
+              } catch (error) {
+                throw new Error('Internal Server Error');
+              }
+
+        }
+
+    } catch (error) {
+        console.error('Error sending prediction:', error);
+        
+    }
+        
+    }
+    
 
     const iconHTMLRed = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faMapMarkerAlt} color="red" size="2x"/>)
     const customMarkerIconRed = new L.DivIcon({
@@ -291,7 +354,7 @@ function Analyze (){
                                         </div>
                                     </div>
                                     <div className='boutonAnalyse'>
-                                        <Link to={`/llm_chat/${incident.id}`} style={{color:"white", textDecoration:"none"}}>Discussion LLM</Link>
+                                        <Link to={`/llm_chat/${incident.id}/${userId}`} style={{color:"white", textDecoration:"none"}}>Discussion LLM</Link>
                                     </div>
                                 </div>
                             </Col>
