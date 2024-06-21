@@ -21,6 +21,7 @@ function GlobalView (){
     const [user, setUser] = useState({});
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
+    const [nearbyPlaces, setNearbyPlaces] = useState([]);
     
 
     const handleChangeEtat = () => {
@@ -30,19 +31,10 @@ function GlobalView (){
     const { incidentId } = useParams(); 
     const [incident, setIncident] = useState({});
     const [videoIsLoading, setVideoIsLoading] = useState(false);
-    const [storedPredictionId, setStoredPredictionId] = useState('');
+    const [predictions, setPredictions] = useState([]);
     console.log('Incident updated:', incident);
 
-    const fetchHistories = async () => {
-            try {
-                const response = await axios.get(`${config.url}/MapApi/prediction/${predictionId}`);
-                console.log("les reponses du serveur", response.data)
-                setStoredPredictionId(response.data.prediction_id);
-                return response.data;
-            } catch (error) {
-                console.error('Erreur lors de la récupération des prédictions :', error);
-            }
-        };
+   
 
 
     const fetchUserData = async () => {
@@ -72,8 +64,6 @@ function GlobalView (){
             }
         };
 
-
-
         
 
         if (incidentId) {
@@ -82,9 +72,28 @@ function GlobalView (){
     }, [incidentId]);
 
 
+    useEffect(() => {
+        if (incident.lattitude && incident.longitude) {
+            const apiUrl = `${config.url}/MapApi/overpass/?latitude=${incident.lattitude}&longitude=${incident.longitude}`;
+            
+            axios.get(apiUrl)
+                .then(response => {
+                    console.log(response.data);
+                    setNearbyPlaces(response.data); 
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+
+    }, [incident.lattitude, incident.longitude]);
+
+
     const handleNavigate = async () => {
         const userId = user.id;
-        navigate(`/analyze/${incident.id}/${userId}`);
+        const pictUrl = incident.photo
+        navigate(`/analyze/${incident.id}/${userId}`,{ state: { pictUrl, nearbyPlaces}});
 
         };
 
