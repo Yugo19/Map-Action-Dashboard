@@ -43,6 +43,9 @@ function Dashboard(props) {
     const [preduct, setPreduct] = useState([])
 
     useEffect(() => {
+        if (userType !== 'admin') {
+            return window.location.pathname = "/";
+        }
         _getIncidents();
         _getIndicateur();
         _getIncidentsResolved();

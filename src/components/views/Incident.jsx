@@ -58,14 +58,6 @@ function Incident(){
         
     }, []);
     
-    const onDeleteIncident = (item) => {
-        if (item) {
-            console.log("element à supprimer ", item);
-            setNewIncident(item);
-        }
-        setShow(true);
-    };
-    
     const deleteIncident = (incidentId) => {
       setInProgress(true);
       var url = config.url + "/MapApi/incident/";
@@ -252,7 +244,7 @@ function Incident(){
             this.setState({ visible: false, message: [] });
           }, 5000);
         });
-      };
+    };
     const columns = [
         {
           name: "title",
@@ -385,8 +377,8 @@ function Incident(){
     ];
   
     return(
-        <div className='body' style={{marginTop:"5%"}}>
-            <div style={{maxWidth:"165vh"}}>
+        <div className='body incidentView' >
+            <div className='incident-data'>
                 { dataReady ?(
                     <ThemeProvider theme={getMuiTheme}>
                         <MUIDataTable

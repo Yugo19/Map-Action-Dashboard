@@ -50,12 +50,14 @@
     background: #fff;
     border-radius: 50%;
     width: 150px;
+    height: 150px;
 }
 
 .user-detail .email {
     color: #525252;
 
 }
+
 
 .user-info {
     background: #fff;

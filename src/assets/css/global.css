@@ -473,22 +473,6 @@ img.width-half {
   gap: 1.5rem;
   margin-left: 15%;
 
-  @media screen and (max-width: 795px) {
-    .body {
-      margin-left: 70%;
-      gap: 0.5rem;
-    }
-    
-  }
-  @media screen and (max-width: 1000px) {
-    .body {
-      margin-left: 20%;
-    }
-    .head {
-      margin-top: 10%;
-    }
-    
-  }
 }
 
 
@@ -645,7 +629,7 @@ padding: 0;
   cursor: pointer;
   justify-content: center;
   flex-direction: column; 
-  width: 25%;
+  min-width: 25%;
   padding-right: 1.5%;
   padding-bottom: 1.5%;
 
@@ -663,7 +647,7 @@ padding: 0;
   cursor: pointer;
   display: flex;
   justify-content: center;
-  width: 25%;
+  min-width: 25%;
   flex-direction: column;
   padding-right: 1.5%;
   padding-bottom: 1.5%;
@@ -679,7 +663,7 @@ padding: 0;
 }
 .map-grid{
   border: 1px #84818A;
-  width: 55%;
+  min-width: 52%;
   min-height: 950px;
   background-color: #fff;
   margin-top: 20px;
@@ -710,7 +694,8 @@ padding: 0;
   background-color: #fff;
   margin-top: 20px;
   border-radius: 30px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 15px; 
 }
 
 .hr_blue{
@@ -860,7 +845,23 @@ padding: 0;
   border: 1px #84818A;
   border-radius: 30px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  width: 55%; 
+  width: 55%;
+  display: flex;
+  flex-direction: column; 
+  /* padding: auto;  */
+}
+
+.chart-grids{
+  height: 448px;
+  background-color: #fff;
+  margin-left: 20px;
+  margin-bottom: 20px;
+  border: 1px #84818A;
+  border-radius: 30px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  width: 55%;
+  display: flex;
+  padding: auto; 
 }
 .chart-grid:hover{
   transform: scale(1.04);
@@ -900,7 +901,6 @@ padding: 0;
 .videoIncident{
   width: 686px;
   height: 495px;
-
 }
 .audioIncident{
   margin-bottom: 30px; 
@@ -1014,6 +1014,7 @@ h6 h5{
   color: rgb(51, 179, 230); 
   font-weight: bold; 
   text-decoration: none;
+  font-size: 16px;
 }
 .non-clickable {
   pointer-events: none;
@@ -1078,4 +1079,172 @@ h6 h5{
 .organi_image{
   border-bottom-left-radius: 30px;
   border-top-right-radius: 30px;
+}
+.codes{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-right: 25px;
+}
+
+@media (max-width: 960px) {
+  .colle,
+  .compte,
+  .resolu {
+    min-width: 30%;
+  }
+
+  .map-grid,
+  .map-grid-view,
+  .map-grid-colabor,
+  .chart-grid,
+  .chart-grids,
+  .action-grid,
+  .chart-grid-ia {
+    width: 70%;
+  }
+
+  .codeColor {
+    margin-left: 50%;
+  }
+
+  .code-text {
+    margin-left: 50%;
+  }
+  .codes{
+    padding-right: 250px;
+    width: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .colle,
+  .compte,
+  .resolu {
+    min-width: 45%;
+  }
+
+  .map-grid,
+  .map-grid-view,
+  .map-grid-colabor,
+  .chart-grid,
+  .chart-grids,
+  .action-grid,
+  .chart-grid-ia {
+    width: 90%;
+  }
+
+  .codeColor {
+    margin-left: 20%;
+  }
+
+  .code-text {
+    margin-left: 30%;
+  }
+  .codes{
+    padding-right: 250px;
+    width: 25px;
+  }
+  .videoIncident{
+    margin: 0;
+  }
+  
+}
+
+@media (max-width: 480px) {
+  .colle,
+  .compte,
+  .resolu {
+    min-width: 90%;
+  }
+
+  .map-grid,
+  .map-grid-view,
+  .map-grid-colabor,
+  .chart-grid,
+  .chart-grids,
+  .action-grid,
+  .chart-grid-ia {
+    width: 100%;
+  }
+
+  .codeColor {
+    margin-left: 10%;
+  }
+
+  .code-text {
+    margin-left: 10%;
+  }
+  .codes{
+    padding-right: 250px;
+    width: 10px;
+  }
+  .static-card{
+    gap: 20px;
+    flex-direction: column;
+  }
+  
+}
+@media (max-width: 1440px) {
+  .colle, .compte, .resolu {
+    min-width: 25%;
+  }
+  .incident-data{
+    width: 143vh;
+    margin-top: 7%;
+  }
+
+  .map-grid, .map-grid-view,  .action-grid, .chart-grid-ia {
+    width: 60%;
+  }
+  .chart-grid, .chart-grids{
+    width:56%;
+  }
+  .charts-view{
+    margin-top: -92.5%;
+    display: grid;
+  }
+  .map-grid-colabor{
+    width: 77%;
+  }
+  .static-card{
+    width: 95%;
+  }
+  .body{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    /* align-items: center; */
+    margin-left: 18%;
+  }
+  .codeColor, .code-text {
+    margin-left: 40%;
+  }
+  .codes{
+    padding-right: 250px;
+    width: 250px;
+    margin-left: 23%;
+  }
+  .head {
+    margin-top: 8%;
+    width:76%
+  }
+  .incident-image{
+    max-height: 300px;
+    max-width: 315px;
+  }
+}
+
+.incident-image{
+  height: 300px;
+  width: 480px;
+}
+.incidentView{
+  margin-top:'7%';  
+  justify-content:'center'; 
+  align-items:'center'
+}
+.incident-data{
+  max-width: 160vh;
+  margin-top: 7%;
 }

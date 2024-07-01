@@ -301,7 +301,7 @@ function Colaboration () {
                         </div>
                     </div>
                 </div>
-                <div style={{marginTop:"15px"}}>
+                <div>
                     <div className="map-grid-colabor" style={{paddingTop:'5px'}}>
                         <div className="col_header">
                             <h4 style={{marginLeft:"30px"}}>Carte Interactive</h4>
@@ -309,9 +309,9 @@ function Colaboration () {
                         <div id="map"> 
                             {map}
                         </div>
-                        <div>
+                        <div style={{display:'flex'}}>
                             <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
-                            <div style={{marginTop:'2%'}}>
+                            <div className="codes">
                                 <h5 className="colorCode">Code Couleur</h5>
                                 <div className="codeColor">
                                     <div>

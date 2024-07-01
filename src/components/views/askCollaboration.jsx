@@ -427,11 +427,11 @@ function Colaborate (){
                     </Col>
                     <Col lg={3} sm={9}>
                         <Col>
-                            <Col lg={12} sm={9} className="chart-grid">
+                            <Col lg={12} sm={9} className="chart-grids">
                                 <div className="col_header">
                                     <div style={{marginTop:"-28px", paddingTop:'15px'}}>
                                         <h4 style={{textAlign:"justify"}}>Image de l'incident</h4>
-                                        <img src={imgUrl} alt='' style={{height:"300px"}}/>{''}
+                                        <img src={imgUrl} alt='' style={{height:"300px", width:'442px'}}/>{''}
                                     </div>
                                     <div style={{display:"flex", justifyContent:"space-between"}}>
                                         <p>Date: {date}</p>
