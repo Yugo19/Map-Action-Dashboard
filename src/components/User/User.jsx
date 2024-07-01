@@ -30,7 +30,8 @@ function User (){
         phone : "",
         address : "",
         user_type : "",
-        password : ""
+        password : "",
+        organisation : ""
     })
 
     const onDeleteUser = (item) => {
@@ -217,6 +218,7 @@ function User (){
         phone: newUser.phone,
         address: newUser.address,
         user_type: newUser.user_type,
+        organisation: newUser.organisation,
         password: "mapaction2020",
       };
   
@@ -264,6 +266,7 @@ function User (){
               phone: "",
               adress: "",
               user_type: "",
+              organisation: "",
               password: "",
             });
             Swal.fire("Succes", "Utilisateur ajoute avec succes", "success");
@@ -377,6 +380,17 @@ function User (){
                   value={newUser.user_type}
                   onChange={handleSelectChange}
                   classNamePrefix="select"
+                />
+              </FormGroup>
+              <FormGroup className="col-sm-6">
+                <label htmlFor="prenom">Organisation:</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  id="organisation"
+                  name="organisation"
+                  value={newUser.organisation}
+                  onChange={(e) => setNewUser({ ...newUser, organisation: e.target.value })}
                 />
               </FormGroup>
             </Modal.Body>

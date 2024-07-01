@@ -477,10 +477,10 @@ function GlobalView (){
                             </div>
                         </div>
                         <div className='charts-view'>
-                            <div className="chart-grid" style={{paddingTop:'5px'}}>
+                            <div className="chart-grids" style={{paddingTop:'5px', display:'flex'}}>
                                 <div className="col_header">
                                     <h4>Image de l'incident</h4>
-                                    <img src={imgUrl} alt="" style={{height:"300px"}}/>{' '}
+                                    <img src={imgUrl} alt="" className='incident-image'/>{' '}
                                     <div style={{display:"flex", justifyContent:"space-between"}}>
                                         <p>Date: {date}</p>
                                         <p >Heure: {heure}</p>

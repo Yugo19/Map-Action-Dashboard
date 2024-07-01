@@ -37,7 +37,7 @@ export default class Login extends Component {
       showPwdModal: false,
       changepwd: false,
       file: null,
-      show_reset: "/request-password",
+      show_reset: "/",
     };
 
     this.onChange = this.onChange.bind(this);

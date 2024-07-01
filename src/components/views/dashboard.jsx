@@ -43,6 +43,9 @@ function Dashboard(props) {
     const [preduct, setPreduct] = useState([])
 
     useEffect(() => {
+        if (userType !== 'elu') {
+            return window.location.pathname = "/";
+        }
         _getIncidents();
         _getIndicateur();
         _getIncidentsResolved();
@@ -616,7 +619,7 @@ function Dashboard(props) {
                     </div>
                 </div>
             </div>
-            <div style={{marginTop:"20px"}}>
+            <div >
                 <div className="static-card">
                     <div className="map-grid">
                         <div className="col_header">
@@ -626,9 +629,9 @@ function Dashboard(props) {
                         <div id="map"> 
                           {map}
                         </div>
-                        <div>
+                        <div style={{display:'flex'}}>
                             <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
-                            <div>
+                            <div className="codes">
                                 <h5 className="colorCode">Code Couleur</h5>
                                 <div className="codeColor">
                                     <div>
@@ -670,11 +673,10 @@ function Dashboard(props) {
                         <div className="chart-grid" style={{paddingTop:'5px'}}>
                             <div className="col_header">
                                 <h4 style={{marginLeft:"20px"}}>Incidents par type d’utilisateurs</h4>
-                                <p style={{marginLeft:"20px"}}>{selectedMonth}</p>
                                 <div className="pun">
                                     <canvas ref={chartRef} width="500" height="300"></canvas>
                                 </div>
-                                <Row style={{marginTop:'40px'}}>
+                                <Row style={{marginTop:'40px', display:'flex', justifyContent:'center', alignItems:'center'}}>
                                     <Col lg={6} sm={6}>
                                         <div style={{marginLeft:"35px"}}>
                                             <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{percentageAnonymous}%</p>

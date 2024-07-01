@@ -65,7 +65,8 @@
     }
     .collapse-button {
       transform: rotate(180deg);
-      top: 1%;
+      top: 2%;
+      right: -40px;
     }
     .profil{
       display: none;
@@ -167,11 +168,20 @@
   background-color: #f4f7f7;
   position: fixed;
   justify-content: space-between;
+
   @media (max-width: 768px) {
     width: 100%;
     height: auto;
-    // flex-direction: column;
     margin-left: 0;
+  }
+  
+}
+@media (max-width: 1440px) {
+  
+  .header {
+    width:85%;
+    padding-left: 50px;
+    padding-right: 60px;
   }
 }
 
@@ -229,9 +239,7 @@ input {
 }
 
 .menu-list .item{
-  // display: flex;
   align-items: center;
-  // gap: 20px;
   color: #202020;
   cursor: pointer;
   font-weight: 500;
@@ -251,11 +259,10 @@ input {
 }
 
 .user_logo {
-  border-radius: 30%;
-  background: #fff;
+  border-radius: 50%;
   padding: 5px;
   width: 45px;
-  height: 35%;
+  height: 45px;
 }
 
 .user_logo:hover {
@@ -316,3 +323,5 @@ font-size: 18px;
 border-radius: 12px;
 // line-height: 50px;
 }
+
+

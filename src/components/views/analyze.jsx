@@ -267,21 +267,21 @@ function Analyze (){
                     </div>
                     <hr className="dash_line"/>
                 </div>
-                <div style={{marginTop:"50px"}}>
+                <div>
                 <Row>
-                        <Col lg={6} sm={9} className="map-grid-view">
-                            <div className="col_header">
-                                <h4>Carte Interactive</h4>
-                            </div>
-                            <div id="map">
-                                {latitude !== 0 && longitude !== 0 ? (
-                                <MapContainer center={position} zoom={13} style={{ height: '600px', width: '100%' }}>
-                                    <RecenterMap lat={latitude} lon={longitude} />
-                                    <TileLayer
+                    <Col lg={6} sm={9} className="map-grid-view">
+                        <div className="col_header">
+                            <h4>Carte Interactive</h4>
+                        </div>
+                        <div id="map">
+                            {latitude !== 0 && longitude !== 0 ? (
+                            <MapContainer center={position} zoom={13} style={{ height: '600px', width: '100%' }}>
+                                <RecenterMap lat={latitude} lon={longitude} />
+                                <TileLayer
                                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                    />
-                                    <Marker
+                                />
+                                <Marker
                                     className="icon-marker"
                                     icon={
                                         incident.etat === "resolved"
@@ -291,11 +291,11 @@ function Analyze (){
                                             : customMarkerIconRed
                                     }
                                     position={position}
-                                    >
+                                >
                                     <Popup>{incident.title}</Popup>
                                     <Circle center={position} radius={500} color="red"></Circle>
-                                    </Marker>
-                                </MapContainer>
+                                </Marker>
+                            </MapContainer>
                                 ) : (
                                 <p className="danger">Coordonnees non renseignees</p>
                                 )}
@@ -355,11 +355,11 @@ function Analyze (){
                             </Col>
                             <Col lg={3} sm={9}>
                                 <Col>
-                                    <Col lg={12} sm={9} className="chart-grid" style={{paddingTop:'5px'}}>
+                                    <Col lg={12} sm={9} className="chart-grids" >
                                         <div className="col_header">
                                             <div>
                                                 <h4 style={{textAlign:"justify"}}>Image de l'incident</h4>
-                                                <img src={imgUrl} alt='' style={{height:"300px"}}/>{''}
+                                                <img src={imgUrl} alt="" className='incident-image'/>{' '}
                                             </div>
                                             
                                             <div style={{display:"flex", justifyContent:"space-between"}}>
