@@ -55,8 +55,8 @@ function Dashboard(props) {
         _getPercentageVsTaken();
         _getPercentageVsResolved();
         _getZone();
-        _getCategory();
         _getRegistered();
+        _getCategory();
     }, [selectedMonth]);
 
     const handleMonthChange = (selectedOption) => {
@@ -238,6 +238,42 @@ function Dashboard(props) {
             console.log(error.message)
         }
     }
+    const _getCategory = async () => {
+        try {
+            const res = await axios.get(`${config.url}/MapApi/prediction/`, {
+                headers: {
+                  Authorization: `Bearer ${sessionStorage.token}`,
+                },
+              });
+            console.log("Ici log", res.data);
+            let predictions = res.data;
+    
+            let incidentCounts = predictions.reduce((acc, prediction) => {
+                acc[prediction.incident_type] = (acc[prediction.incident_type] || 0) + 1;
+                return acc;
+            }, {});
+    
+            let totalIncidents = predictions.length;
+    
+            let incidentPercentages = Object.entries(incidentCounts).map(([type, count]) => {
+                return {
+                    type,
+                    count,
+                    percentage: ((count / totalIncidents) * 100).toFixed(2) + '%'
+                };
+            });
+    
+            console.log('Nombre total d\'incidents:', totalIncidents);
+            console.log('Détails des incidents:', incidentPercentages);
+    
+            setCountCategory(totalIncidents);
+            setPreduct(incidentPercentages);
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+    
+    
 
     // Resolved Incidents
     const _getIncidentsResolved = async () => {
@@ -283,40 +319,6 @@ function Dashboard(props) {
             const incidentsPreviousMonth = previousMonthRes.data.data.length;
             const percentageVsPreviousMonth = incidentsPreviousMonth !== 0 ? ((incidentsCurrentMonth / incidentsPreviousMonth) * 100).toFixed(2) : 0;
             setPercentageVs(percentageVsPreviousMonth)
-        } catch (error) {
-            console.log(error.message);
-        }
-    };
-    const _getCategory = async () => {
-        try {
-            const res = await axios.get(`${config.url}/MapApi/prediction/`, {
-                headers: {
-                  Authorization: `Bearer ${sessionStorage.token}`,
-                },
-              });
-            console.log("Ici log", res.data);
-            let predictions = res.data;
-    
-            let incidentCounts = predictions.reduce((acc, prediction) => {
-                acc[prediction.incident_type] = (acc[prediction.incident_type] || 0) + 1;
-                return acc;
-            }, {});
-    
-            let totalIncidents = predictions.length;
-    
-            let incidentPercentages = Object.entries(incidentCounts).map(([type, count]) => {
-                return {
-                    type,
-                    count,
-                    percentage: ((count / totalIncidents) * 100).toFixed(2) + '%'
-                };
-            });
-    
-            console.log('Nombre total d\'incidents:', totalIncidents);
-            console.log('Détails des incidents:', incidentPercentages);
-    
-            setCountCategory(totalIncidents);
-            setPreduct(incidentPercentages);
         } catch (error) {
             console.log(error.message);
         }
@@ -439,6 +441,7 @@ function Dashboard(props) {
             setIncident(item);
         }
     }
+
 
     let positions =[]
 
@@ -576,7 +579,7 @@ function Dashboard(props) {
                 </div>
                 <hr className="dash_line"/>
             </div>
-            <div >
+            <div>
                 <div className="static-card">
                     <div className="colle">
                         <div>
@@ -616,7 +619,7 @@ function Dashboard(props) {
                     </div>
                 </div>
             </div>
-            <div style={{marginTop:"20px"}}>
+            <div >
                 <div className="static-card">
                     <div className="map-grid">
                         <div className="col_header">
@@ -626,9 +629,9 @@ function Dashboard(props) {
                         <div id="map"> 
                           {map}
                         </div>
-                        <div>
+                        <div style={{display:'flex'}}>
                             <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
-                            <div>
+                            <div className="codes">
                                 <h5 className="colorCode">Code Couleur</h5>
                                 <div className="codeColor">
                                     <div>
@@ -650,15 +653,19 @@ function Dashboard(props) {
                         <div>
                             <h4 className="repartionText">Repartition des incidents par catégories</h4>
                             <div>
-                                <div className="repartition">
-                                {preduct.map((incident, index) => (
-                                    <div key={index}>
-                                        <p style={{fontSize:"14px"}}>{incident.type}</p>
-                                        <p style={{float:"right", marginTop:"-25px",}}>{incident.percentage}</p>
-                                        <hr/>
+                                <div>
+                                    <div className="repartition">
+                                    {preduct.map((incident, index) => (
+                                        <div key={index}>
+                                            <p style={{fontSize:"14px"}}>{incident.type}</p>
+                                            <p style={{float:"right", marginTop:"-25px",}}>{incident.percentage}</p>
+                                            <hr/>
+                                        </div>
+                                    ))}
                                     </div>
-                                ))}
+                                    
                                 </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -666,11 +673,10 @@ function Dashboard(props) {
                         <div className="chart-grid" style={{paddingTop:'5px'}}>
                             <div className="col_header">
                                 <h4 style={{marginLeft:"20px"}}>Incidents par type d’utilisateurs</h4>
-                                <p style={{marginLeft:"20px"}}>{selectedMonth}</p>
                                 <div className="pun">
                                     <canvas ref={chartRef} width="500" height="300"></canvas>
                                 </div>
-                                <Row style={{marginTop:'40px'}}>
+                                <Row style={{marginTop:'40px', display:'flex', justifyContent:'center', alignItems:'center'}}>
                                     <Col lg={6} sm={6}>
                                         <div style={{marginLeft:"35px"}}>
                                             <p style={{fontWeight:"600", fontSize:"32px", lineHeight:"48px"}}>{percentageAnonymous}%</p>

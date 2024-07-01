@@ -96,7 +96,7 @@ function GlobalView (){
         const pictUrl = incident.photo
         navigate(`/analyze/${incident.id}/${userId}`,{ state: { pictUrl, nearbyPlaces}});
 
-        };
+    };
 
      
 
@@ -144,44 +144,7 @@ function GlobalView (){
         console.log(EditIncident);
     };
     
-    // const handleChangeStatus = async (e) => {
-    //     e.preventDefault();
-    //     setState(true);
-    //     var new_data = new FormData();
-    //     new_data.append('etat', EditIncident.etat);
-    //     new_data.append('zone', incident.zone);
-    //     var url = config.url + '/MapApi/incident/' + incidentId;
-    //     try {
-    //         const response = await axios.put(url, new_data);
-    //         console.log(response);
-    //         setState(false);
-    //         setisChanged(false);
-    //         setEditIncident({
-    //             title: '',
-    //             zone: '',
-    //             description: '',
-    //             lattitude: '',
-    //             longitude: '',
-    //             user_id: '',
-    //             etat: '',
-    //             indicateur_id: '',
-    //             category_ids: [],
-    //         });
-    //         Swal.fire('Changement de status effectué avec succés')
-    //     } catch (error) {
-    //         setProgress(false);
-    //         setState(false);
-    //         setisChanged(false);
-    //         if (error.response) {
-    //             console.log(error.response.status);
-    //             console.log(error.response.data);
-    //         } else if (error.request) {
-    //             console.log(error.request.data);
-    //         } else {
-    //             console.log(error.message);
-    //         }
-    //     }
-    // };
+    
     const handleChangeStatus = async (e) => {
         e.preventDefault();
         setState(true);
@@ -328,7 +291,8 @@ function GlobalView (){
                 <h2>Loading video...</h2>
             </div>
         )
-    }; return(
+    }; 
+    return(
             <div className='body'>
                 <div>
                     <div className="head">
@@ -448,8 +412,8 @@ function GlobalView (){
                                     >
                                     </Player>
                                     {videoIsLoading ? <Loader /> : null}
-                                    </div>
                                 </div>
+                            </div>
                                 <div>
                                     <h6>Note Vocal</h6>
                                     <div className='audioIncident'>
@@ -475,8 +439,8 @@ function GlobalView (){
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                        <div className='charts-view'>
+                    </div>
+                    <div className='charts-view'>
                             <div className="chart-grids" style={{paddingTop:'5px', display:'flex'}}>
                                 <div className="col_header">
                                     <h4>Image de l'incident</h4>
@@ -520,8 +484,8 @@ function GlobalView (){
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </div>
-            )
-        }
+            </div>
+        )
+}
 export default GlobalView;

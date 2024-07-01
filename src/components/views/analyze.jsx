@@ -267,9 +267,8 @@ function Analyze (){
                     </div>
                     <hr className="dash_line"/>
                 </div>
-                <div>
-                <Row>
-                    <Col lg={6} sm={9} className="map-grid-view">
+                <div className='static-card'>
+                    <div className="map-grid-view">
                         <div className="col_header">
                             <h4>Carte Interactive</h4>
                         </div>
@@ -299,127 +298,122 @@ function Analyze (){
                                 ) : (
                                 <p className="danger">Coordonnees non renseignees</p>
                                 )}
-                            </div>
+                        </div>
+                        <div>
+                            <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
                             <div>
-                                <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
-                                <div>
-                                    <h5 className='colorCode'>Code Couleur</h5>
-                                    <div className="codeColor">
-                                        <div>
-                                            <div className="hr_blue"/>
-                                            <p>Declaré <br/> résolu</p>
-                                        </div>
-                                        <div>
-                                            <div className="hr_orange"/>
-                                            <p>Pris en <br/> compte</p>
-                                        </div>
-                                        <div>
-                                            <div className="hr_red"/>
-                                            <p>Pas d'action</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                                <div className="dashed-line"></div>
-                                <div style={{marginLeft:'10px'}}>
-                                    <div style={{marginBottom:'40px'}}>
-                                        <h6>Contexte & Description</h6>
-                                        <div className='descriptionIncident'>
-                                            <ExpandableContent content={context || ""} />
-                                        </div>
-                                    </div>
-                                    <div style={{marginBottom:'40px'}}>
-                                        <h6>Impacts Potentiels</h6>
-                                        <div className='descriptionIncident'>
-                                            <ExpandableContent content={impact_potentiel || ""} />
-                                        </div>
+                                <h5 className='colorCode'>Code Couleur</h5>
+                                <div className="codeColor">
+                                    <div>
+                                        <div className="hr_blue"/>
+                                        <p>Declaré <br/> résolu</p>
                                     </div>
                                     <div>
-                                        <h6>Pistes de solutions envisageables</h6>
-                                        <div className='descriptionIncident'>
-                                            <ExpandableContent content={piste_solution || ""} />
-                                            <h6>Lieux à proximité:</h6>
-                                            <div>
-                                            {nearbyPlaces.map(place => (
-                                                <div key={place.id} style={{ marginBottom: '10px' }}>
-                                                <p>{place.name}</p>
-                                                </div>
-                                            ))}
-                                            </div>
-                                        </div>
+                                        <div className="hr_orange"/>
+                                        <p>Pris en <br/> compte</p>
                                     </div>
-                                    <div className='boutonAnalyse'>
-                                        <Link to={`/llm_chat/${incident.id}/${userId}`} style={{color:"white", textDecoration:"none"}}>Discussion LLM</Link>
+                                    <div>
+                                        <div className="hr_red"/>
+                                        <p>Pas d'action</p>
                                     </div>
                                 </div>
-                            </Col>
-                            <Col lg={3} sm={9}>
-                                <Col>
-                                    <Col lg={12} sm={9} className="chart-grids" >
-                                        <div className="col_header">
-                                            <div>
-                                                <h4 style={{textAlign:"justify"}}>Image de l'incident</h4>
-                                                <img src={imgUrl} alt="" className='incident-image'/>{' '}
+                            </div>
+                        </div>
+                        <div className="dashed-line"></div>
+                        <div style={{marginLeft:'10px'}}>
+                            <div style={{marginBottom:'40px'}}>
+                                <h6>Contexte & Description</h6>
+                                <div className='descriptionIncident'>
+                                    <ExpandableContent content={context || ""} />
+                                </div>
+                            </div>
+                            <div style={{marginBottom:'40px'}}>
+                                <h6>Impacts Potentiels</h6>
+                                <div className='descriptionIncident'>
+                                    <ExpandableContent content={impact_potentiel || ""} />
+                                </div>
+                            </div>
+                            <div>
+                                <h6>Pistes de solutions envisageables</h6>
+                                <div className='descriptionIncident'>
+                                    <ExpandableContent content={piste_solution || ""} />
+                                    <h6>Lieux à proximité:</h6>
+                                    <div>
+                                        {nearbyPlaces.map(place => (
+                                            <div key={place.id} style={{ marginBottom: '10px' }}>
+                                                <p>{place.name}</p>
                                             </div>
-                                            
-                                            <div style={{display:"flex", justifyContent:"space-between"}}>
-                                                <p>Date: {date}</p>
-                                                <p>Heure: {heure}</p>
-                                            </div>
-                                        </div>
-                                    </Col>
-                                    <Col lg={12} sm={9} className="chart-grid-ia" style={{paddingTop:'3px'}}>
-                                        <div className="col_header">
-                                            <h4>Type d'incident</h4>
-                                            <div className='typeIncident'>
-                                                <img src='' alt=''/>
-                                            </div>
-                                            <p>{type_incident || ""}</p>
-                                        </div>
-                                        <div className="col_header">
-                                            <h4>Gravité d'incident</h4>
-                                            <div className='typeIncident'>
-                                                <img src='' alt=''/>
-                                            </div>
-                                        </div>
-                                        <div className="col_header">
-                                            <h4>Code Couleur*</h4>
-                                            <div style={{display:"flex"}}>
-                                                <div>
-                                                    <div className="hr_yellow"/>
-                                                    <p>Faible <br/>Impact</p>
-                                                </div>
-                                                <div>
-                                                    <div className="hr_orange_gr"/>
-                                                    <p>Potentiellement <br/>Grave</p>
-                                                </div>
-                                                <div>
-                                                    <div className="hr_red_gr"/>
-                                                    <p>Potentiellement<br/>Dangereux</p>
-                                                </div>
-                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='boutonAnalyse'>
+                                <Link to={`/llm_chat/${incident.id}/${userId}`} style={{color:"white", textDecoration:"none"}}>Discussion LLM</Link>
+                            </div>
+                        </div>
+                    </div>
+                        <div className='charts-view analyze'>
+                            <div className="chart-grids" style={{paddingTop:'5px', display:'flex' }}>
+                                <div className="col_header">
+                                    <div>
+                                        <h4 style={{textAlign:"justify"}}>Image de l'incident</h4>
+                                        <img src={imgUrl} alt="" className='incident-image'/>{' '}
+                                    </div>
+                                    <div style={{display:"flex", justifyContent:"space-between"}}>
+                                        <p>Date: {date}</p>
+                                        <p>Heure: {heure}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="chart-grid-ia" style={{paddingTop:'3px'}}>
+                                <div className="col_header">
+                                    <h4>Type d'incident</h4>
+                                    <div className='typeIncident'>
+                                        <img src='' alt=''/>
+                                    </div>
+                                    <p>{type_incident || ""}</p>
+                                </div>
+                                <div className="col_header">
+                                    <h4>Gravité d'incident</h4>
+                                    <div className='typeIncident'>
+                                        <img src='' alt=''/>
+                                    </div>
+                                </div>
+                                <div className="col_header">
+                                    <h4>Code Couleur*</h4>
+                                    <div style={{display:"flex"}}>
+                                        <div>
+                                            <div className="hr_yellow"/>
+                                            <p>Faible <br/>Impact</p>
                                         </div>
                                         <div>
-                                            <p className='alerts'>
-                                            <span>*</span> L'évaluation de la gravité des incidents
-                                              est réalisée par notre système d'intelligence
-                                              artificielle qui analyse conjointement certains 
-                                              éléments tels que la proximité des incidents aux zones sensibles, 
-                                              les populations vulnérables, les données environnementales contextuelles 
-                                              et les tendences historiques. 
-                                              Cette estimation repose sur les données actuellement accessibles et, 
-                                              bien que précise dans la majorité des cas, 
-                                              peut parfois être sujette à erreur ou à mauvaise interprétation. 
-                                              Nous recommandons toujours une vérification sur le terrain pour confirmer 
-                                              les détails de chaque incident.
-                                            </p>
-                                            <p></p>
+                                            <div className="hr_orange_gr"/>
+                                            <p>Potentiellement <br/>Grave</p>
                                         </div>
-                                    </Col>
-                                </Col>
-                               
-                            </Col>
-                    </Row>
+                                        <div>
+                                            <div className="hr_red_gr"/>
+                                            <p>Potentiellement<br/>Dangereux</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className='alerts'>
+                                        <span>*</span> L'évaluation de la gravité des incidents
+                                            est réalisée par notre système d'intelligence
+                                            artificielle qui analyse conjointement certains 
+                                            éléments tels que la proximité des incidents aux zones sensibles, 
+                                            les populations vulnérables, les données environnementales contextuelles 
+                                            et les tendences historiques. 
+                                            Cette estimation repose sur les données actuellement accessibles et, 
+                                            bien que précise dans la majorité des cas, 
+                                            peut parfois être sujette à erreur ou à mauvaise interprétation. 
+                                            Nous recommandons toujours une vérification sur le terrain pour confirmer 
+                                            les détails de chaque incident.
+                                    </p>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
                 </div>
             </div>
         )

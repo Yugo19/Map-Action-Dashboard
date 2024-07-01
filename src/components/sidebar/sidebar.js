@@ -304,8 +304,8 @@ const Sidebar = ({ isAdmin }) => {
   const [notifications, setNotifications] = useState([]);
   const [width, setWidth] = useState(window.innerWidth);
   const location = useLocation();
-
-  const photo_user = userData ? config.url + userData.avatar : "";
+  const photo_user = userData && config && config.url ? config.url + userData.avatar : "";
+  // const photo_user = userData ? config.url + userData.avatar : "";
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);

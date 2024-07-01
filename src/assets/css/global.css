@@ -5,7 +5,7 @@ html{
   scroll-behavior: smooth;
   body{
     background-color: #f4f7f7;
-    min-width: 100vw;
+    min-width: 100%;
     overflow-x: hidden;
     font-family: "Poppins";
     justify-content: center;
@@ -880,7 +880,7 @@ padding: 0;
   transform: scale(1.04);
 }
 .chart-grid-ia{
-  width: 400px;
+  width: 55%;
   height: 100%;
   background-color: #fff;
   margin-left: 20px;
@@ -1044,7 +1044,7 @@ h6 h5{
   justify-content: space-between;
   align-items: center;
   margin-top: 7%;
-  width: 84%;
+  width: 79%;
 }
 
 .static-card{
@@ -1065,7 +1065,7 @@ h6 h5{
   width: 50%;
   flex-direction: column;
   display: flex;
-  margin-top: -65%;
+  margin-top: -32%;
 }
 .choiceData{
   display: flex;
@@ -1233,12 +1233,131 @@ h6 h5{
     max-height: 300px;
     max-width: 315px;
   }
+
+  .analyze{
+    margin-top: -40%;
+  }
 }
 
-.incident-image{
-  height: 300px;
-  width: 480px;
+@media (min-width: 1441px) and (max-width: 1500px) {
+  .colle, .compte, .resolu {
+    min-width: 28%;
+  }
+  .incident-data{
+    width: 160vh;
+    margin-top: 5%;
+  }
+
+  .map-grid, .map-grid-view{
+    width: 75%;
+  }
+  .chart-grid-ia{
+    width: 70%;
+  }
+  .chart-grid, .chart-grids, .action-grid{
+    width: 70%;
+  }
+  .charts-view{
+    margin-top: -97%;
+    display: grid;
+  }
+  .map-grid-colabor{
+    width: 70%;
+  }
+  .static-card{
+    width: 90%;
+  }
+  .body{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-left: 18%;
+  }
+  .codeColor, .code-text {
+    margin-left: 35%;
+  }
+  .codes{
+    padding-right: 250px;
+    width: 200px;
+    margin-left: 20%;
+  }
+  .head {
+    /* margin-top: 5%; */
+    width: 81%;
+  }
+  .incident-image{
+    max-height: 300px;
+    max-width: 315px;
+  }
+  .analyze{
+    margin-top: -40%;
+  }
 }
+@media (min-width: 1501px) and (max-width: 1700px) {
+  .colle, .compte, .resolu {
+    min-width: 28%;
+  }
+  .incident-data{
+    width: 160vh;
+    margin-top: 5%;
+  }
+
+  .map-grid, .map-grid-view{
+    width: 75%;
+  }
+  .chart-grid-ia{
+    width: 70%;
+  }
+  .chart-grid, .chart-grids, .action-grid{
+    width: 70%;
+  }
+  .charts-view{
+    margin-top: -82%;
+    display: grid;
+  }
+  .map-grid-colabor{
+    width: 70%;
+  }
+  .static-card{
+    width: 90%;
+  }
+  .body{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-left: 16%;
+  }
+  .codeColor, .code-text {
+    margin-left: 35%;
+  }
+  .codes{
+    padding-right: 250px;
+    width: 200px;
+    margin-left: 20%;
+  }
+  .head {
+    /* margin-top: 5%; */
+    width: 81%;
+  }
+  .incident-image{
+    max-height: 300px;
+    max-width: 385px;
+  }
+  .analyze{
+    margin-top: -37%;
+  }
+}
+
+
+
+
+.incident-image {
+  height: 300px;
+  width: 472px;
+  box-sizing: border-box;
+}
+
+
 .incidentView{
   margin-top:'7%';  
   justify-content:'center'; 
