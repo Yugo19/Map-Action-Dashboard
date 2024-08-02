@@ -1,4 +1,3 @@
-
 import React, { Component } from "react";
 import { Nav, NavDropdown, MenuItem } from "react-bootstrap";
 
@@ -7,7 +6,6 @@ class AdminNavbarLinks extends Component {
     super(props);
     this.state = {
       redirect: false,
-      // user: JSON.parse(sessionStorage.getItem('user'))
     };
   }
 
@@ -23,24 +21,20 @@ class AdminNavbarLinks extends Component {
       window.location.pathname = "/elu/profile-elu";
     }
   };
+
   render() {
     return (
-      <div>
-        {/* <Nav>          
-          <NavItem eventKey={1} href="#">           
-            <p className="hidden-lg hidden-md">Admin Sira Dashboard</p>
-          </NavItem>          
-        </Nav> */}
+      <div data-testid="admin-navbar-links">
         <Nav pullRight>
           <NavDropdown
             title={sessionStorage.first_name}
             eventKey={2}
             id="basic-nav-dropdown-right"
           >
-            <MenuItem eventKey={2.1} onClick={this.profile}>
+            <MenuItem eventKey={2.1} onClick={this.profile} data-testid="profile-menu-item">
               Profil
             </MenuItem>
-            <MenuItem eventKey={2.2} onClick={this.logOut}>
+            <MenuItem eventKey={2.2} onClick={this.logOut} data-testid="logout-menu-item">
               Log Out
             </MenuItem>
           </NavDropdown>

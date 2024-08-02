@@ -7,7 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'), // import and retain the original functionalities
+  ...jest.requireActual('react-router-dom'), 
   useParams: () => ({
 
     incidentId: '123'
@@ -45,6 +45,5 @@ describe('Analyze Component', () => {
     expect(axiosMock.get).toHaveBeenCalledWith(expect.stringContaining('MapApi/prediction/123'));
   });
 
-  // Add more tests as needed for different aspects of the component
 });
 

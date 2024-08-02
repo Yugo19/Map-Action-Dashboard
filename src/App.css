@@ -58,7 +58,9 @@
 }
 
 .chat:-webkit-scrollbar {
-    display: none;
+    /*display: none;
+
+    */
 }
 
 .input-chat-container {
@@ -121,7 +123,7 @@
 }
 
 .another-message {
-    max-width: 00px;
+    max-width: 400px;
     padding: 5px;
     width: fit-content;
     background-color: rgb(212, 253, 77);

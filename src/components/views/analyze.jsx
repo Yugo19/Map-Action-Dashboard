@@ -1,15 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
-import { MapContainer, TileLayer, Circle, Popup, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer, Circle, Popup, Marker, useMap } from 'react-leaflet';
 import '../../assets/css/global.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faCalendarPlus, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import { config } from '../../config';
 import ReactDOMServer from 'react-dom/server';
 import Select from 'react-select';
 import axios from 'axios';
-
 
 function ExpandableContent({ content }) {
     const [expanded, setExpanded] = useState(false);
@@ -31,14 +30,23 @@ function ExpandableContent({ content }) {
 }
 
 function Analyze (){
-    const { incidentId } = useParams(); 
+    const { incidentId, userId} = useParams(); 
     const [incident, setIncident] = useState({});
     const [videoIsLoading, setVideoIsLoading] = useState(false);
-    const [prediction, setPredictions] = useState({});
+    const [prediction, setPredictions] = useState([]);
+    const [nearbyPlaces, setNearbyPlaces] = useState([]);
+    const predictionId = userId+incidentId;
+    const location = useLocation();
+    const pictUrl = location.state.pictUrl;
+    const nearbyPlacesDic = location.state.nearbyPlaces;
+
+
     useEffect(() => {
+
         const fetchIncident = async () => {
             try {
                 const response = await axios.get(`${config.url}/MapApi/incident/${incidentId}`);
+                console.log('Incident data', response.data)
                 setIncident(response.data);
             } catch (error) {
                 console.error('Erreur lors de la récupération des détails de l\'incident :', error);
@@ -46,19 +54,23 @@ function Analyze (){
         };
         const fetchPredictions = async () => {
             try {
-                const response = await axios.get(`${config.url}/MapApi/prediction/${incidentId}`);
+                const response = await axios.get(`${config.url}/MapApi/prediction/${predictionId}`);
                 console.log("les reponses du serveur", response.data)
                 setPredictions(response.data[0]);
+
             } catch (error) {
                 console.error('Erreur lors de la récupération des prédictions :', error);
             }
         };
-
+        
 
         if (incidentId) {
             fetchIncident();
             fetchPredictions(); 
         }
+
+        sendPrediction();
+        
     }, [incidentId]);
 
     const imgUrl = incident ? config.url + incident.photo : '';
@@ -72,6 +84,7 @@ function Analyze (){
     const piste_solution = prediction ? prediction.piste_solution: '';
     const context = prediction ? prediction.context: '';
     const impact_potentiel = prediction ? prediction.impact_potentiel: '';
+    const type_incident =prediction ? prediction.incident_type: "";
     console.log(impact_potentiel)
     const dateObject = new Date(dataTostring)
     const date = dateObject.toLocaleDateString();
@@ -80,6 +93,70 @@ function Analyze (){
     const customMarkerIconBlue = new L.DivIcon({
         html: iconHTML,
     });
+
+    useEffect(() => {
+        if (incident.lattitude && incident.longitude) {
+            const apiUrl = `${config.url}/MapApi/overpass/?latitude=${incident.lattitude}&longitude=${incident.longitude}`;
+            
+            axios.get(apiUrl)
+                .then(response => {
+                    console.log(response.data);
+                    setNearbyPlaces(response.data); 
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+    }, [incident.lattitude, incident.longitude]);
+ 
+
+    const sendPrediction = async () => {
+        try {
+
+        const fastapiUrl = config.url2;
+
+        let sensitiveStructures = [];
+
+        for (let i = 0; i < nearbyPlacesDic.length; i++) {
+            if (nearbyPlacesDic[i].amenity == 'school') {
+                sensitiveStructures.push('ecole');
+            }else if (nearbyPlacesDic[i].amenity == 'clinic') {
+                sensitiveStructures.push('Clinique');
+            } else if (nearbyPlacesDic[i].amenity == 'river') {
+                sensitiveStructures.push('Rivière');
+            } else if (nearbyPlacesDic[i].amenity == 'marigot') {
+                sensitiveStructures.push('marigot');
+            }else{
+                sensitiveStructures.push(nearbyPlacesDic[i].amenity);
+            }
+            
+        }
+
+        const payload = {
+            image_name: pictUrl,
+            sensitive_structures: sensitiveStructures,
+            incident_id: incidentId,
+            user_id: userId,
+            };    
+
+        try {
+
+            console.log("payload", payload);
+            const response = await axios.post(fastapiUrl, payload);
+
+        } catch (error) {
+            throw new Error('Internal Server Error');
+        }
+
+        
+
+    } catch (error) {
+        console.error('Error sending prediction:', error);
+        
+    }
+        
+    }
+    
 
     const iconHTMLRed = ReactDOMServer.renderToString(<FontAwesomeIcon icon={faMapMarkerAlt} color="red" size="2x"/>)
     const customMarkerIconRed = new L.DivIcon({
@@ -129,37 +206,48 @@ function Analyze (){
           </components.Option>
         );
     };
+    function RecenterMap({ lat, lon }) {
+        const map = useMap();
+        useEffect(() => {
+          if (lat && lon) {
+            map.setView([lat, lon], 13);
+          }
+        }, [lat, lon, map]);
+        return null;
+    }
         return(
             <div className='body'>
-                <div style={{backgroundColor:"#f4f7f7"}}>
-                    <div className="title">
-                        <h3 style={{fontSize:"30px", fontWeight:"700"}}>Tableau de Bord</h3>
+                <div>
+                    <div className="head">
+                        <div >
+                            <h3 className="title">Tableau de Bord</h3>
+                        </div>
+                        <div className="monthChoice">
+                        <Select
+                                components={{CustomOption}}
+                                value={monthsOptions.find(option => option.value === selectedMonth)}
+                                onChange={handleMonthChange}
+                                options={monthsOptions}
+                                styles={{
+                                    control: (provided, state) => ({
+                                        ...provided,
+                                        border: '1px solid #ccc',
+                                        borderRadius: '15px',
+                                        width:'150px',
+                                        height:'40px',
+                                        justifyContent:'space-around',
+                                        paddingLeft: '3px',
+                                    }),
+                                    indicatorSeparator: (provided, state) => ({
+                                        ...provided,
+                                        display: 'none' 
+                                    }),
+                                
+                                }}
+                            />
+                        </div>
                     </div>
-                    <div className="monthChoice">
-                    <Select
-                            components={{CustomOption}}
-                            value={monthsOptions.find(option => option.value === selectedMonth)}
-                            onChange={handleMonthChange}
-                            options={monthsOptions}
-                            styles={{
-                                // Styles de la zone de contrôle (sélection)
-                                control: (provided, state) => ({
-                                    ...provided,
-                                    border: '1px solid #ccc',
-                                    borderRadius: '15px',
-                                    width:'150px',
-                                    height:'40px',
-                                    justifyContent:'space-around',
-                                    paddingLeft: '3px',
-                                }),
-                                indicatorSeparator: (provided, state) => ({
-                                    ...provided,
-                                    display: 'none' // Pour masquer le séparateur entre l'icône et le contrôle
-                                }),
-                               
-                            }}
-                        />
-                    </div>
+                    
                     <div>
                         <div className="dash">
                             <ul className="dash_ul">
@@ -179,150 +267,153 @@ function Analyze (){
                     </div>
                     <hr className="dash_line"/>
                 </div>
-                <div style={{marginTop:"50px"}}>
-                <Row>
-                        <Col lg={6} sm={9} className="map-grid-view">
-                            <div className="col_header">
-                                <h4>Carte Interactive</h4>
-                            </div>
-                            <div id="map"> 
-                            {/* && typeof longitude=="number" && typeof latitude=="number"  */}
-                                {latitude !== null && longitude !== null ? (
-                                    <MapContainer center={position} zoom={13}>
-                                        <TileLayer
-                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                        />
-                                        <Marker
-                                        className="icon-marker"
-                                        icon={
-                                            incident.etat === "resolved"
-                                              ? customMarkerIconBlue
-                                              : incident.etat === "taken_into_account"
-                                                ? customMarkerIconOrange
-                                                : customMarkerIconRed
-                                          }
-                                        position={position}
-                                        >
-                                            <Popup>{incident.title}</Popup>
-                                            <Circle center={position} radius={500} color="red"></Circle>
-                                        </Marker>
-                                    </MapContainer>
+                <div className='static-card'>
+                    <div className="map-grid-view">
+                        <div className="col_header">
+                            <h4>Carte Interactive</h4>
+                        </div>
+                        <div id="map">
+                            {latitude !== 0 && longitude !== 0 ? (
+                            <MapContainer center={position} zoom={13} style={{ height: '600px', width: '100%' }}>
+                                <RecenterMap lat={latitude} lon={longitude} />
+                                <TileLayer
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                />
+                                <Marker
+                                    className="icon-marker"
+                                    icon={
+                                        incident.etat === "resolved"
+                                        ? customMarkerIconBlue
+                                        : incident.etat === "taken_into_account"
+                                            ? customMarkerIconOrange
+                                            : customMarkerIconRed
+                                    }
+                                    position={position}
+                                >
+                                    <Popup>{incident.title}</Popup>
+                                    <Circle center={position} radius={500} color="red"></Circle>
+                                </Marker>
+                            </MapContainer>
                                 ) : (
-                                    <p className="danger">Coordonnees non renseignees</p>
+                                <p className="danger">Coordonnees non renseignees</p>
                                 )}
-                            </div>
+                        </div>
+                        <div>
+                            <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
                             <div>
-                                <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
-                                <div>
-                                    <h5 style={{marginLeft:"350px", marginBottom:"5px", fontWeight:"500", marginTop:"-45px", fontSize:"18px"}}>Code Couleur</h5>
-                                    <div className="codeColor">
-                                        <div>
-                                            <div className="hr_blue"/>
-                                            <p>Declaré <br/> résolu</p>
-                                        </div>
-                                        <div>
-                                            <div className="hr_orange"/>
-                                            <p>Pris en <br/> compte</p>
-                                        </div>
-                                        <div>
-                                            <div className="hr_red"/>
-                                            <p>Pas d'action</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                                <div className="dashed-line"></div>
-                                <div style={{marginLeft:'10px'}}>
-                                    <div style={{marginBottom:'40px'}}>
-                                        <h6>Context & Description</h6>
-                                        <div className='descriptionIncident'>
-                                            <ExpandableContent content={context || ""} />
-                                        </div>
-                                    </div>
-                                    <div style={{marginBottom:'40px'}}>
-                                        <h6>Impacts Potentiels</h6>
-                                        <div className='descriptionIncident'>
-                                            <ExpandableContent content={impact_potentiel || ""} />
-                                        </div>
+                                <h5 className='colorCode'>Code Couleur</h5>
+                                <div className="codeColor">
+                                    <div>
+                                        <div className="hr_blue"/>
+                                        <p>Declaré <br/> résolu</p>
                                     </div>
                                     <div>
-                                        <h6>Pistes de solutions envisageables</h6>
-                                        <div className='descriptionIncident'>
-                                            <ExpandableContent content={piste_solution || ""} />
-                                        </div>
+                                        <div className="hr_orange"/>
+                                        <p>Pris en <br/> compte</p>
                                     </div>
-                                    <div className='boutonAnalyse'>
-                                        <Link to={`/llm_chat/${incident.id}`} style={{color:"white", textDecoration:"none"}}>Discussion LLM</Link>
+                                    <div>
+                                        <div className="hr_red"/>
+                                        <p>Pas d'action</p>
                                     </div>
                                 </div>
-                            </Col>
-                            <Col lg={3} sm={9}>
-                                <Col>
-                                    <Col lg={12} sm={9} className="chart-grid" style={{paddingTop:'5px'}}>
-                                        <div className="col_header">
-                                            <div>
-                                                <h4 style={{textAlign:"justify"}}>Image de l'incident</h4>
-                                                <img src={imgUrl} alt='' style={{height:"300px"}}/>{''}
+                            </div>
+                        </div>
+                        <div className="dashed-line"></div>
+                        <div style={{marginLeft:'10px'}}>
+                            <div style={{marginBottom:'40px'}}>
+                                <h6>Contexte & Description</h6>
+                                <div className='descriptionIncident'>
+                                    <ExpandableContent content={context || ""} />
+                                </div>
+                            </div>
+                            <div style={{marginBottom:'40px'}}>
+                                <h6>Impacts Potentiels</h6>
+                                <div className='descriptionIncident'>
+                                    <ExpandableContent content={impact_potentiel || ""} />
+                                </div>
+                            </div>
+                            <div>
+                                <h6>Pistes de solutions envisageables</h6>
+                                <div className='descriptionIncident'>
+                                    <ExpandableContent content={piste_solution || ""} />
+                                    <h6>Lieux à proximité:</h6>
+                                    <div>
+                                        {nearbyPlaces.map(place => (
+                                            <div key={place.id} style={{ marginBottom: '10px' }}>
+                                                <p>{place.name}</p>
                                             </div>
-                                            
-                                            <div style={{display:"flex", justifyContent:"space-between"}}>
-                                                <p>Date: {date}</p>
-                                                <p>Heure: {heure}</p>
-                                            </div>
-                                        </div>
-                                    </Col>
-                                    <Col lg={12} sm={9} className="chart-grid-ia" style={{paddingTop:'3px'}}>
-                                        <div className="col_header">
-                                            <h4>Type d'incident</h4>
-                                            <div className='typeIncident'>
-                                                <img src='' alt=''/>
-                                            </div>
-                                        </div>
-                                        <div className="col_header">
-                                            <h4>Gravité d'incident</h4>
-                                            <div className='typeIncident'>
-                                                <img src='' alt=''/>
-                                            </div>
-                                        </div>
-                                        <div className="col_header">
-                                            <h4>Code Couleur*</h4>
-                                            <div style={{display:"flex"}}>
-                                                <div>
-                                                    <div className="hr_yellow"/>
-                                                    <p>Faible <br/>Impact</p>
-                                                </div>
-                                                <div>
-                                                    <div className="hr_orange_gr"/>
-                                                    <p>Potentiellement <br/>Grave</p>
-                                                </div>
-                                                <div>
-                                                    <div className="hr_red_gr"/>
-                                                    <p>Potentiellement<br/>Dangereux</p>
-                                                </div>
-                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='boutonAnalyse'>
+                                <Link to={`/llm_chat/${incident.id}/${userId}`} style={{color:"white", textDecoration:"none"}}>Discussion LLM</Link>
+                            </div>
+                        </div>
+                    </div>
+                        <div className='charts-view analyze'>
+                            <div className="chart-grids" style={{paddingTop:'5px', display:'flex' }}>
+                                <div className="col_header">
+                                    <div>
+                                        <h4 style={{textAlign:"justify"}}>Image de l'incident</h4>
+                                        <img src={imgUrl} alt="" className='incident-image'/>{' '}
+                                    </div>
+                                    <div style={{display:"flex", justifyContent:"space-between"}}>
+                                        <p>Date: {date}</p>
+                                        <p>Heure: {heure}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="chart-grid-ia" style={{paddingTop:'3px'}}>
+                                <div className="col_header">
+                                    <h4>Type d'incident</h4>
+                                    <div className='typeIncident'>
+                                        <img src='' alt=''/>
+                                    </div>
+                                    <p>{type_incident || ""}</p>
+                                </div>
+                                <div className="col_header">
+                                    <h4>Gravité d'incident</h4>
+                                    <div className='typeIncident'>
+                                        <img src='' alt=''/>
+                                    </div>
+                                </div>
+                                <div className="col_header">
+                                    <h4>Code Couleur*</h4>
+                                    <div style={{display:"flex"}}>
+                                        <div>
+                                            <div className="hr_yellow"/>
+                                            <p>Faible <br/>Impact</p>
                                         </div>
                                         <div>
-                                            <p className='alerts'>
-                                            <span>*</span> L'évaluation de la gravité des incidents
-                                              est réalisée par notre système d'intelligence
-                                              artificielle qui analyse conjointement certains 
-                                              éléments tels que la proximité des incidents aux zones sensibles, 
-                                              les populations vulnérables, les données environnementales contextuelles 
-                                              et les tendences historiques. 
-                                              Cette estimation repose sur les données actuellement accessibles et, 
-                                              bien que précise dans la majorité des cas, 
-                                              peut parfois être sujette à erreur ou à mauvaise interprétation. 
-                                              Nous recommandons toujours une vérification sur le terrain pour confirmer 
-                                              les détails de chaque incident.
-                                            </p>
-                                            <p></p>
+                                            <div className="hr_orange_gr"/>
+                                            <p>Potentiellement <br/>Grave</p>
                                         </div>
-                                    </Col>
-                                </Col>
-                               
-                            </Col>
-                    </Row>
+                                        <div>
+                                            <div className="hr_red_gr"/>
+                                            <p>Potentiellement<br/>Dangereux</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className='alerts'>
+                                        <span>*</span> L'évaluation de la gravité des incidents
+                                            est réalisée par notre système d'intelligence
+                                            artificielle qui analyse conjointement certains 
+                                            éléments tels que la proximité des incidents aux zones sensibles, 
+                                            les populations vulnérables, les données environnementales contextuelles 
+                                            et les tendences historiques. 
+                                            Cette estimation repose sur les données actuellement accessibles et, 
+                                            bien que précise dans la majorité des cas, 
+                                            peut parfois être sujette à erreur ou à mauvaise interprétation. 
+                                            Nous recommandons toujours une vérification sur le terrain pour confirmer 
+                                            les détails de chaque incident.
+                                    </p>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
                 </div>
             </div>
         )

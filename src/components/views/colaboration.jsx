@@ -67,7 +67,7 @@ function Colaboration () {
                 },
             })
             setCountIncidents(res.data.data.filter(incident => incident.etat === "taken_into_account").length);
-            setData(res.data.data);
+            setData(res.data.data.filter(incident => incident.etat === "taken_into_account"));
         } catch (error) {
             console.log(error.message)
         }
@@ -135,6 +135,8 @@ function Colaboration () {
                 desc: incident.description,
                 etat: incident.etat,
                 img: config.url + incident.photo,
+                video: config.url + incident.video,
+                audio: config.url + incident.audio
             }
             positions.push(pos);
         }
@@ -201,35 +203,37 @@ function Colaboration () {
           )
         return(
             <div className='body'>
-                <div style={{backgroundColor:"#f4f7f7"}}>
-                    <div className="title">
-                        <h3 style={{fontSize:"30px", fontWeight:"700"}}>Tableau de Bord</h3>
+                <div>
+                    <div className="head">
+                        <div>
+                            <h3 className="title">Tableau de Bord</h3>
+                        </div>
+                        <div className="monthChoice">
+                            <Select
+                                components={{CustomOption}}
+                                value={monthsOptions.find(option => option.value === selectedMonth)}
+                                onChange={handleMonthChange}
+                                options={monthsOptions}
+                                styles={{
+                                    control: (provided, state) => ({
+                                        ...provided,
+                                        border: '1px solid #ccc',
+                                        borderRadius: '15px',
+                                        width:'150px',
+                                        height:'40px',
+                                        justifyContent:'space-around',
+                                        paddingLeft: '3px',
+                                    }),
+                                    indicatorSeparator: (provided, state) => ({
+                                        ...provided,
+                                        display: 'none'
+                                    }),
+                                
+                                }}
+                            />
+                        </div>
                     </div>
-                    <div className="monthChoice">
-                    <Select
-                            components={{CustomOption}}
-                            value={monthsOptions.find(option => option.value === selectedMonth)}
-                            onChange={handleMonthChange}
-                            options={monthsOptions}
-                            styles={{
-                                // Styles de la zone de contrôle (sélection)
-                                control: (provided, state) => ({
-                                    ...provided,
-                                    border: '1px solid #ccc',
-                                    borderRadius: '15px',
-                                    width:'150px',
-                                    height:'40px',
-                                    justifyContent:'space-around',
-                                    paddingLeft: '3px',
-                                }),
-                                indicatorSeparator: (provided, state) => ({
-                                    ...provided,
-                                    display: 'none'
-                                }),
-                               
-                            }}
-                        />
-                    </div>
+                    
                     <div>
                         <div className="dash">
                             <ul className="dash_ul">
@@ -250,8 +254,8 @@ function Colaboration () {
                     <hr className="dash_line"/>
                 </div>
                 <div>
-                    <Row>
-                        <Col lg={3} sm={9} className="colle">
+                    <div className="static-card">
+                        <div className="colle">
                             <div>
                                 <div>
                                     <h3 className="titleCard">Nombre d'incidents <br/> pris en compte</h3>
@@ -264,77 +268,68 @@ function Colaboration () {
                                 <div>
                                 </div>
                             </div>
-                        </Col>
+                        </div>
 
-                        <Col lg={3} sm={9} className="compte">
+                        <div className="compte">
                             <div>
                                 <div>
                                     <h3 className="titleCard">Nombre d'incidents <br/> avec collaboration</h3>
-                                    <p className="percentage">+3,19%</p>
+                                    <p className="percentage">0,00%</p>
                                 </div>
                                 <div className="percent">
-                                    <p>19%</p>
+                                    <p>0%</p>
                                     <FontAwesomeIcon icon={faBarChart} className="statistic-icon"/>
                                 </div>
                                 <div>
                                 </div>
                             </div>
-                        </Col>
+                        </div>
 
-                        <Col lg={3} sm={9} className="resolu">
+                        <div className="resolu">
                             <div>
                                 <div>
                                     <h3 className="titleCard">Pourcentage <br/> de collaboration</h3>
-                                    <p className="resolve-percent">-3,19%</p>
+                                    <p className="resolve-percent">0,00%</p>
                                 </div>
                                 <div className="percent">
-                                    <p>17%</p>
+                                    <p>0%</p>
                                     <FontAwesomeIcon icon={faBarChart} className="statist-icon"/>
                                 </div>
                                 <div>
                                 </div>
                             </div>
-                        </Col>
-                    </Row>
+                        </div>
+                    </div>
                 </div>
-                <div style={{marginTop:"15px"}}>
-                        <div className="map-grid-colabor" style={{paddingTop:'5px'}}>
-                            <div className="col_header">
-                                <h4 style={{marginLeft:"30px"}}>Carte Interactive</h4>
-                            </div>
-                            <div id="map"> 
-                                {map}
-                            </div>
-                            <div>
-                                <Row>
-                                    <Col lg={6} sm={6}>
-                                        <h4 style={{fontSize:"small", marginLeft:"10px", lineHeight:"21px", fontWeight:"400"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
-                                    </Col>
-                                    <Col lg={6} sm={6}>
+                <div>
+                    <div className="map-grid-colabor" style={{paddingTop:'5px'}}>
+                        <div className="col_header">
+                            <h4 style={{marginLeft:"30px"}}>Carte Interactive</h4>
+                        </div>
+                        <div id="map"> 
+                            {map}
+                        </div>
+                        <div style={{display:'flex'}}>
+                            <h4 style={{fontSize:"small", marginLeft:"10px"}}>Base Cartographique : Leaflet / OpenStreetMap</h4>
+                            <div className="codes">
+                                <h5 className="colorCode">Code Couleur</h5>
+                                <div className="codeColor">
                                     <div>
-                                        <h5 style={{marginLeft:'200px'}}>Code Couleur</h5>
-                                        <div className="code">
-                                            <div>
-                                                <div className="hr_blue"/>
-                                                <p>Declaré <br/> résolu</p>
-                                            </div>
-                                            <div>
-                                                <div className="hr_orange"/>
-                                                <p>Pris en <br/> compte</p>
-                                            </div>
-                                            <div>
-                                                <div className="hr_red"/>
-                                                <p>Pas d'action</p>
-                                            </div>
-                                        </div>
+                                        <div className="hr_blue" />
+                                        <p>Declaré <br/> résolu</p>
                                     </div>
-                                
-                                </Col>
-                                </Row>
-                                
-                                
+                                    <div>
+                                        <div className="hr_orange" />
+                                        <p>Pris en <br/> compte</p>
+                                    </div>
+                                    <div>
+                                        <div className="hr_red" />
+                                        <p>Pas d'action</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
         )

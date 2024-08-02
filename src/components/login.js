@@ -13,6 +13,7 @@ import Background from "../assets/img/map-bg-1.jpg";
 import logo from "../assets/logo.png";
 import Swal from "sweetalert2";
 import { config } from "../config";
+import "../assets/css/login.css"
 
 var sectionStyle = {
   backgroundImage: `url(${Background})`,
@@ -36,8 +37,7 @@ export default class Login extends Component {
       showPwdModal: false,
       changepwd: false,
       file: null,
-      // url_reset: global.config.url + "api/request-password-reset/",
-      show_reset: "/request-password",
+      show_reset: "/",
     };
 
     this.onChange = this.onChange.bind(this);
@@ -372,10 +372,7 @@ export default class Login extends Component {
       </Modal>
     );
     return (
-      <div className="auth-wrapper" style={{
-        backgroundImage: `url(${file ? image : Background})`,
-        backgroundSize: "cover",
-      }}>
+      <div className="auth-wrapper">
         {changePassword}
         <div className="modal fade">
           <Modal
@@ -420,7 +417,6 @@ export default class Login extends Component {
             <ModalFooter></ModalFooter>
           </Modal>
         </div>
-        {/* {this.renderRedirect()} */}
         <div className="auth-inner">
           <form
             noValidate
@@ -493,7 +489,7 @@ export default class Login extends Component {
               )}
             </div>
 
-            <a href={this.state.show_reset}>
+            <a href={this.state.show_reset} className="map-color link-style">
               Mot de passe oublié
             </a>
           </form>
